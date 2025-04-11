@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="exploreeasedb@ep-snowy-water-a2njm5ba.eu-central-1.aws.neon.tech" uuid="d0d89781-f780-4e23-840c-5f37954286e8">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <configured-by-url>true</configured-by-url>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ep-snowy-water-a2njm5ba.eu-central-1.aws.neon.tech:5432/exploreeasedb?password=HJzTy0gquLf9&amp;user=exploreeasedb_owner</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
