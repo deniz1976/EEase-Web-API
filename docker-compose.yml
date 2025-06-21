@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  eease-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eease-api
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    restart: always
+    volumes:
+      - ./Presentation/EEaseWebAPI.API/wwwroot:/app/wwwroot
+      - data-protection-keys:/root/.aspnet/DataProtection-Keys
+
+volumes:
+  data-protection-keys: 
