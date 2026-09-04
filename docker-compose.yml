@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: eease-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-eease}
+      POSTGRES_USER: ${POSTGRES_USER:-eease}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-eease}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eease} -d ${POSTGRES_DB:-eease}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  eease-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eease-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${API_PORT:-8080}:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ASPNETCORE_HTTP_PORTS: "8080"
+
+      # Connects to the bundled Postgres container. To use Neon, override
+      # ConnectionStrings__PostgreSQL in the .env file with your Neon connection string.
+      ConnectionStrings__PostgreSQL: ${ConnectionStrings__PostgreSQL:-Host=postgres;Port=5432;Database=eease;Username=eease;Password=eease}
+
+      Database__MigrateOnStartup: "true"
+
+      Token__Issuer: ${Token__Issuer:-eease-local}
+      Token__Audience: ${Token__Audience:-eease-local}
+      Token__SecurityKey: ${Token__SecurityKey:-local-development-only-signing-key-change-me-32chars}
+
+      GeminiAI__ApiKeys__0: ${GEMINI_API_KEY:-}
+      GooglePlaces__ApiKey: ${GOOGLE_PLACES_API_KEY:-}
+
+      MailService__Enabled: ${MailService__Enabled:-false}
+      MailService__Email: ${MailService__Email:-}
+      MailService__Key: ${MailService__Key:-}
+      MailService__Name: ${MailService__Name:-}
+    volumes:
+      - ./Presentation/EEaseWebAPI.API/wwwroot:/app/wwwroot
+      - data-protection-keys:/home/app/.aspnet/DataProtection-Keys
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  data-protection-keys:

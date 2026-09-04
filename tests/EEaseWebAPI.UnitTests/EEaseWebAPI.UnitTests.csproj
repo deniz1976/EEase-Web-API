@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\EEaseWebAPI.Application\EEaseWebAPI.Application.csproj" />
+    <ProjectReference Include="..\..\Core\EEaseWebAPI.Domain\EEaseWebAPI.Domain.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\EEaseWebAPI.Infrastructure\EEaseWebAPI.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\EEaseWebAPI.Persistence\EEaseWebAPI.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+</Project>
