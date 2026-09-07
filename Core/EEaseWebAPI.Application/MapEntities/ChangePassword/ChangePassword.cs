@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.MapEntities.ChangePassword
         public ChangePasswordBody? Body { get; set; }
     }
 
-    public class ChangePasswordBody 
+    public class ChangePasswordBody
     {
         public string? message { get; set; }
     }

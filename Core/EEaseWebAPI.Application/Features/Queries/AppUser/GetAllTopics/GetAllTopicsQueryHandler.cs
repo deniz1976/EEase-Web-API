@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using MediatR;
 using System;
@@ -13,25 +13,24 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetAllTopics
     public class GetAllTopicsQueryHandler : IRequestHandler<GetAllTopicsQueryRequest, GetAllTopicsQueryResponse>
     {
 
-        private readonly IUserService _userService;
+        private readonly IUserPreferenceService _preferenceService;
         private readonly IHeaderService _headerService;
 
-        public GetAllTopicsQueryHandler(IUserService userService,IHeaderService headerService)
+        public GetAllTopicsQueryHandler(IUserPreferenceService preferenceService,IHeaderService headerService)
         {
-            _userService = userService;
+            _preferenceService = preferenceService;
             _headerService = headerService;
         }
 
         public async Task<GetAllTopicsQueryResponse> Handle(GetAllTopicsQueryRequest request, CancellationToken cancellationToken)
         {
-            var responseBody = _userService.GetAllTopics();
+            var responseBody = _preferenceService.GetAllTopics();
 
             var response = new GetAllTopicsQueryResponse()
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.GetAllTopicsSuccessfully),
                 Body = responseBody
             };
-
 
             return response;
         }

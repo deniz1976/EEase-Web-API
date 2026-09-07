@@ -19,5 +19,4 @@ namespace EEaseWebAPI.Application.DTOs.GooglePlaces
         public List<Place>? Places { get; set; }
     }
 
-
-} 
+}

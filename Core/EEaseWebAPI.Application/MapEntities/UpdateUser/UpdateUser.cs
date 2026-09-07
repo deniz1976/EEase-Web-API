@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.DTOs;
+using EEaseWebAPI.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.MapEntities.UpdateUser
         public UpdateUserBody? Body { get; set; }
     }
 
-    public class UpdateUserBody 
+    public class UpdateUserBody
     {
         public Token? newToken { get; set; }
 

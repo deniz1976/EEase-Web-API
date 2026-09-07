@@ -1,8 +1,7 @@
+using EEaseWebAPI.API.Constants;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using EEaseWebAPI.API.Constants;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using TokenOptions = EEaseWebAPI.Application.Options.TokenOptions;
 
 namespace EEaseWebAPI.API.Extensions

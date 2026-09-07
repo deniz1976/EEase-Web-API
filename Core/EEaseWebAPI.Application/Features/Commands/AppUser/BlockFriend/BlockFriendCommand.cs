@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
         public string Username { get; set; }
         public string TargetUsername { get; set; }
     }
-} 
+}

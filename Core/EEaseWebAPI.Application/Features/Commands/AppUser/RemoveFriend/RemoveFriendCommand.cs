@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
         public string Username { get; set; }
         public string FriendUsername { get; set; }
     }
-} 
+}

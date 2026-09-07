@@ -21,4 +21,4 @@ namespace EEaseWebAPI.Application.Exceptions
         {
         }
     }
-} 
+}

@@ -18,14 +18,14 @@ namespace EEaseWebAPI.Persistence.Services
         private readonly IMemoryCache _memoryCache;
         private readonly string _currenciesCacheKey;
 
-        public CurrencyService(EEaseAPIDbContext context, IMemoryCache memoryCache, IConfiguration configuration) 
+        public CurrencyService(EEaseAPIDbContext context, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _context = context;
             _memoryCache = memoryCache;
             _currenciesCacheKey = configuration["CacheConfiguration:AllCurrenciesCacheKey"] ?? "AllCurrencies_Cache";
         }
 
-        public async Task<List<AllWorldCurrencies>> GetCurrenciesAsync() 
+        public async Task<List<AllWorldCurrencies>> GetCurrenciesAsync()
         {
             if (_memoryCache.TryGetValue(_currenciesCacheKey, out List<AllWorldCurrencies> cachedCurrencies))
             {

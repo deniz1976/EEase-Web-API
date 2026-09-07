@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
     {
         public string Message { get; set; } = "User blocked successfully.";
     }
-} 
+}

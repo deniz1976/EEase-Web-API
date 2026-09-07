@@ -38,6 +38,8 @@ namespace EEaseWebAPI.Persistence.Contexts
         public DbSet<UserFoodPreferences> UserFoodPreferences { get; set; }
         public DbSet<UserAccommodationPreferences> UserAccommodationPreferences { get; set; }
         public DbSet<UserFriendship> UserFriendships { get; set; }
+        public DbSet<UserBlock> UserBlocks { get; set; }
+        public DbSet<UserDislikedPlace> UserDislikedPlaces { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

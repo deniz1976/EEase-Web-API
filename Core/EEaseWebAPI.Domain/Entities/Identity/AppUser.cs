@@ -16,10 +16,13 @@ namespace EEaseWebAPI.Domain.Entities.Identity
         public DateOnly? BornDate { get; set; }
         public DateTime? DeleteDate { get; set; }
         public string? DeleteCode { get; set; }
+        public DateTime? DeleteCodeExpiration { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenEndDate { get; set; }
         public string? VerificationCode { get; set; }
         public string? ResetPasswordCode { get; set; }
+        public DateTime? ResetPasswordCodeExpiration { get; set; }
+        public int ResetPasswordCodeAttempts { get; set; }
         public bool? Status { get; set; } = true;
         public string? Currency { get; set; } = "TRY";
         public string? Country { get; set; } = "Turkey";
@@ -33,10 +36,14 @@ namespace EEaseWebAPI.Domain.Entities.Identity
         public List<StandardRoute>? MyRoutes { get; set; }
         public virtual ICollection<UserFriendship> SentFriendRequests { get; set; }
         public virtual ICollection<UserFriendship> ReceivedFriendRequests { get; set; }
+        public virtual ICollection<UserBlock> BlocksIssued { get; set; }
+        public virtual ICollection<UserBlock> BlocksReceived { get; set; }
         public AppUser()
         {
             SentFriendRequests = new HashSet<UserFriendship>();
             ReceivedFriendRequests = new HashSet<UserFriendship>();
+            BlocksIssued = new HashSet<UserBlock>();
+            BlocksReceived = new HashSet<UserBlock>();
             LikedRoutes = new List<StandardRoute>(){};
             MyRoutes = new List<StandardRoute>(){};
         }

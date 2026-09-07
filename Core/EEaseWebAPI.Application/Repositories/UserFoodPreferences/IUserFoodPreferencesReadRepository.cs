@@ -10,4 +10,4 @@ namespace EEaseWebAPI.Application.Repositories
     public interface IUserFoodPreferencesReadRepository : IReadRepository<UserFoodPreferences>
     {
     }
-} 
+}

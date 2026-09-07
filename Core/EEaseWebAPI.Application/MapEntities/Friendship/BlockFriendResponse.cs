@@ -8,4 +8,4 @@ namespace EEaseWebAPI.Application.MapEntities.Friendship
     {
         public string Message { get; set; }
     }
-} 
+}

@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.MapEntities.GetAllCountries
     {
         public List<string>? Countries { get; set; }
     }
-} 
+}

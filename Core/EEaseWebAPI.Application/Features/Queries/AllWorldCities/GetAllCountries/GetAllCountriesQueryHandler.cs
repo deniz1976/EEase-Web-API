@@ -38,4 +38,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountrie
             }
         }
     }
-} 
+}

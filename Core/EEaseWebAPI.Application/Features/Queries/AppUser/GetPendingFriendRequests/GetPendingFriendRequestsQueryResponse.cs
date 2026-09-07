@@ -20,4 +20,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
         public string RequesterSurname { get; set; }
         public DateTime RequestDate { get; set; }
     }
-} 
+}

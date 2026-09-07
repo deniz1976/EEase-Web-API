@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using MediatR;
 using System;
@@ -12,12 +12,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
     public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommandRequest, ChangePasswordCommandResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IAuthService _authService;
+        private readonly IPasswordService _passwordService;
 
-        public ChangePasswordCommandHandler(IHeaderService headerService, IAuthService authService)
+        public ChangePasswordCommandHandler(IHeaderService headerService, IPasswordService passwordService)
         {
             _headerService = headerService;
-            _authService = authService;
+            _passwordService = passwordService;
         }
 
         public async Task<ChangePasswordCommandResponse> Handle(ChangePasswordCommandRequest request, CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
             if(request == null || request.username == null || request.oldPassword == null)
                 throw new ArgumentNullException(nameof(request));
 
-            var result = await _authService.ChangePassword(request.username, request.oldPassword,request.newPassword);
+            var result = await _passwordService.ChangePasswordAsync(request.username, request.oldPassword,request.newPassword);
 
             return new ChangePasswordCommandResponse()
                 {
@@ -38,7 +38,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
                         }
                     }
                 };
-            
+
         }
     }
 }

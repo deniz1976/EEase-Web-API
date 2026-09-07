@@ -8,18 +8,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
 {
     public class UpdateUserPreferencesCommandHandler : IRequestHandler<UpdateUserPreferencesCommandRequest, UpdateUserPreferencesCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IUserPreferenceService _preferenceService;
         private readonly IHeaderService _headerService;
 
-        public UpdateUserPreferencesCommandHandler(IUserService userService, IHeaderService headerService)
+        public UpdateUserPreferencesCommandHandler(IUserPreferenceService preferenceService, IHeaderService headerService)
         {
-            _userService = userService;
+            _preferenceService = preferenceService;
             _headerService = headerService;
         }
 
         public async Task<UpdateUserPreferencesCommandResponse> Handle(UpdateUserPreferencesCommandRequest request, CancellationToken cancellationToken)
         {
-            await _userService.UpdateUserPreferences(request.Username, request.Message);
+            await _preferenceService.SetFromMessageAsync(request.Username, request.Message);
 
             return new UpdateUserPreferencesCommandResponse
             {
@@ -34,4 +34,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
             };
         }
     }
-} 
+}

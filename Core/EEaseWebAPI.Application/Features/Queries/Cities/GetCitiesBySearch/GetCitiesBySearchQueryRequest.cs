@@ -9,4 +9,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Cities.GetCitiesBySearch
         public int PageNumber { get; set; } = 1;
         public string? Username { get; set; }
     }
-} 
+}

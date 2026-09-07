@@ -6,4 +6,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
     {
         public string? Username { get; set; }
     }
-} 
+}

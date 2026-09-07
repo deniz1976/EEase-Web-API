@@ -22,4 +22,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
         public string PhotoPath { get; set; }
         public DateTime FriendshipDate { get; set; }
     }
-} 
+}

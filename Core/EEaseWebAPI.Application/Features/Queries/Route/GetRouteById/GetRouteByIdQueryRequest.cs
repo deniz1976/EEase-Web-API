@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
         public string? Username { get; set; }
         public Guid? RouteId { get; set; }
     }
-} 
+}

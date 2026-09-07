@@ -7,11 +7,11 @@ namespace EEaseWebAPI.Persistence.Services
 {
     public sealed class RouteAccessPolicy : IRouteAccessPolicy
     {
-        private readonly IUserService _userService;
+        private readonly IFriendshipService _friendshipService;
 
-        public RouteAccessPolicy(IUserService userService)
+        public RouteAccessPolicy(IFriendshipService friendshipService)
         {
-            _userService = userService;
+            _friendshipService = friendshipService;
         }
 
         public async Task<RouteAccessResult> EvaluateAsync(
@@ -80,7 +80,7 @@ namespace EEaseWebAPI.Persistence.Services
                 return false;
             }
 
-            return await _userService.IsFriendAsync(ownerUsername, requesterUsername);
+            return await _friendshipService.AreFriendsAsync(ownerUsername, requesterUsername);
         }
     }
 }

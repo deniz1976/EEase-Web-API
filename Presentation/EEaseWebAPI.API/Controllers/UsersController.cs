@@ -1,33 +1,33 @@
-﻿using EEaseWebAPI.Application.DTOs.User;
 using EEaseWebAPI.API.Constants;
+using EEaseWebAPI.Application.DTOs.User;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmailUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode;
-using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser;
-using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferences;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences;
+using EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCodeAgain;
+using EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto;
+using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry;
+using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency;
+using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferences;
+using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferencesWithTopics;
 using EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailConfirmed;
+using EEaseWebAPI.Application.Features.Queries.AppUser.GetAllTopics;
+using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserCurrency;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfo;
-using EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck;
+using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById;
+using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName;
+using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto;
+using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDescriptions;
+using EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers;
+using EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using EEaseWebAPI.Application.Features.Queries.AppUser.GetAllTopics;
-using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferencesWithTopics;
-using EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCodeAgain;
-using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency;
-using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserCurrency;
-using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto;
-using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName;
-using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName;
-using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById;
-using EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto;
-using EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers;
 namespace EEaseWebAPI.API.Controllers
 {
     [Route("api/[controller]")]
@@ -53,7 +53,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SendVerificationCodeCommandResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SendVerificationCodeAgain(SendVerificationCodeCommandRequest request) 
+        public async Task<IActionResult> SendVerificationCodeAgain(SendVerificationCodeCommandRequest request)
         {
            SendVerificationCodeCommandResponse response = await _mediator.Send(request);
             return Ok(response);
@@ -67,7 +67,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO)
         {
-            UpdateUserCommandRequest updateUserCommandRequest = new UpdateUserCommandRequest() 
+            UpdateUserCommandRequest updateUserCommandRequest = new UpdateUserCommandRequest()
             {
                 Username = updateUserDTO.Username,
                 Name = updateUserDTO.Name,
@@ -82,13 +82,12 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(updateUserCommandResponse);
         }
 
-
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserInfoQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
-        public async Task<IActionResult> GetUserInfo() 
+        public async Task<IActionResult> GetUserInfo()
         {
             var userName = User.FindFirst(ClaimTypes.Name)?.Value;
             GetUserInfoQueryRequest request = new() { username = userName };
@@ -105,7 +104,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ConfirmEmailUserCommandResponse), StatusCodes.Status200OK)]
@@ -121,15 +119,14 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(DeleteUserCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
-        public async Task<IActionResult> DeleteAccount() 
+        public async Task<IActionResult> DeleteAccount()
         {
 
-            DeleteUserCommandRequest deleteUserCommandRequest = new DeleteUserCommandRequest() 
+            DeleteUserCommandRequest deleteUserCommandRequest = new DeleteUserCommandRequest()
             { username=  User.FindFirst(ClaimTypes.Name)?.Value };
             DeleteUserCommandResponse response = await _mediator.Send(deleteUserCommandRequest);
             return Ok(response);
         }
-
 
         [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
@@ -137,7 +134,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(DeleteUserWithCodeCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
-        public async Task<IActionResult> DeleteAccountWithCode([FromBody] DeleteAccountWithCode code) 
+        public async Task<IActionResult> DeleteAccountWithCode([FromBody] DeleteAccountWithCode code)
         {
             DeleteUserWithCodeCommandRequest deleteUserWithCodeCommandRequest = new DeleteUserWithCodeCommandRequest() {username = User.FindFirst(ClaimTypes.Name)?.Value,code = code.Code };
             DeleteUserWithCodeCommandResponse deleteUserWithCodeCommandResponse = await _mediator.Send(deleteUserWithCodeCommandRequest);
@@ -150,7 +147,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(StatusCheckQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> StatusCheck() 
+        public async Task<IActionResult> StatusCheck()
         {
             StatusCheckQueryRequest statusCheckQueryRequest = new StatusCheckQueryRequest() { username = User.FindFirst(ClaimTypes.Name)?.Value};
             StatusCheckQueryResponse statusCheckQueryResponse = await _mediator.Send(statusCheckQueryRequest);
@@ -190,7 +187,6 @@ namespace EEaseWebAPI.API.Controllers
             var result = await _mediator.Send(request);
             return Ok(result);
         }
-
 
         [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
@@ -244,7 +240,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(GetAllTopicsQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTopics() 
+        public async Task<IActionResult> GetAllTopics()
         {
             var request = new GetAllTopicsQueryRequest();
             var response = await _mediator.Send(request);
@@ -256,7 +252,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCurrencyCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUserCurrency([FromBody] string currencyCode) 
+        public async Task<IActionResult> UpdateUserCurrency([FromBody] string currencyCode)
         {
 
             var request = new UpdateUserCurrencyCommandRequest
@@ -324,7 +320,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPhotoQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserPhoto() 
+        public async Task<IActionResult> GetUserPhoto()
         {
             var request = new GetUserPhotoQueryRequest
             {
@@ -335,13 +331,12 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPhotoByNameQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserPhotoByName([FromQuery]string TargetUsername) 
+        public async Task<IActionResult> GetUserPhotoByName([FromQuery]string TargetUsername)
         {
             var request = new GetUserPhotoByNameQueryRequest()
             {
@@ -358,7 +353,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SetUserPhotoCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> SetUserPhoto([FromQuery] string photoPath)         
+        public async Task<IActionResult> SetUserPhoto([FromQuery] string photoPath)
         {
             var request = new SetUserPhotoCommandRequest
             {

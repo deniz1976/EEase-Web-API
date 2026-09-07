@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using MediatR;
 using System;
@@ -40,7 +40,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse
                     }
                 }
             };
-
 
         }
     }

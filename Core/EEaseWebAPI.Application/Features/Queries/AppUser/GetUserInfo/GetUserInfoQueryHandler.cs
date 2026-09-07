@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.MapEntities;
 using EEaseWebAPI.Application.Enums;
 using MediatR;
@@ -13,12 +13,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfo
     public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQueryRequest, GetUserInfoQueryResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IUserService _userService;
+        private readonly IUserProfileService _profileService;
 
-        public GetUserInfoQueryHandler(IHeaderService headerService, IUserService userService)
+        public GetUserInfoQueryHandler(IHeaderService headerService, IUserProfileService profileService)
         {
             _headerService = headerService;
-            _userService = userService;
+            _profileService = profileService;
         }
 
         public async Task<GetUserInfoQueryResponse> Handle(GetUserInfoQueryRequest request, CancellationToken cancellationToken)
@@ -26,14 +26,14 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfo
             if (request == null || request.username == null)
                 throw new ArgumentNullException(nameof(request));
 
-            DTOs.User.GetUserInfo response = await _userService.GetUserInfoQuery(request.username);
+            DTOs.User.GetUserInfo response = await _profileService.GetUserInfoQuery(request.username);
 
             return new GetUserInfoQueryResponse()
             {
                 userInfo = new()
                 {
                     Header = _headerService.HeaderCreate((int)StatusEnum.GetUserInfoSuccessfully),
-                    GetUserInfoBody = new() 
+                    GetUserInfoBody = new()
                     {
                         name = response.name,
                         surname = response.surname,

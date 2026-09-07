@@ -16,4 +16,4 @@ namespace EEaseWebAPI.Application.DTOs.Route
         public string AccessibilityMessage { get; set; }
         public int? Status { get; set; }
     }
-} 
+}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +11,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
         public MapEntities.GetUserPhoto.GetUserPhoto? response { get; set; }
     }
 
-    
 }

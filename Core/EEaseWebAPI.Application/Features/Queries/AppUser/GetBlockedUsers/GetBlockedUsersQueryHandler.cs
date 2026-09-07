@@ -7,12 +7,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers
 {
     public class GetBlockedUsersQueryHandler : IRequestHandler<GetBlockedUsersQuery, GetBlockedUsersQueryResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public GetBlockedUsersQueryHandler(IUserService userService, IHeaderService headerService)
+        public GetBlockedUsersQueryHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
-            _userService = userService;
+            _friendshipService = friendshipService;
             _headerService = headerService;
         }
 
@@ -20,14 +20,14 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers
         {
             try
             {
-                var blockedUsers = await _userService.GetBlockedUsersAsync(request.Username);
+                var blockedUsers = await _friendshipService.GetBlockedUsersAsync(request.Username);
 
-                var blockedUserDtos = blockedUsers.Select(f => new BlockedUserDto
+                var blockedUserDtos = blockedUsers.Select(block => new BlockedUserDto
                 {
-                    Username = f.Addressee.UserName,
-                    Name = f.Addressee.Name,
-                    Surname = f.Addressee.Surname,
-                    BlockedDate = f.ResponseDate ?? f.RequestDate
+                    Username = block.Blocked.UserName,
+                    Name = block.Blocked.Name,
+                    Surname = block.Blocked.Surname,
+                    BlockedDate = block.BlockedDate
                 }).ToList();
 
                 return new GetBlockedUsersQueryResponse
@@ -49,4 +49,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers
             }
         }
     }
-} 
+}

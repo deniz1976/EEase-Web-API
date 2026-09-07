@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions.GetRouteComponent;
 using MediatR;
@@ -32,9 +32,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto
                 };
             }
             throw new Exception();
-        }     
-            
-    
+        }
 
         public bool GetRouteComponentPhotoRequestControl(GetRouteComponentPhotoCommandRequest request)
         {

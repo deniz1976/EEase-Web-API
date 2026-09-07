@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task<GetRouteComponentPhotoCommandResponseBody> GetPlacePhotosAsync(string photoName, int maxWidth = 400, int maxHeight = 400);
     }
-} 
+}

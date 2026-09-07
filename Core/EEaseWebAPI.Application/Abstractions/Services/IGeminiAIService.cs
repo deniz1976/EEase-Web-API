@@ -32,4 +32,4 @@ namespace EEaseWebAPI.Application.Abstractions.Services
             UserFoodPreferences foodPrefs,
             UserPersonalization personalPrefs);
     }
-} 
+}

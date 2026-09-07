@@ -13,4 +13,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountrie
     {
         public List<string>? Countries { get; set; }
     }
-} 
+}

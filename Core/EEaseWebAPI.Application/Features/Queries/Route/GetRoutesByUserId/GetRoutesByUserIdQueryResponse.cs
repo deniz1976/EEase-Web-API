@@ -26,4 +26,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId
         public bool HasPrevious { get; set; }
         public bool HasNext { get; set; }
     }
-} 
+}

@@ -20,4 +20,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers
         public string? Surname { get; set; }
         public DateTime? BlockedDate { get; set; }
     }
-} 
+}

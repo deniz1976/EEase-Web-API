@@ -1,5 +1,3 @@
-
-
 using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserCurrency
@@ -10,10 +8,8 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserCurrency
         public GetUserCurrencyBody? Body { get; set; }
     }
 
-
-
     public class GetUserCurrencyBody
     {
         public string? Currency { get; set; }
     }
-} 
+}

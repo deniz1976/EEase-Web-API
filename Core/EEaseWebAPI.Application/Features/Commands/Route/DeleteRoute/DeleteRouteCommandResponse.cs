@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DeleteRoute
     {
         public bool IsDeleted { get; set; }
     }
-} 
+}

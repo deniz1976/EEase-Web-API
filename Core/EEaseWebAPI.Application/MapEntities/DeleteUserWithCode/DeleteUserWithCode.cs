@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace EEaseWebAPI.Application.MapEntities.DeleteUserWithCode
         public Header? Header { get; set; }
         public DeleteUserWithCodeBody? Body { get; set; }
     }
-    public class DeleteUserWithCodeBody 
+    public class DeleteUserWithCodeBody
     {
         public string? message { get; set; }
     }

@@ -9,4 +9,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendReque
         public string AddresseeUsername { get; set; }
         public FriendshipStatus Response { get; set; }
     }
-} 
+}

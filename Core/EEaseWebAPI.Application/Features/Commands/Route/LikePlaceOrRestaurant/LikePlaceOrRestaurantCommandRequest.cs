@@ -10,4 +10,4 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant
 
         public string Username { get; set; }
     }
-} 
+}

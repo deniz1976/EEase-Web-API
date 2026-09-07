@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
     {
         public ResetUserPreferencesResponse? Response { get; set; }
     }
-} 
+}

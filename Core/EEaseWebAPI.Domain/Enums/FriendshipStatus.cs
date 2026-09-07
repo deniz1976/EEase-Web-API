@@ -4,7 +4,6 @@ namespace EEaseWebAPI.Domain.Enums
     {
         Pending = 0,
         Accepted = 1,
-        Rejected = 2,
-        Blocked = 3
+        Rejected = 2
     }
-} 
+}

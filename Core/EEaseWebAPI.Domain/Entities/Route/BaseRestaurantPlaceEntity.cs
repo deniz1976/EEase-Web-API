@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Domain.Entities.Common;
+using EEaseWebAPI.Domain.Entities.Common;
 using EEaseWebAPI.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Domain.Entities.Route
 {
-    public class BaseRestaurantPlaceEntity : BaseEntity
+    public class BaseRestaurantPlaceEntity : BaseEntity, IHasWeather, ISelectablePlace, IHasFoodPreference
     {
         [JsonPropertyName("nationalPhoneNumber")]
-        public string? NationalPhoneNumber { get; set; } //
+        public string? NationalPhoneNumber { get; set; }
         [JsonPropertyName("formattedAddress")]
-        public string? FormattedAddress { get; set; } //
+        public string? FormattedAddress { get; set; }
         [JsonPropertyName("rating")]
-        public double? Rating { get; set; } //
+        public double? Rating { get; set; }
         [JsonPropertyName("googleMapsUri")]
-        public string? GoogleMapsUri { get; set; } //
+        public string? GoogleMapsUri { get; set; }
         [JsonPropertyName("websiteUri")]
-        public string? WebsiteUri { get; set; } //
+        public string? WebsiteUri { get; set; }
         [JsonPropertyName("primaryType")]
-        public string? PrimaryType { get; set; } // 
+        public string? PrimaryType { get; set; }
         [JsonPropertyName("id")]
-        public string? GoogleId { get; set; } // 
+        public string? GoogleId { get; set; }
         [JsonPropertyName("reservable")]
         public bool? Reservable { get; set; }
         [JsonPropertyName("servesBrunch")]
@@ -40,26 +40,26 @@ namespace EEaseWebAPI.Domain.Entities.Route
         [JsonPropertyName("menuForChildren")]
         public bool? MenuForChildren { get; set; }
         [JsonPropertyName("restroom")]
-        public bool? Restroom { get; set; } //
+        public bool? Restroom { get; set; }
         [JsonPropertyName("goodForGroups")]
         public bool? GoodForGroups { get; set; }
         [JsonPropertyName("location")]
-        public Location? Location { get; set; } //
+        public Location? Location { get; set; }
         [JsonPropertyName("regularOpeningHours")]
-        public RegularOpeningHours? RegularOpeningHours { get; set; } //
+        public RegularOpeningHours? RegularOpeningHours { get; set; }
 
         public PRICE_LEVEL? _PRICE_LEVEL { get; set; }
 
         [JsonPropertyName("displayName")]
-        public DisplayName? DisplayName { get; set; } //
+        public DisplayName? DisplayName { get; set; }
 
         [JsonPropertyName("paymentOptions")]
-        public PaymentOptions? PaymentOptions { get; set; }//
+        public PaymentOptions? PaymentOptions { get; set; }
         [JsonPropertyName("photos")]
-        public List<Photos>? Photos { get; set; }//
+        public List<Photos>? Photos { get; set; }
 
         [JsonPropertyName("weather")]
-        public Weather? Weather { get; set; } //
+        public Weather? Weather { get; set; }
 
         public UserFoodPreferences? UserFoodPreferences { get; set; } = null;
         public UserPersonalization? UserPersonalization { get; set; } = null;
@@ -67,9 +67,6 @@ namespace EEaseWebAPI.Domain.Entities.Route
         public UserAccommodationPreferences? UserAccommodationPreferences { get; set; } = null;
 
         public string? UserFoodPreference { get; set; }
-
-
-
 
     }
 }

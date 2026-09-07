@@ -14,4 +14,4 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task InitializeCacheAsync();
     }
-} 
+}

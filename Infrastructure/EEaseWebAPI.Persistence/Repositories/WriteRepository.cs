@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Repositories;
+using EEaseWebAPI.Application.Repositories;
 using EEaseWebAPI.Domain.Entities.Common;
 using EEaseWebAPI.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +37,7 @@ namespace EEaseWebAPI.Persistence.Repositories
         public bool Remove(T model)
         {
             EntityEntry<T> entityEntry =  Table.Remove(model);
-            return entityEntry.State == EntityState.Deleted;   
+            return entityEntry.State == EntityState.Deleted;
         }
 
         public async Task<bool> RemoveAsync(string id)

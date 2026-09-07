@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities;
 using EEaseWebAPI.Domain.Entities.Route;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute
         public CreateCustomRouteCommandResponseBody? Body { get; set; }
     }
 
-    public class CreateCustomRouteCommandResponseBody 
+    public class CreateCustomRouteCommandResponseBody
     {
         public StandardRoute? Route { get; set; }
     }

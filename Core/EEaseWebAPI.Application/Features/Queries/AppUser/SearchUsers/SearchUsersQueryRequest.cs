@@ -13,4 +13,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
     {
         public string SearchTerm { get; set; }
     }
-} 
+}

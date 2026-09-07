@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CancelFriendRequest
         public CancelFriendRequestCommandResponseBody? Body { get; set; }
     }
 
-    public class CancelFriendRequestCommandResponseBody 
+    public class CancelFriendRequestCommandResponseBody
     {
         public string? message { get; set; }
         public bool? success { get; set; }

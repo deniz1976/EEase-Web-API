@@ -25,4 +25,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDesc
         public string? Description { get; set; }
         public int? Value { get; set; }
     }
-} 
+}

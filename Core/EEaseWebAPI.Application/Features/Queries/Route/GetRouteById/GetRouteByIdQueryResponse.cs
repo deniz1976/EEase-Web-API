@@ -2,7 +2,7 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
 {
-    public class GetRouteByIdQueryResponse  
+    public class GetRouteByIdQueryResponse
     {
         public GetRouteByIdQueryResponseBody? Body { get; set; }
         public Header? Header { get; set; }
@@ -13,4 +13,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
     {
         public EEaseWebAPI.Application.DTOs.Route.StandardRouteDTO Route { get; set; }
     }
-} 
+}

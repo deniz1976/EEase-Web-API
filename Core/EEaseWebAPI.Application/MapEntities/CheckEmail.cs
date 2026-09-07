@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ namespace EEaseWebAPI.Application.MapEntities
         public Header? Header { get; set; }
     }
 
-    public class CheckEmailBody 
+    public class CheckEmailBody
     {
         public bool? result {  get; set; }
     }

@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Domain.Entities.Common;
+using EEaseWebAPI.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,6 @@ namespace EEaseWebAPI.Application.Repositories
         Task<T> GetSingleAsync(Expression<Func<T, bool>> method, bool tracking = true);
 
         Task<T> GetByIdAsync(string id, bool tracking = true);
-
 
     }
 }

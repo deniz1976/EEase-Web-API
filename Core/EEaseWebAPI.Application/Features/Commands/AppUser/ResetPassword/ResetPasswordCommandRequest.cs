@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPassword;
+using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPassword;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser
 {
     public class ResetPasswordCommandRequest : IRequest<ResetPasswordCommandResponse>
     {
+        public string? usernameOrEmail { get; set; }
+
         public string? code { get; set; }
 
         public string? newPassword { get; set; }

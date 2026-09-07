@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
     {
         public string Message { get; set; } = "Friend removed successfully.";
     }
-} 
+}

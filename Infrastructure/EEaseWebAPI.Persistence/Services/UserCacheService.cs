@@ -57,7 +57,7 @@ namespace EEaseWebAPI.Persistence.Services
             {
                 searchTerm = searchTerm.ToLower().Trim();
                 return users
-                    .Where(u => 
+                    .Where(u =>
                         (u.Username?.ToLower().Contains(searchTerm) ?? false) ||
                         (u.Name?.ToLower().Contains(searchTerm) ?? false) ||
                         (u.Surname?.ToLower().Contains(searchTerm) ?? false) ||
@@ -102,30 +102,30 @@ namespace EEaseWebAPI.Persistence.Services
                 _memoryCache.Set(USER_CACHE_KEY, users, cacheEntryOptions);
             }
         }
-        
+
         public void UpdateUserAttributesInCache(string userId, string? username = null, string? name = null, string? surname = null, string? photoUrl = null, string? gender = null)
         {
             if (_memoryCache.TryGetValue(USER_CACHE_KEY, out List<UserSearchDTO> users))
             {
                 var existingUser = users.FirstOrDefault(u => u.Id == userId);
-                
+
                 if (existingUser != null)
                 {
                     if (username != null)
                         existingUser.Username = username;
-                    
+
                     if (name != null)
                         existingUser.Name = name;
-                    
+
                     if (surname != null)
                         existingUser.Surname = surname;
-                    
+
                     if (photoUrl != null)
                         existingUser.PhotoUrl = photoUrl;
-                    
+
                     if (gender != null)
                         existingUser.Gender = gender;
-                    
+
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         .SetSlidingExpiration(TimeSpan.FromHours(1));
 
@@ -148,4 +148,4 @@ namespace EEaseWebAPI.Persistence.Services
             }
         }
     }
-} 
+}

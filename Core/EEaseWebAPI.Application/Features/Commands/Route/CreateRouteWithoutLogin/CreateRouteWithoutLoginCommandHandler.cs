@@ -18,44 +18,17 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogi
 
         public async Task<CreateRouteWithoutLoginCommandResponse> Handle(CreateRouteWithoutLoginCommandRequest request, CancellationToken cancellationToken)
         {
-            if(RequestControl(request)) 
+            var route = await _customRouteService.CreateRandomRoute(
+                request.destination!,
+                request.StartDate,
+                request.EndDate,
+                request.PRICE_LEVEL);
+
+            return new CreateRouteWithoutLoginCommandResponse
             {
-                return new CreateRouteWithoutLoginCommandResponse()
-                {
-                    Body = new()
-                    {
-                        Route = await _customRouteService.CreateRandomRoute(request.destination, request.StartDate, request.EndDate, request.PRICE_LEVEL)
-                    },
-                    Header = _headerService.HeaderCreate((int)StatusEnum.RouteCreatedSuccessfully)
-                };
-            }
-
-            throw new CreateRouteRequestException();
-        }
-
-        public static bool RequestControl(CreateRouteWithoutLoginCommandRequest request)
-        {
-            if (request == null || String.IsNullOrEmpty(request.destination) || request.StartDate == null || request.EndDate == null) throw new ArgumentNullException();
-
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
-            var oneYearLater = today.AddYears(1);
-
-            if (request.StartDate < today || request.EndDate < today)
-                throw new CreateRouteRequestException("You cant create route for past.");
-
-            if (request.StartDate > oneYearLater || request.EndDate > oneYearLater)
-                throw new CreateRouteRequestException("Routes cannot be created for dates more than 1 year away.");
-
-            if (request.StartDate > request.EndDate)
-                throw new CreateRouteRequestException("The start date cannot be later than the end date.");
-
-            var startDateTime = request.StartDate.Value.ToDateTime(TimeOnly.MinValue);
-            var endDateTime = request.EndDate.Value.ToDateTime(TimeOnly.MinValue);
-            var dayDifference = (endDateTime - startDateTime).Days;
-            if (dayDifference > 5)
-                throw new CreateRouteRequestException("The route can be a maximum of 5 days.");
-
-            return true;
+                Body = new() { Route = route },
+                Header = _headerService.HeaderCreate((int)StatusEnum.RouteCreatedSuccessfully)
+            };
         }
     }
 }

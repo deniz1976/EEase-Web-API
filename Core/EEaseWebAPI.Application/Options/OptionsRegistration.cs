@@ -32,6 +32,10 @@ namespace EEaseWebAPI.Application.Options
                 .Bind(configuration.GetSection(MailOptions.SectionName))
                 .ValidateDataAnnotations();
 
+            services.AddOptions<RedisOptions>()
+                .Bind(configuration.GetSection(RedisOptions.SectionName))
+                .ValidateDataAnnotations();
+
             services.AddOptions<GeminiOptions>()
                 .Bind(configuration.GetSection(GeminiOptions.SectionName))
                 .ValidateDataAnnotations();

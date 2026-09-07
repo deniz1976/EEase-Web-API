@@ -20,4 +20,4 @@ namespace EEaseWebAPI.Application.Common.Models.Pagination
             Items = items;
         }
     }
-} 
+}

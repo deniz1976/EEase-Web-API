@@ -7,11 +7,13 @@ using EEaseWebAPI.Persistence.Contexts;
 using EEaseWebAPI.Persistence.Repositories;
 using EEaseWebAPI.Persistence.Services;
 using EEaseWebAPI.Persistence.Services.Gemini;
+using EEaseWebAPI.Persistence.Services.Route;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace EEaseWebAPI.Persistence
 {
@@ -26,7 +28,7 @@ namespace EEaseWebAPI.Persistence
             services.AddIdentityCore();
             services.AddRepositories();
             services.AddDomainServices();
-            services.AddExternalApiClients();
+            services.AddExternalApiClients(configuration);
 
             return services;
         }
@@ -107,28 +109,46 @@ namespace EEaseWebAPI.Persistence
 
         private static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IExternalAuthentication, AuthService>();
-            services.AddScoped<IInternalAuthentication, AuthService>();
+            services.AddScoped<IUserRegistrationService, Services.User.UserRegistrationService>();
+            services.AddScoped<IUserProfileService, Services.User.UserProfileService>();
+            services.AddScoped<IUserAccountService, Services.User.UserAccountService>();
+            services.AddScoped<IFriendshipService, Services.Social.FriendshipService>();
+            services.AddScoped<IUserPreferenceService, Services.User.UserPreferenceService>();
+            services.AddScoped<IAuthService, Services.Authentication.AuthService>();
+            services.AddScoped<IExternalAuthentication, Services.Authentication.AuthService>();
+            services.AddScoped<IInternalAuthentication, Services.Authentication.AuthService>();
+            services.AddScoped<IPasswordService, Services.Authentication.PasswordService>();
+            services.AddScoped<IAccountDeletionPolicy, Services.Authentication.AccountDeletionPolicy>();
+            services.AddSingleton<IVerificationCodeGenerator, Services.Authentication.VerificationCodeGenerator>();
             services.AddScoped<IHeaderService, HeaderService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<IRouteAccessPolicy, RouteAccessPolicy>();
             services.AddScoped<ISystemUserProvider, SystemUserProvider>();
+            services.AddSingleton<IRoutePlanValidator, RoutePlanValidator>();
+            services.AddScoped<IPlaceSearchService, PlaceSearchService>();
+            services.AddScoped<IPlaceSelectionService, PlaceSelectionService>();
+            services.AddScoped<IRouteEnrichmentService, RouteEnrichmentService>();
+            services.AddSingleton(Random.Shared);
+            services.AddScoped<IPreferenceFeedbackService, Services.Route.PreferenceFeedbackService>();
+            services.AddScoped<IPlaceReplacementService, Services.Route.PlaceReplacementService>();
+            services.AddScoped<IDislikedPlaceService, Services.Route.DislikedPlaceService>();
+            services.AddSingleton<IPlaceQueryBuilder, Services.Route.PlaceQueryBuilder>();
+            services.AddSingleton<IPreferenceProfileBuilder, Services.Route.PreferenceProfileBuilder>();
             services.AddScoped<IRouteService, RouteService>();
             services.AddScoped<ICustomRouteService, CustomRouteService>();
             services.AddScoped<IUserCacheService, UserCacheService>();
-            services.AddScoped<PasswordHasher<string>>();
 
             services.AddHostedService<CacheInitializationService>();
 
             return services;
         }
 
-        private static IServiceCollection AddExternalApiClients(this IServiceCollection services)
+        private static IServiceCollection AddExternalApiClients(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            services.AddSingleton<IGeminiKeyManager, GeminiKeyManager>();
+            services.AddGeminiKeyManager(configuration);
 
             services.AddHttpClient<IGeminiApiClient, GeminiApiClient>((provider, client) =>
             {
@@ -145,6 +165,38 @@ namespace EEaseWebAPI.Persistence
                 client.BaseAddress = new Uri(options.BaseAddress);
                 client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
             });
+
+            return services;
+        }
+
+        private static IServiceCollection AddGeminiKeyManager(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var redisOptions = configuration.GetSection(RedisOptions.SectionName).Get<RedisOptions>()
+                               ?? new RedisOptions();
+
+            services.AddSingleton<GeminiKeyManager>();
+
+            if (!redisOptions.IsEnabled)
+            {
+                services.AddSingleton<IGeminiKeyManager>(
+                    provider => provider.GetRequiredService<GeminiKeyManager>());
+
+                return services;
+            }
+
+            services.AddSingleton<IConnectionMultiplexer>(_ =>
+            {
+                var configurationOptions = ConfigurationOptions.Parse(redisOptions.ConnectionString);
+
+                configurationOptions.AbortOnConnectFail = false;
+                configurationOptions.ConnectTimeout = redisOptions.ConnectTimeoutSeconds * 1000;
+
+                return ConnectionMultiplexer.Connect(configurationOptions);
+            });
+
+            services.AddSingleton<IGeminiKeyManager, RedisGeminiKeyManager>();
 
             return services;
         }

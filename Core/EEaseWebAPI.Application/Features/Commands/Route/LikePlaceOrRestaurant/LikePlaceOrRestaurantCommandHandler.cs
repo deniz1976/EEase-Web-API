@@ -19,7 +19,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant
 
         public async Task<LikePlaceOrRestaurantCommandResponse> Handle(LikePlaceOrRestaurantCommandRequest request, CancellationToken cancellationToken)
         {
-            
+
                 var result = await _routeService.LikePlaceOrRestaurantAsync(
                     request.Username,
                     request.GooglePlaceId,
@@ -31,7 +31,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant
                     Header = _headerService.HeaderCreate((int)StatusEnum.PreferenceUpdatedSuccessfully),
                     Body = result
                 };
-            
+
         }
     }
-} 
+}

@@ -8,12 +8,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
 {
     public class RemoveFriendCommandHandler : IRequestHandler<RemoveFriendCommand, RemoveFriendCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public RemoveFriendCommandHandler(IUserService userService, IHeaderService headerService)
+        public RemoveFriendCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
-            _userService = userService;
+            _friendshipService = friendshipService;
             _headerService = headerService;
         }
 
@@ -21,14 +21,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
         {
             try
             {
-                if (request.Username == request.FriendUsername)
-                    throw new CannotPerformActionOnSelfException();
-
-                var friendship = await _userService.GetFriendshipAsync(request.Username, request.FriendUsername);
-                if (friendship == null)
-                    throw new FriendshipNotFoundException();
-
-                bool result = await _userService.RemoveFriendshipAsync(friendship);
+                await _friendshipService.RemoveFriendAsync(request.Username, request.FriendUsername);
 
                 return new RemoveFriendCommandResponse
                 {
@@ -48,10 +41,14 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
             {
                 throw;
             }
+            catch (FriendshipException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new FriendshipException("Failed to remove friend.", StatusEnum.FriendRemovalFailed, ex);
             }
         }
     }
-} 
+}

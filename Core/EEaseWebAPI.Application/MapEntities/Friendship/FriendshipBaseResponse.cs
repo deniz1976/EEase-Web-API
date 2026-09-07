@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.MapEntities.Friendship
             Header = new EEaseWebAPI.Application.MapEntities.Header();
         }
     }
-} 
+}

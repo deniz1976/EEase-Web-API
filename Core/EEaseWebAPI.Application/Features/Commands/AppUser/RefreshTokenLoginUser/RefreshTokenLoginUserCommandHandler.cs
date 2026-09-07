@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.DTOs;
 using EEaseWebAPI.Application.MapEntities.Login;
 using EEaseWebAPI.Application.MapEntities.RefreshTokenLogin;
@@ -32,12 +32,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RefreshTokenLoginUse
 
             RefreshTokenLoginBody token = await _authService.RefreshTokenLoginAsync(request.RefreshToken);
 
-            return new RefreshTokenLoginUserCommandResponse 
+            return new RefreshTokenLoginUserCommandResponse
             {
-                RefreshTokenLogin = new MapEntities.RefreshTokenLogin.RefreshTokenLogin 
+                RefreshTokenLogin = new MapEntities.RefreshTokenLogin.RefreshTokenLogin
                 {
                     Header = _headerService.HeaderCreate((int)StatusEnum.TokenRefreshedSuccessfully),
-                    Body = new MapEntities.RefreshTokenLogin.RefreshTokenLoginBody() 
+                    Body = new MapEntities.RefreshTokenLogin.RefreshTokenLoginBody()
                     {
                         Token = token.Token,
                         warning = token.warning

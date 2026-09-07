@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.DTOs.Route;
+using EEaseWebAPI.Application.DTOs.Route;
 using EEaseWebAPI.Application.MapEntities;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes
         public GetLikedRoutesQueryResponseBody? Body { get; set; }
     }
 
-    public class GetLikedRoutesQueryResponseBody 
+    public class GetLikedRoutesQueryResponseBody
     {
         public List<StandardRouteDTO> Routes { get; set; }
         public int TotalCount { get; set; }

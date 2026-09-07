@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +11,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto
 {
     public class SetUserPhotoCommandHandler : IRequestHandler<SetUserPhotoCommandRequest, SetUserPhotoCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IUserProfileService _profileService;
         private readonly IHeaderService _headerService;
 
-        public SetUserPhotoCommandHandler(IUserService userService, IHeaderService headerService)
+        public SetUserPhotoCommandHandler(IUserProfileService profileService, IHeaderService headerService)
         {
-            _userService = userService;
+            _profileService = profileService;
             _headerService = headerService;
         }
 
@@ -26,9 +26,9 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto
             {
                 throw new ArgumentNullException("Request or required properties cannot be null.");
             }
-            var result = await _userService.SetUserPhoto(request.Username, request.PhotoUrl);
+            var result = await _profileService.SetUserPhoto(request.Username, request.PhotoUrl);
 
-            if (result) 
+            if (result)
             {
                 return new()
                 {

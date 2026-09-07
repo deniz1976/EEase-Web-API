@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.MapEntities.GetCurrencies
     {
         public PaginatedList<AllWorldCurrencies>? Currencies { get; set; }
     }
-} 
+}

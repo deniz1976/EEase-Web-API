@@ -17,11 +17,17 @@ namespace EEaseWebAPI.Application.Options
         [Required(AllowEmptyStrings = false)]
         public string Model { get; init; } = "gemini-3.8-flash";
 
+        [Required(AllowEmptyStrings = false)]
+        public string ApiRevision { get; init; } = "2026-05-20";
+
         [Range(1, 10000)]
         public int RequestsPerMinutePerKey { get; init; } = 100;
 
         [Range(5, 600)]
         public int TimeoutSeconds { get; init; } = 120;
+
+        [Range(1, 600)]
+        public int QuotaCooldownSeconds { get; init; } = 60;
 
         [Range(0, 10)]
         public int MaxRetryCount { get; init; } = 3;
@@ -32,6 +38,6 @@ namespace EEaseWebAPI.Application.Options
         [Range(256, 65536)]
         public int MaxOutputTokens { get; init; } = 8192;
 
-        public string GenerateContentPath => $"{ApiVersion}/models/{Model}:generateContent";
+        public string InteractionsPath => $"{ApiVersion}/interactions";
     }
 }

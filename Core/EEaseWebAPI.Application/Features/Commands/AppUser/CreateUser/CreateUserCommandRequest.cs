@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser
         public string? Username { get; set; }
 
         public DateOnly? BornDate {  get; set; }
-
 
     }
 }

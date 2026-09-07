@@ -9,12 +9,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
 {
     public class ResetUserPreferencesCommandHandler : IRequestHandler<ResetUserPreferencesCommandRequest, ResetUserPreferencesCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IUserPreferenceService _preferenceService;
         private readonly IHeaderService _headerService;
 
-        public ResetUserPreferencesCommandHandler(IUserService userService, IHeaderService headerService)
+        public ResetUserPreferencesCommandHandler(IUserPreferenceService preferenceService, IHeaderService headerService)
         {
-            _userService = userService;
+            _preferenceService = preferenceService;
             _headerService = headerService;
         }
 
@@ -22,7 +22,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
         {
             try
             {
-                await _userService.ResetUserPreferences(request.Username);
+                await _preferenceService.ResetAsync(request.Username);
 
                 return new ResetUserPreferencesCommandResponse
                 {
@@ -50,4 +50,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
             }
         }
     }
-} 
+}

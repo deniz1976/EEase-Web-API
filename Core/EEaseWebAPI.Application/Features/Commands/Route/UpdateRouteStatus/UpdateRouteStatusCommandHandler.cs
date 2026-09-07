@@ -26,7 +26,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
             }
 
             var result = await _routeService.UpdateRouteStatusAsync(request.RouteId, request.Status, request.Username);
-            
+
             return new UpdateRouteStatusCommandResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.RouteStatusUpdatedSuccessfully),
@@ -37,4 +37,4 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
             };
         }
     }
-} 
+}

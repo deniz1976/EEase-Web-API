@@ -5,4 +5,4 @@ namespace EEaseWebAPI.Application.Repositories
     public interface IUserFriendshipWriteRepository : IWriteRepository<UserFriendship>
     {
     }
-} 
+}

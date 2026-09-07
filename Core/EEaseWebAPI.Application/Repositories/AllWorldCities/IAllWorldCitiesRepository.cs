@@ -8,4 +8,4 @@ namespace EEaseWebAPI.Application.Repositories
     {
         Task<List<AllWorldCities>> GetAllCitiesAsync();
     }
-} 
+}

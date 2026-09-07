@@ -10,4 +10,4 @@ namespace EEaseWebAPI.Application.MapEntities.ResetUserPreferences
     {
         public string? Message { get; set; }
     }
-} 
+}

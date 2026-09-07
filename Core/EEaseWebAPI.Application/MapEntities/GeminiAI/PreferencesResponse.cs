@@ -13,4 +13,4 @@ namespace EEaseWebAPI.Application.MapEntities.GeminiAI
         public UserFoodPreferences? FoodPreferences { get; set; }
         public UserPersonalization? Personalization { get; set; }
     }
-} 
+}

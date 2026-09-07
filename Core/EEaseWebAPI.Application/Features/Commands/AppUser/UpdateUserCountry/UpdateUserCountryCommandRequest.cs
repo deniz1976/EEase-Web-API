@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
         public string Country { get; set; }
         public string Username { get; set; }
     }
-} 
+}

@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendFriendRequest
         public string? RequesterUsername { get; set; }
         public string? AddresseeUsername { get; set; }
     }
-} 
+}

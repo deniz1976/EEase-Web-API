@@ -22,7 +22,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
             try
             {
                 var users = _userCacheService.SearchUsers(request.Body.SearchTerm);
-                
+
                 return new SearchUsersQueryResponse
                 {
                     Header = new Header
@@ -55,4 +55,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
             }
         }
     }
-} 
+}

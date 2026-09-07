@@ -10,12 +10,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
 {
     public class UpdateUserCountryCommandHandler : IRequestHandler<UpdateUserCountryCommandRequest, UpdateUserCountryCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IUserProfileService _profileService;
         private readonly IHeaderService _headerService;
 
-        public UpdateUserCountryCommandHandler(IUserService userService, IHeaderService headerService)
+        public UpdateUserCountryCommandHandler(IUserProfileService profileService, IHeaderService headerService)
         {
-            _userService = userService;
+            _profileService = profileService;
             _headerService = headerService;
         }
 
@@ -23,7 +23,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
         {
             try
             {
-                bool result = await _userService.UpdateUserCountry(request.Username, request.Country);
+                bool result = await _profileService.UpdateUserCountry(request.Username, request.Country);
 
                 return new UpdateUserCountryCommandResponse
                 {
@@ -41,4 +41,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
             }
         }
     }
-} 
+}

@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using MediatR;
 using System;
@@ -12,12 +12,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
     public class GetUserPhotoQueryHandler : IRequestHandler<GetUserPhotoQueryRequest, GetUserPhotoQueryResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IUserService _userService;
+        private readonly IUserProfileService _profileService;
 
-        public GetUserPhotoQueryHandler(IHeaderService headerService, IUserService userService)
+        public GetUserPhotoQueryHandler(IHeaderService headerService, IUserProfileService profileService)
         {
             _headerService = headerService;
-            _userService = userService;
+            _profileService = profileService;
         }
 
         public async Task<GetUserPhotoQueryResponse> Handle(GetUserPhotoQueryRequest request, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
                 response = new()
                 {
                     Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoReceivedSuccessfully),
-                    Body = new() { path= await _userService.GetUserPhotoAsync(request.username) }
+                    Body = new() { path= await _profileService.GetUserPhotoAsync(request.username) }
                 }
             };
         }

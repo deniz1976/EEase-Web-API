@@ -30,7 +30,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies
                 throw new ArgumentNullException(nameof(request));
 
             var currencies = await GetCurrenciesFromCache();
-            
+
             var paginatedCurrencies = currencies
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
@@ -58,18 +58,18 @@ namespace EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies
         private async Task<List<Domain.Entities.Currency.AllWorldCurrencies>> GetCurrenciesFromCache()
         {
             const string cacheKey = "AllCurrencies";
-            
+
             if (!_cache.TryGetValue(cacheKey, out List<Domain.Entities.Currency.AllWorldCurrencies> currencies))
             {
                 currencies = await _currencyService.GetCurrenciesAsync();
-                
+
                 var cacheOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromHours(1))
                     .SetAbsoluteExpiration(TimeSpan.FromHours(24));
-                
+
                 _cache.Set(cacheKey, currencies, cacheOptions);
             }
-            
+
             return currencies;
         }
     }

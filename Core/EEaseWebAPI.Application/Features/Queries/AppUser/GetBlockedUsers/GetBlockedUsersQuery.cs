@@ -6,4 +6,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers
     {
         public string? Username { get; set; }
     }
-} 
+}

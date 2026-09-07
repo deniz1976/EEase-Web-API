@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Domain.Entities.Route
 {
-    public class Place : BaseTravelPlaceEntity
+    public class Place : BaseTravelPlaceEntity, IHasWeather
     {
         [JsonPropertyName("weather")]
         public Weather? Weather { get; set; }
 
-        
     }
 }

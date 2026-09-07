@@ -28,4 +28,4 @@ namespace EEaseWebAPI.Application.MapEntities.GetUserInfoById
         public List<PreferenceDetail>? FoodPreferences { get; set; }
         public List<PreferenceDetail>? AccommodationPreferences { get; set; }
     }
-} 
+}

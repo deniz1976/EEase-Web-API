@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPassword;
 using EEaseWebAPI.Application.MapEntities.ResetPasswordWithCode;
 using EEaseWebAPI.Application.Enums;
@@ -14,25 +14,23 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser
     public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommandRequest, ResetPasswordCommandResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IAuthService _authService;
+        private readonly IPasswordService _passwordService;
 
-        public ResetPasswordCommandHandler(IHeaderService headerService, IAuthService authService)
+        public ResetPasswordCommandHandler(IHeaderService headerService, IPasswordService passwordService)
         {
             _headerService = headerService;
-            _authService = authService;
+            _passwordService = passwordService;
         }
 
         public async Task<ResetPasswordCommandResponse> Handle(ResetPasswordCommandRequest request, CancellationToken cancellationToken)
         {
 
-         if(request == null ||request.code == null || request.newPassword == null)
+         if(request == null ||request.usernameOrEmail == null || request.code == null || request.newPassword == null)
                 throw new ArgumentNullException(nameof(request));
 
+         await _passwordService.ResetPasswordAsync(request.usernameOrEmail, request.code, request.newPassword);
 
-         await _authService.ResetPasswordWithCode(request.code, request.newPassword);
-           
-        
-            return new ResetPasswordCommandResponse() 
+            return new ResetPasswordCommandResponse()
             {
                 ResetPasswordWithCode = new ResetPasswordWithCode()
                 {
@@ -40,8 +38,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser
                     Body = new ResetPasswordWithCodeBody() { message = "Password changed succesfully."}
                 }
             };
-            
-            
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,12 +12,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
     public class ResetPasswordUserCommandHandler : IRequestHandler<ResetPasswordUserCommandRequest, ResetPasswordUserCommandResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IAuthService _authService;
+        private readonly IPasswordService _passwordService;
 
-        public ResetPasswordUserCommandHandler(IHeaderService headerService, IAuthService authService)
+        public ResetPasswordUserCommandHandler(IHeaderService headerService, IPasswordService passwordService)
         {
             _headerService = headerService;
-            _authService = authService;
+            _passwordService = passwordService;
         }
 
         public async Task<ResetPasswordUserCommandResponse> Handle(ResetPasswordUserCommandRequest request, CancellationToken cancellationToken)
@@ -25,8 +25,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
             if(request == null || request.EmailOrUsername == null)
                 throw new ArgumentNullException(nameof(request));
 
-
-            var control = await _authService.ResetPassword(request.EmailOrUsername);
+            var control = await _passwordService.SendResetCodeAsync(request.EmailOrUsername);
 
             if (control)
             {

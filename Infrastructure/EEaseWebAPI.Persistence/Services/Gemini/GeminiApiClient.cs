@@ -18,6 +18,9 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
             PropertyNameCaseInsensitive = true
         };
 
+        private const string ModelOutputStepType = "model_output";
+        private const string TextContentType = "text";
+
         private readonly HttpClient _httpClient;
         private readonly IGeminiKeyManager _keyManager;
         private readonly GeminiOptions _options;
@@ -57,46 +60,44 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
             {
                 attempt++;
 
-                var apiKey = await _keyManager.GetAvailableApiKey();
-                if (string.IsNullOrWhiteSpace(apiKey))
+                var apiKey = await _keyManager.AcquireKeyAsync(cancellationToken);
+
+                using var request = CreateRequest(apiKey, requestBody);
+                using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    throw new GeminiAPIKeyNotFoundException();
+                    return ExtractText(responseContent);
                 }
 
-                try
+                var quotaExceeded = response.StatusCode == HttpStatusCode.TooManyRequests;
+
+                if (quotaExceeded)
                 {
-                    await _keyManager.MarkKeyAsUsed(apiKey);
+                    _keyManager.ReportQuotaExceeded(apiKey);
+                }
 
-                    using var request = CreateRequest(apiKey, requestBody);
-                    using var response = await _httpClient.SendAsync(request, cancellationToken);
-
-                    var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return ExtractText(responseContent);
-                    }
-
-                    if (ShouldRetry(response.StatusCode) && attempt <= _options.MaxRetryCount)
-                    {
-                        var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt - 1));
-
-                        _logger.LogWarning(
-                            "Gemini request failed with {StatusCode}. Retrying in {Delay}s ({Attempt}/{Max}).",
-                            (int)response.StatusCode,
-                            delay.TotalSeconds,
-                            attempt,
-                            _options.MaxRetryCount);
-
-                        await Task.Delay(delay, cancellationToken);
-                        continue;
-                    }
-
+                if (!ShouldRetry(response.StatusCode) || attempt > _options.MaxRetryCount)
+                {
                     throw MapErrorResponse(response.StatusCode, responseContent);
                 }
-                finally
+
+                var delay = quotaExceeded
+                    ? TimeSpan.Zero
+                    : TimeSpan.FromSeconds(Math.Pow(2, attempt - 1));
+
+                _logger.LogWarning(
+                    "Gemini request failed with {StatusCode}. Retrying in {Delay}s ({Attempt}/{Max}).",
+                    (int)response.StatusCode,
+                    delay.TotalSeconds,
+                    attempt,
+                    _options.MaxRetryCount);
+
+                if (delay > TimeSpan.Zero)
                 {
-                    await _keyManager.ReleaseKey(apiKey);
+                    await Task.Delay(delay, cancellationToken);
                 }
             }
         }
@@ -106,32 +107,37 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
             var generationConfig = new Dictionary<string, object>
             {
                 ["temperature"] = _options.Temperature,
-                ["maxOutputTokens"] = _options.MaxOutputTokens
+                ["max_output_tokens"] = _options.MaxOutputTokens
+            };
+
+            var requestBody = new Dictionary<string, object>
+            {
+                ["model"] = _options.Model,
+                ["input"] = prompt,
+                ["generation_config"] = generationConfig
             };
 
             if (expectJson)
             {
-                generationConfig["responseMimeType"] = "application/json";
+                requestBody["response_format"] = new Dictionary<string, object>
+                {
+                    ["type"] = "text",
+                    ["mime_type"] = "application/json"
+                };
             }
 
-            return new
-            {
-                contents = new[]
-                {
-                    new { parts = new[] { new { text = prompt } } }
-                },
-                generationConfig
-            };
+            return requestBody;
         }
 
         private HttpRequestMessage CreateRequest(string apiKey, object requestBody)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, _options.GenerateContentPath)
+            var request = new HttpRequestMessage(HttpMethod.Post, _options.InteractionsPath)
             {
                 Content = JsonContent.Create(requestBody)
             };
 
             request.Headers.Add("x-goog-api-key", apiKey);
+            request.Headers.Add("Api-Revision", _options.ApiRevision);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return request;
@@ -174,12 +180,18 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
                 throw new GeminiAPIResponseParseException("Could not parse the Gemini response.", exception);
             }
 
-            var text = response?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
+            var text = string.Concat(
+                (response?.Steps ?? Array.Empty<GeminiStep>())
+                    .Where(step => string.Equals(step.Type, ModelOutputStepType, StringComparison.OrdinalIgnoreCase))
+                    .SelectMany(step => step.Content ?? Array.Empty<GeminiStepContent>())
+                    .Where(content => string.Equals(content.Type, TextContentType, StringComparison.OrdinalIgnoreCase))
+                    .Select(content => content.Text));
 
             if (string.IsNullOrWhiteSpace(text))
             {
                 throw new GeminiAPIResponseParseException(
-                    $"No text was found in the Gemini response. Response: {Truncate(responseContent, 500)}");
+                    $"No text was found in the Gemini response (status: {response?.Status ?? "unknown"}). " +
+                    $"Response: {Truncate(responseContent, 500)}");
             }
 
             return text;

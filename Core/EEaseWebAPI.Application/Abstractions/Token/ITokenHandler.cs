@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.DTOs;
+using EEaseWebAPI.Application.DTOs;
 using EEaseWebAPI.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,6 @@ namespace EEaseWebAPI.Application.Abstractions.Token
         DTOs.Token CreateAccessToken(int second, AppUser user);
 
         string CreateRefreshToken();
-
 
     }
 }

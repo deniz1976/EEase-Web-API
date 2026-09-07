@@ -11,7 +11,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId
         private readonly IRouteService _routeService;
         private readonly IHeaderService _headerService;
 
-
         public GetRoutesByUserIdQueryHandler(IRouteService routeService, IHeaderService headerService)
         {
             _routeService = routeService;
@@ -43,4 +42,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId
             };
         }
     }
-} 
+}

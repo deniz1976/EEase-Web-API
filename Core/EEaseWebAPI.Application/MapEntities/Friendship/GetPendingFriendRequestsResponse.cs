@@ -23,4 +23,4 @@ namespace EEaseWebAPI.Application.MapEntities.Friendship
         public string RequesterSurname { get; set; }
         public DateTime RequestDate { get; set; }
     }
-} 
+}

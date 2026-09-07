@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +20,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DeleteAllRoutes
         }
         public async Task<DeleteAllRoutesCommandResponse> Handle(DeleteAllRoutesCommandRequest request, CancellationToken cancellationToken)
         {
-            if (request == null || request.Username == null) 
+            if (request == null || request.Username == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }

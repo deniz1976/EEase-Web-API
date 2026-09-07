@@ -27,8 +27,8 @@ namespace EEaseWebAPI.Persistence.Services
         private const string DEFAULT_COUNTRY = "Turkey";
 
         public CityService(
-            EEaseAPIDbContext context, 
-            IMemoryCache memoryCache, 
+            EEaseAPIDbContext context,
+            IMemoryCache memoryCache,
             IConfiguration configuration,
             UserManager<AppUser> userManager)
         {
@@ -142,11 +142,11 @@ namespace EEaseWebAPI.Persistence.Services
                 }
 
                 var filteredCities = allCities
-                    .Where(c => (c.city != null && c.city.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) || 
+                    .Where(c => (c.city != null && c.city.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
                                (c.city_ascii != null && c.city_ascii.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
-                    .OrderByDescending(c => c.country == userCountry) 
-                    .ThenByDescending(c => c.capital == "primary") 
-                    .ThenByDescending(c => c.population) 
+                    .OrderByDescending(c => c.country == userCountry)
+                    .ThenByDescending(c => c.capital == "primary")
+                    .ThenByDescending(c => c.population)
                     .ToList();
 
                 var totalCount = filteredCities.Count;
@@ -198,4 +198,4 @@ namespace EEaseWebAPI.Persistence.Services
             }
         }
     }
-} 
+}

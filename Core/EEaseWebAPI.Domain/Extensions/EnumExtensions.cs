@@ -9,9 +9,9 @@ namespace EEaseWebAPI.Domain.Extensions
         {
             FieldInfo field = value.GetType().GetField(value.ToString());
             if (field == null) return value.ToString();
-            
+
             DescriptionAttribute attribute = field.GetCustomAttribute<DescriptionAttribute>();
             return attribute == null ? value.ToString() : attribute.Description;
         }
     }
-} 
+}

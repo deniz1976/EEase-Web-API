@@ -6,4 +6,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserCurrency
     {
         public string? Username { get; set; }
     }
-} 
+}

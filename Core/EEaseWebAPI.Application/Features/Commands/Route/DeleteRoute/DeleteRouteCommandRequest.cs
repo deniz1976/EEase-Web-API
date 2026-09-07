@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DeleteRoute
         public string? Username { get; set; }
         public Guid RouteId { get; set; }
     }
-} 
+}

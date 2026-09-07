@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.DTOs.User;
 using EEaseWebAPI.Application.Exceptions.CreateUser;
 using EEaseWebAPI.Application.MapEntities;
@@ -15,19 +15,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IUserRegistrationService _registrationService;
         private readonly IHeaderService _headerService;
 
-
-        public CreateUserCommandHandler(IUserService userService, IHeaderService headerService)
+        public CreateUserCommandHandler(IUserRegistrationService registrationService, IHeaderService headerService)
         {
-            _userService = userService;
+            _registrationService = registrationService;
             _headerService = headerService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            CreateUserResponse result = await _userService.CreateAsync(new() 
+            CreateUserResponse result = await _registrationService.CreateAsync(new()
             {
                 Email = request.Email,
                 Name = request.Name,
@@ -48,11 +47,9 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser
 
                 }
             };
-            
+
         }
 
-        
     }
 
-    
 }

@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser;
+using EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace EEaseWebAPI.Application.Validators.User
 {
     public class CreateUserValidator : AbstractValidator<CreateUserCommandRequest>
     {
-        public CreateUserValidator() 
+        public CreateUserValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required.")
@@ -32,7 +32,6 @@ namespace EEaseWebAPI.Application.Validators.User
                 .Matches(@"\d").WithMessage("Password must contain at least one number.")
                 .Matches(@"[^\w\d\s:]").WithMessage("Password must contain at least one special character.")
                 .Equal(x => x.PasswordConfirm).WithMessage("Password and PasswordConfirm must match.");
-
 
             RuleFor(x => x.Gender)
                 .Must(g => g == "Male" || g == "Female")

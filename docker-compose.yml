@@ -17,6 +17,24 @@ services:
       retries: 10
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    container_name: eease-redis
+    command: >
+      redis-server
+      --save ""
+      --appendonly no
+      --maxmemory ${REDIS_MAXMEMORY:-128mb}
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
   eease-api:
     build:
       context: .
@@ -25,17 +43,19 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "${API_PORT:-8080}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
       ASPNETCORE_HTTP_PORTS: "8080"
 
-      # Connects to the bundled Postgres container. To use Neon, override
-      # ConnectionStrings__PostgreSQL in the .env file with your Neon connection string.
       ConnectionStrings__PostgreSQL: ${ConnectionStrings__PostgreSQL:-Host=postgres;Port=5432;Database=eease;Username=eease;Password=eease}
 
       Database__MigrateOnStartup: "true"
+
+      Redis__ConnectionString: ${Redis__ConnectionString:-redis:6379}
 
       Token__Issuer: ${Token__Issuer:-eease-local}
       Token__Audience: ${Token__Audience:-eease-local}

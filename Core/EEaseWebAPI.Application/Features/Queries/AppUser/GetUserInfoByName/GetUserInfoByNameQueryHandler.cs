@@ -12,12 +12,13 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
     public class GetUserInfoByNameQueryHandler : IRequestHandler<GetUserInfoByNameQueryRequest, GetUserInfoByNameQueryResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IUserService _userService;
+        private readonly IUserProfileService _profileService;
+        private readonly IUserPreferenceService _preferenceService;
 
-        public GetUserInfoByNameQueryHandler(IHeaderService headerService, IUserService userService)
+        public GetUserInfoByNameQueryHandler(IHeaderService headerService, IUserProfileService profileService)
         {
             _headerService = headerService;
-            _userService = userService;
+            _profileService = profileService;
         }
 
         public async Task<GetUserInfoByNameQueryResponse> Handle(GetUserInfoByNameQueryRequest request, CancellationToken cancellationToken)
@@ -25,8 +26,8 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
             if (request == null || request.username == null || request.targetUsername == null)
                 throw new ArgumentNullException(nameof(request));
 
-            var (userInfo, visibilityStatus) = await _userService.GetUserInfoByNameAsync(request.username, request.targetUsername);
-            
+            var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(request.username, request.targetUsername);
+
             var response = new GetUserInfoByNameQueryResponse
             {
                 response = new()
@@ -54,7 +55,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
                 response.response.Body.username = userInfo.username;
                 return response;
             }
-            
+
             response.response.Body.username = userInfo.username;
             response.response.Body.name = userInfo.name;
             response.response.Body.surname = userInfo.surname;
@@ -65,10 +66,10 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
             response.response.Body.isFriend = visibilityStatus == ProfileVisibilityStatus.FullAccess &&request.username != request.targetUsername;
             response.response.Body.canSendFriendRequest = visibilityStatus == ProfileVisibilityStatus.LimitedAccess;
             response.response.Body.FriendRequestStatus = userInfo.friendRequestStatus;
-            
+
             if (visibilityStatus == ProfileVisibilityStatus.FullAccess)
             {
-                var preferences = await _userService.GetUserPreferenceDescriptionsByUsernameAsync(request.username, request.targetUsername);
+                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.username, request.targetUsername);
                 if (preferences != null)
                 {
                     response.response.Body.PersonalizationPreferences = preferences.PersonalizationPreferences;
@@ -76,7 +77,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
                     response.response.Body.AccommodationPreferences = preferences.AccommodationPreferences;
                 }
             }
-            
+
             if (visibilityStatus == ProfileVisibilityStatus.LimitedAccess)
             {
                 response.response.Body.errorMessage = "You are not friends with this user. Send a friend request to see more details.";
@@ -85,4 +86,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
             return response;
         }
     }
-} 
+}

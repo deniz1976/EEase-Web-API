@@ -17,9 +17,9 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
 
         public async Task<CheckRouteLikeStatusQueryResponse> Handle(CheckRouteLikeStatusQueryRequest request, CancellationToken cancellationToken)
         {
-            
+
                 var isLiked = await _routeService.CheckRouteLikeStatus(request.Username, request.RouteId);
-                
+
                 return new CheckRouteLikeStatusQueryResponse
                 {
                     Header = _headerService.HeaderCreate((int)StatusEnum.CheckRouteLikeSuccess),
@@ -29,9 +29,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
                         Message = isLiked ? "Route is liked by the user" : "Route is not liked by the user"
                     }
                 };
-            
-            
+
         }
     }
 }
-

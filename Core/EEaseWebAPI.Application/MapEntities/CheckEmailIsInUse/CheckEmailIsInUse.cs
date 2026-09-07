@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace EEaseWebAPI.Application.MapEntities.CheckEmailIsInUse
         public CheckEmailIsInUseBody ?Body { get; set; }
         public Header ?Header { get; set; }
     }
-    public class CheckEmailIsInUseBody 
+    public class CheckEmailIsInUseBody
     {
         public bool? result { get; set; }
 

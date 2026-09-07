@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +9,6 @@ namespace EEaseWebAPI.Application.Exceptions.CreateUser
     public class EmailConfirmException : BaseException
     {
         public EmailConfirmException(string message, int statusenumcode) : base(message, statusenumcode) { }
-
 
     }
 }

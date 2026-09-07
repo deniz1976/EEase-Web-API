@@ -6,4 +6,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
     {
         public string Username { get; set; }
     }
-} 
+}

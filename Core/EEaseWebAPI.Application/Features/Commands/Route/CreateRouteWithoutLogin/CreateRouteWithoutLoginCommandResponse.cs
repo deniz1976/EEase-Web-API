@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.DTOs.Route.CreateRouteWithoutLogin;
+using EEaseWebAPI.Application.DTOs.Route.CreateRouteWithoutLogin;
 using EEaseWebAPI.Application.MapEntities;
 using EEaseWebAPI.Domain.Entities.Route;
 using System;
@@ -15,7 +15,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogi
         public CreateRouteWithoutLoginCommandResponseBody? Body { get; set; }
     }
 
-    public class CreateRouteWithoutLoginCommandResponseBody 
+    public class CreateRouteWithoutLoginCommandResponseBody
     {
         public StandardRoute? Route { get; set; }
     }

@@ -1,13 +1,13 @@
-﻿namespace EEaseWebAPI.Application.MapEntities.GetUserInfo
+namespace EEaseWebAPI.Application.MapEntities.GetUserInfo
 {
     public class GetUserInfo
     {
-        public GetUserInfoBody? GetUserInfoBody { get; set; }   
+        public GetUserInfoBody? GetUserInfoBody { get; set; }
 
         public Header? Header { get; set; }
     }
 
-    public class GetUserInfoBody 
+    public class GetUserInfoBody
     {
         public string? name { get; set; }
         public string? email { get; set; }

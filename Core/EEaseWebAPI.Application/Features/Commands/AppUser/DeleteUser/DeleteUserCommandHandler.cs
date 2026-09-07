@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,13 +12,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommandRequest, DeleteUserCommandResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IUserService _userService;
-        
+        private readonly IUserAccountService _accountService;
 
-        public DeleteUserCommandHandler(IHeaderService headerService, IUserService userService)
+        public DeleteUserCommandHandler(IHeaderService headerService, IUserAccountService accountService)
         {
             _headerService = headerService;
-            _userService = userService;
+            _accountService = accountService;
         }
 
         public async Task<DeleteUserCommandResponse> Handle(DeleteUserCommandRequest request, CancellationToken cancellationToken)
@@ -26,9 +25,9 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
             if (request?.username == null)
                 throw new ArgumentNullException(nameof(request));
 
-            var isDeleted = await _userService.DeleteUserSendMail(request.username);
+            var outcome = await _accountService.RequestDeletionAsync(request.username);
 
-            return isDeleted
+            return outcome == DeleteRequestOutcome.CodeSent
                 ? CreateResponse((int)StatusEnum.UserDeleteCodeSentSuccessfully, "Delete code sent to mail.")
                 : CreateResponse((int)StatusEnum.UserDeletionFailed, "User status set to active.");
         }

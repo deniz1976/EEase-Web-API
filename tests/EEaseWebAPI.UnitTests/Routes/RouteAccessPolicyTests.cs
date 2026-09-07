@@ -16,9 +16,9 @@ namespace EEaseWebAPI.UnitTests.Routes
         private const string RequesterId = "requester-id";
         private const string RequesterUserName = "requester";
 
-        private readonly IUserService _userService = Substitute.For<IUserService>();
+        private readonly IFriendshipService _friendshipService = Substitute.For<IFriendshipService>();
 
-        private RouteAccessPolicy CreatePolicy() => new(_userService);
+        private RouteAccessPolicy CreatePolicy() => new(_friendshipService);
 
         private static StandardRoute CreateRoute(RouteVisibility visibility) => new()
         {
@@ -68,7 +68,7 @@ namespace EEaseWebAPI.UnitTests.Routes
         public async Task Friends_only_route_is_open_to_a_friend()
         {
             var route = CreateRoute(RouteVisibility.FriendsOnly);
-            _userService.IsFriendAsync(OwnerUserName, RequesterUserName).Returns(true);
+            _friendshipService.AreFriendsAsync(OwnerUserName, RequesterUserName).Returns(true);
 
             var result = await CreatePolicy().EvaluateAsync(route, RequesterUserName, RequesterId);
 
@@ -79,7 +79,7 @@ namespace EEaseWebAPI.UnitTests.Routes
         public async Task Friends_only_route_is_closed_to_a_non_friend()
         {
             var route = CreateRoute(RouteVisibility.FriendsOnly);
-            _userService.IsFriendAsync(OwnerUserName, RequesterUserName).Returns(false);
+            _friendshipService.AreFriendsAsync(OwnerUserName, RequesterUserName).Returns(false);
 
             var result = await CreatePolicy().EvaluateAsync(route, RequesterUserName, RequesterId);
 
@@ -96,7 +96,7 @@ namespace EEaseWebAPI.UnitTests.Routes
             var result = await CreatePolicy().EvaluateAsync(route, RequesterUserName, RequesterId);
 
             result.IsAccessible.Should().BeFalse();
-            await _userService.DidNotReceiveWithAnyArgs().IsFriendAsync(default!, default!);
+            await _friendshipService.DidNotReceiveWithAnyArgs().AreFriendsAsync(default!, default!);
         }
 
         [Theory]

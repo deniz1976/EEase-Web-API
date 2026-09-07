@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCode
         public SendVerificationCodeBody? Body { get; set;}
     }
 
-    public class SendVerificationCodeBody 
+    public class SendVerificationCodeBody
     {
         public string? message { get; set; }
         public bool? success { get; set; }

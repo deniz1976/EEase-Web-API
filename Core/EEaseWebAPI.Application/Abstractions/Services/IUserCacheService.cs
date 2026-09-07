@@ -12,9 +12,9 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         List<UserSearchDTO> SearchUsers(string searchTerm);
 
         void AddOrUpdateUserInCache(AppUser user);
-        
+
         void UpdateUserAttributesInCache(string userId, string? username = null, string? name = null, string? surname = null, string? photoUrl = null,string? Gender = null);
 
         void RemoveUserFromCache(string userId);
     }
-} 
+}

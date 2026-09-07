@@ -68,4 +68,4 @@ namespace EEaseWebAPI.Application.DTOs.GooglePlaces
         [JsonPropertyName("html_attributions")]
         public List<string> HtmlAttributions { get; set; } = new List<string>();
     }
-} 
+}

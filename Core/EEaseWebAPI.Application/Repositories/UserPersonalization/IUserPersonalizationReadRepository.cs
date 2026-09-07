@@ -10,4 +10,4 @@ namespace EEaseWebAPI.Application.Repositories
     public interface IUserPersonalizationReadRepository : IReadRepository<UserPersonalization>
     {
     }
-} 
+}

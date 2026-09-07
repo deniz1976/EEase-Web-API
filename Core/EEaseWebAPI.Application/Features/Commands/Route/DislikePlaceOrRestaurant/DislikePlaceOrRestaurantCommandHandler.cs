@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using MediatR;
 using System;
@@ -22,12 +22,12 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaura
 
         public async Task<DislikePlaceOrRestaurantCommandResponse> Handle(DislikePlaceOrRestaurantCommandRequest request, CancellationToken cancellationToken)
         {
-            return new DislikePlaceOrRestaurantCommandResponse() 
+            return new DislikePlaceOrRestaurantCommandResponse()
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.ComponentChangedSuccessfully),
                 Body = new DislikePlaceOrRestaurantCommandResponseBody()
                 {
-                    StandardRoute = await _routeService.DislikePlaceOrRestaurant(new() 
+                    StandardRoute = await _routeService.DislikePlaceOrRestaurant(new()
                     {
                         Username = request.Username,
                         RouteId = request.RouteId,

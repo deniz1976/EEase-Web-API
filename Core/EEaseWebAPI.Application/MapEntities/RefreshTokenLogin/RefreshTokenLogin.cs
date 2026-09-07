@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.DTOs;
+using EEaseWebAPI.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.MapEntities.RefreshTokenLogin
         public Header? Header { get; set; }
     }
 
-    public class RefreshTokenLoginBody 
+    public class RefreshTokenLoginBody
     {
         public Token? Token { get; set; }
 

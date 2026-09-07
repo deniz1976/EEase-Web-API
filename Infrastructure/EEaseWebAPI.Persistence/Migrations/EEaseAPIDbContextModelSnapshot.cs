@@ -149,6 +149,9 @@ namespace EEaseWebAPI.Persistence.Migrations
                     b.Property<string>("DeleteCode")
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("DeleteCodeExpiration")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -202,6 +205,12 @@ namespace EEaseWebAPI.Persistence.Migrations
 
                     b.Property<string>("ResetPasswordCode")
                         .HasColumnType("text");
+
+                    b.Property<int>("ResetPasswordCodeAttempts")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ResetPasswordCodeExpiration")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -332,6 +341,74 @@ namespace EEaseWebAPI.Persistence.Migrations
                     b.ToTable("UserAccommodationPreferences");
                 });
 
+            modelBuilder.Entity("EEaseWebAPI.Domain.Entities.Identity.UserBlock", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("BlockedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("BlockedId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("BlockerId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlockedId");
+
+                    b.HasIndex("BlockerId", "BlockedId")
+                        .IsUnique();
+
+                    b.ToTable("UserBlocks");
+                });
+
+            modelBuilder.Entity("EEaseWebAPI.Domain.Entities.Identity.UserDislikedPlace", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DislikedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("GoogleId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PlaceType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "GoogleId")
+                        .IsUnique();
+
+                    b.ToTable("UserDislikedPlaces");
+                });
+
             modelBuilder.Entity("EEaseWebAPI.Domain.Entities.Identity.UserFoodPreferences", b =>
                 {
                     b.Property<Guid>("Id")
@@ -459,14 +536,22 @@ namespace EEaseWebAPI.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("UserAId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserBId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddresseeId", "Status");
 
-                    b.HasIndex("RequesterId", "AddresseeId")
-                        .IsUnique();
-
                     b.HasIndex("RequesterId", "Status");
+
+                    b.HasIndex("UserAId", "UserBId")
+                        .IsUnique();
 
                     b.ToTable("UserFriendships");
                 });
@@ -1454,6 +1539,36 @@ namespace EEaseWebAPI.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("EEaseWebAPI.Domain.Entities.Identity.UserBlock", b =>
+                {
+                    b.HasOne("EEaseWebAPI.Domain.Entities.Identity.AppUser", "Blocked")
+                        .WithMany("BlocksReceived")
+                        .HasForeignKey("BlockedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EEaseWebAPI.Domain.Entities.Identity.AppUser", "Blocker")
+                        .WithMany("BlocksIssued")
+                        .HasForeignKey("BlockerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Blocked");
+
+                    b.Navigation("Blocker");
+                });
+
+            modelBuilder.Entity("EEaseWebAPI.Domain.Entities.Identity.UserDislikedPlace", b =>
+                {
+                    b.HasOne("EEaseWebAPI.Domain.Entities.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("EEaseWebAPI.Domain.Entities.Identity.UserFoodPreferences", b =>
                 {
                     b.HasOne("EEaseWebAPI.Domain.Entities.Identity.AppUser", "User")
@@ -1824,6 +1939,10 @@ namespace EEaseWebAPI.Persistence.Migrations
             modelBuilder.Entity("EEaseWebAPI.Domain.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("AccommodationPreferences");
+
+                    b.Navigation("BlocksIssued");
+
+                    b.Navigation("BlocksReceived");
 
                     b.Navigation("FoodPreferences");
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ namespace EEaseWebAPI.Application.MapEntities.ResetPasswordCodeCheck
         public ResetPasswordCodeCheckQueryBody? Body { get; set; }
     }
 
-    public class ResetPasswordCodeCheckQueryBody 
+    public class ResetPasswordCodeCheckQueryBody
     {
         public string? message { get; set; }
     }

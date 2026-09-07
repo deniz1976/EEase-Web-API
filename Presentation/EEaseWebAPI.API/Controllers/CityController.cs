@@ -1,12 +1,10 @@
-﻿using EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountries;
 using EEaseWebAPI.API.Constants;
+using EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountries;
 using EEaseWebAPI.Application.Features.Queries.Cities.GetCitiesBySearch;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace EEaseWebAPI.API.Controllers
 {
@@ -32,7 +30,7 @@ namespace EEaseWebAPI.API.Controllers
                 SearchTerm = searchTerm,
                 PageSize = pageSize,
                 PageNumber = pageNumber,
-                Username = null 
+                Username = null
             });
 
             return Ok(response);
@@ -51,7 +49,7 @@ namespace EEaseWebAPI.API.Controllers
                 SearchTerm = searchTerm,
                 PageSize = pageSize,
                 PageNumber = pageNumber,
-                Username = User.Identity?.Name 
+                Username = User.Identity?.Name
             });
 
             return Ok(response);

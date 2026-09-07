@@ -16,4 +16,4 @@ namespace EEaseWebAPI.Application.Exceptions.UpdateUser
         {
         }
     }
-} 
+}

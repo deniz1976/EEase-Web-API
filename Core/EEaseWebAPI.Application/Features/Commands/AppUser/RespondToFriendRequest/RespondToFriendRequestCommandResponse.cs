@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendReque
     {
         public string Message { get; set; } = "Friend request response processed successfully.";
     }
-} 
+}

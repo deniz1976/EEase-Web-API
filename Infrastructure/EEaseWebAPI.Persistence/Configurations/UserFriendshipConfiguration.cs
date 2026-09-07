@@ -18,7 +18,7 @@ namespace EEaseWebAPI.Persistence.Configurations
                 .HasForeignKey(friendship => friendship.AddresseeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasIndex(friendship => new { friendship.RequesterId, friendship.AddresseeId })
+            builder.HasIndex(friendship => new { friendship.UserAId, friendship.UserBId })
                 .IsUnique();
 
             builder.HasIndex(friendship => new { friendship.AddresseeId, friendship.Status });

@@ -24,4 +24,4 @@ namespace EEaseWebAPI.Application.MapEntities
             Error = error;
         }
     }
-} 
+}

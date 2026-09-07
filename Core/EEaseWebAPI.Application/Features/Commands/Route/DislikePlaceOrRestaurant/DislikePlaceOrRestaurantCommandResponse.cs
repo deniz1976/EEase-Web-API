@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaura
         public Header? Header { get; set; }
         public DislikePlaceOrRestaurantCommandResponseBody? Body { get; set; }
     }
-    public class DislikePlaceOrRestaurantCommandResponseBody 
+    public class DislikePlaceOrRestaurantCommandResponseBody
     {
         public StandardRoute? StandardRoute { get; set; }
     }

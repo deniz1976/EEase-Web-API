@@ -8,13 +8,13 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
 {
     public class GetUserFriendsQueryHandler : IRequestHandler<GetUserFriendsQuery, GetUserFriendsQueryResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
         private readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
 
-        public GetUserFriendsQueryHandler(IUserService userService, IHeaderService headerService, UserManager<Domain.Entities.Identity.AppUser> userManager)
+        public GetUserFriendsQueryHandler(IFriendshipService friendshipService, IHeaderService headerService, UserManager<Domain.Entities.Identity.AppUser> userManager)
         {
-            _userService = userService;
+            _friendshipService = friendshipService;
             _headerService = headerService;
             _userManager = userManager;
         }
@@ -27,7 +27,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
                 throw new UserNotFoundException();
             try
             {
-                var friends = await _userService.GetUserFriendsAsync(request.Username);
+                var friends = await _friendshipService.GetFriendsAsync(request.Username);
                 var friendDtos = friends.Select(f =>
                 {
                     var friend = f.RequesterId == user.Id ? f.Addressee : f.Requester;
@@ -40,8 +40,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
                         FriendshipDate = f.ResponseDate ?? f.RequestDate
                     };
                 }).ToList();
-
-                
 
                 return new GetUserFriendsQueryResponse
                 {
@@ -62,4 +60,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
             }
         }
     }
-} 
+}

@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetAllTopics
         public GetAllTopicsQueryResponseBody? Body { get; set; }
     }
 
-    public class GetAllTopicsQueryResponseBody 
+    public class GetAllTopicsQueryResponseBody
     {
         public List<string> AccommodationTopics { get; set; } = new List<string>();
         public List<string> FoodTopics { get; set; } = new List<string>();

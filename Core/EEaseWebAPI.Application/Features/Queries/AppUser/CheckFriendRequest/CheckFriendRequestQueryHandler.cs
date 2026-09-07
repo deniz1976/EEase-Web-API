@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.MapEntities.StatusCheck;
 using MediatR;
@@ -12,18 +12,18 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
 {
     public class CheckFriendRequestQueryHandler : IRequestHandler<CheckFriendRequestQueryRequest, CheckFriendRequestQueryResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public CheckFriendRequestQueryHandler(IUserService userService, IHeaderService headerService)
+        public CheckFriendRequestQueryHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
-            _userService = userService;
+            _friendshipService = friendshipService;
             _headerService = headerService;
         }
 
         public async Task<CheckFriendRequestQueryResponse> Handle(CheckFriendRequestQueryRequest request, CancellationToken cancellationToken)
         {
-            var status = await _userService.CheckFriendRequest(request.Username, request.TargetUsername);
+            var status = await _friendshipService.GetRequestStatusAsync(request.Username, request.TargetUsername);
             string message = GetMessageForStatus(status);
 
             return new CheckFriendRequestQueryResponse

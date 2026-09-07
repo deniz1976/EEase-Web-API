@@ -18,4 +18,4 @@ namespace EEaseWebAPI.Application.Exceptions.GetCitiesBySearch
         {
         }
     }
-} 
+}

@@ -28,7 +28,7 @@ namespace EEaseWebAPI.Persistence.Repositories
                 var cities = await _context.AllWorldCities
                     .AsNoTracking()
                     .ToListAsync();
-                
+
                 _logger.LogInformation($"Successfully fetched {cities.Count} cities from database.");
                 return cities;
             }
@@ -39,4 +39,4 @@ namespace EEaseWebAPI.Persistence.Repositories
             }
         }
     }
-} 
+}

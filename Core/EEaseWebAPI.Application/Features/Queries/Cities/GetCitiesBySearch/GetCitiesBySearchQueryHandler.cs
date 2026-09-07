@@ -27,11 +27,11 @@ namespace EEaseWebAPI.Application.Features.Queries.Cities.GetCitiesBySearch
                 throw new InvalidSearchTermException();
 
             (List<CityDto> cities, int totalCount) = await _cityService.GetCitiesBySearchAsync(
-                request.SearchTerm, 
-                request.PageSize, 
+                request.SearchTerm,
+                request.PageSize,
                 request.PageNumber,
                 request.Username);
-            
+
             int totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
 
             return new GetCitiesBySearchQueryResponse
@@ -48,4 +48,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Cities.GetCitiesBySearch
             };
         }
     }
-} 
+}

@@ -13,4 +13,4 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
     {
         public bool IsUpdated { get; set; }
     }
-} 
+}

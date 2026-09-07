@@ -13,4 +13,4 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant
         public bool IsPreferenceUpdated { get; set; }
         public string Message { get; set; }
     }
-} 
+}

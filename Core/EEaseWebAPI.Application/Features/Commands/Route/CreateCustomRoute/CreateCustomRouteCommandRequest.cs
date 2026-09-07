@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Domain.Entities.Route;
+using EEaseWebAPI.Domain.Entities.Route;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute
 {
     public class CreateCustomRouteCommandRequest : IRequest<CreateCustomRouteCommandResponse>
     {
-        public List<string> usernames = new List<string>();
+        public List<string>? usernames { get; set; } = new();
         public string? destination { get; set; }
 
         public DateOnly? StartDate { get; set; }

@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using System;
@@ -12,18 +12,18 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailConfirmed
 {
     public class CheckEmailConfirmedQueryHandler : IRequestHandler<CheckEmailConfirmedQueryRequest, CheckEmailConfirmedQueryResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IUserRegistrationService _registrationService;
         private readonly IHeaderService _headerService;
-        public CheckEmailConfirmedQueryHandler(IUserService userService,IHeaderService headerService) 
+        public CheckEmailConfirmedQueryHandler(IUserRegistrationService registrationService,IHeaderService headerService)
         {
-            _userService = userService;
+            _registrationService = registrationService;
             _headerService = headerService;
         }
         public async Task<CheckEmailConfirmedQueryResponse> Handle(CheckEmailConfirmedQueryRequest request, CancellationToken cancellationToken)
         {
             if(request == null || request.emailOrUsername == null)
                 throw new ArgumentNullException(nameof(request));
-            var result = await _userService.CheckEmailConfirmed(request.emailOrUsername);
+            var result = await _registrationService.CheckEmailConfirmed(request.emailOrUsername);
             Header header = _headerService.HeaderCreate();
             return new CheckEmailConfirmedQueryResponse
             {

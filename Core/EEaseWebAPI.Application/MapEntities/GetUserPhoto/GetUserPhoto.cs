@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.MapEntities.GetUserPhoto
         public GetUserPhotoBody? Body { get; set; }
     }
 
-    public class GetUserPhotoBody 
+    public class GetUserPhotoBody
     {
         public string? path {  get; set; }
         public string? errorMessage { get; set; }

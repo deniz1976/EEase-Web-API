@@ -19,8 +19,6 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface IRouteService
     {
-        Task<CreateRouteWithoutLoginCommandResponseBody> CreateRouteWithoutLogin(string? destination, DateOnly? startDate, DateOnly? endDate, PRICE_LEVEL? _PRICE_LEVEL);
-
         Task<(List<StandardRoute> Routes, int TotalCount)> GetAllRoutes(string username, int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default);
 
         Task<(List<StandardRouteDTO> Routes, int TotalCount)> GetRoutesByUserId(string userId, string requesterUsername, int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default);
@@ -30,8 +28,6 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         Task<bool> LikeRoute(string username, Guid routeId);
 
         Task<bool> DeleteRoute(string username, Guid? routeId);
-
-        Task<CreateCustomRouteCommandResponseBody> CreateCustomRoute(string? destination, DateOnly? startDate, DateOnly? endDate, PRICE_LEVEL? _PRICE_LEVEL, string? username, List<string>? usernames);
 
         Task<StandardRouteDTO> GetRouteById(string username, Guid? routeId);
 

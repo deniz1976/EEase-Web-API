@@ -1,4 +1,3 @@
-﻿
 namespace EEaseWebAPI.Application.MapEntities.GetCurrencies
 {
     public class GetCurrencies

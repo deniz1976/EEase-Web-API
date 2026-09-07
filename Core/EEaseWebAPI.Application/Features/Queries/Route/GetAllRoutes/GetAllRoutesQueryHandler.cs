@@ -14,7 +14,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetAllRoutes
         private readonly IRouteService _routeService;
         private readonly IHeaderService _headerService;
 
-
         public GetAllRoutesQueryHandler(IRouteService routeService, IHeaderService headerService)
         {
             _routeService = routeService;

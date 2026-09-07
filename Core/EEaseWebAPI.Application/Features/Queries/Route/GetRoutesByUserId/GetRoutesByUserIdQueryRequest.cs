@@ -9,4 +9,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
     }
-} 
+}

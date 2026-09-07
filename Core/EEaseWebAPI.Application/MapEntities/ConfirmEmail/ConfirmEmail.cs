@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ namespace EEaseWebAPI.Application.MapEntities.ConfirmEmail
         public Header? Header { get; set; }
     }
 
-    public class ConfirmEmailBody 
+    public class ConfirmEmailBody
     {
         public bool? result {  get; set; }
     }

@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikeRoute
     {
         public bool IsLiked { get; set; }
     }
-} 
+}

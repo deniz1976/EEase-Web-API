@@ -7,4 +7,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
         public string Username { get; set; }
         public Guid RouteId { get; set; }
     }
-} 
+}

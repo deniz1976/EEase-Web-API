@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +9,6 @@ namespace EEaseWebAPI.Application.Exceptions.ChangePassword
     public class InvalidPasswordException: BaseException
     {
         public InvalidPasswordException(string message , int statusenumcode) : base(message, statusenumcode) { }
-        
 
-        
-
-        
     }
 }

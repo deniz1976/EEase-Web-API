@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions.UpdateUser;
 using MediatR;
@@ -14,16 +14,15 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
     public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommandRequest, UpdateUserCommandResponse>
     {
         private readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
-        private readonly IUserService _userService;
+        private readonly IUserProfileService _profileService;
         private readonly IHeaderService _headerService;
         private readonly IAuthService _authService;
 
-
-        public UpdateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager,IUserService userService,IHeaderService headerService,
+        public UpdateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager,IUserProfileService profileService,IHeaderService headerService,
             IAuthService authService)
         {
             _userManager = userManager;
-            _userService = userService;
+            _profileService = profileService;
             _headerService = headerService;
             _authService = authService;
         }
@@ -35,8 +34,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
             if (request.user == null)
                 throw new UserNotFoundException("User not found",(int)StatusEnum.UserNotFound);
 
-            var result = await _userService.UpdateUser(request);
-            
+            var result = await _profileService.UpdateUser(request);
 
             if(result && request.Username != null)
             {
@@ -71,7 +69,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
             }
 
             throw new Exception("An unexpected error occured");
-
 
         }
     }

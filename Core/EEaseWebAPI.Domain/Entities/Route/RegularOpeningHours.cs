@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Domain.Entities.Common;
+using EEaseWebAPI.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,6 @@ namespace EEaseWebAPI.Domain.Entities.Route
 
         [JsonPropertyName("hour")]
         public int? Hour { get; set; }
-
 
         [JsonPropertyName("minute")]
         public int? Minute { get; set; }

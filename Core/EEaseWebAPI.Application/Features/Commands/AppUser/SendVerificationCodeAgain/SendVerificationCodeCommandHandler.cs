@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Exceptions.Login;
 using MediatR;
 using System;
@@ -12,26 +12,26 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCode
     public class SendVerificationCodeCommandHandler : IRequestHandler<SendVerificationCodeCommandRequest, SendVerificationCodeCommandResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IUserService _userService;
+        private readonly IUserRegistrationService _registrationService;
         private static string success = "Code sent to mail successfully.";
 
-        public SendVerificationCodeCommandHandler(IHeaderService headerService, IUserService userService)
+        public SendVerificationCodeCommandHandler(IHeaderService headerService, IUserRegistrationService registrationService)
         {
             _headerService = headerService;
-            _userService = userService;
+            _registrationService = registrationService;
         }
 
         public async Task<SendVerificationCodeCommandResponse> Handle(SendVerificationCodeCommandRequest request, CancellationToken cancellationToken)
         {
             if (request.email == null) { throw new UserNotFoundException("User Not Found",7); }
 
-            var result = await _userService.SendVerificationEmailAgain(request.email);
-            if (result) 
+            var result = await _registrationService.SendVerificationEmailAgain(request.email);
+            if (result)
             {
-                return new SendVerificationCodeCommandResponse() 
+                return new SendVerificationCodeCommandResponse()
                 {
                     Header = _headerService.HeaderCreate(98),
-                    Body = new SendVerificationCodeBody() 
+                    Body = new SendVerificationCodeBody()
                     {
                         message = success,
                         success = result

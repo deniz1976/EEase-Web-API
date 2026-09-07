@@ -10,19 +10,26 @@ namespace EEaseWebAPI.UnitTests.Gemini
 {
     public class GeminiKeyManagerTests
     {
-        private static GeminiKeyManager CreateManager(int requestsPerMinute, params string[] keys) =>
+        private static GeminiKeyManager CreateManager(
+            int requestsPerMinute,
+            int quotaCooldownSeconds,
+            params string[] keys) =>
             new(Options.Create(new GeminiOptions
             {
                 ApiKeys = keys,
-                RequestsPerMinutePerKey = requestsPerMinute
+                RequestsPerMinutePerKey = requestsPerMinute,
+                QuotaCooldownSeconds = quotaCooldownSeconds
             }));
+
+        private static GeminiKeyManager CreateManager(int requestsPerMinute, params string[] keys) =>
+            CreateManager(requestsPerMinute, 60, keys);
 
         [Fact]
         public async Task Throws_a_clear_error_when_no_key_is_configured()
         {
             var manager = CreateManager(60);
 
-            await Assert.ThrowsAsync<GeminiAPIKeyNotFoundException>(() => manager.GetAvailableApiKey());
+            await Assert.ThrowsAsync<GeminiAPIKeyNotFoundException>(() => manager.AcquireKeyAsync());
         }
 
         [Fact]
@@ -30,68 +37,102 @@ namespace EEaseWebAPI.UnitTests.Gemini
         {
             var manager = CreateManager(60, "", "  ", "valid-key");
 
-            var key = await manager.GetAvailableApiKey();
+            var key = await manager.AcquireKeyAsync();
 
             key.Should().Be("valid-key");
         }
 
         [Fact]
-        public async Task Returns_a_free_key_instead_of_one_just_used()
+        public async Task Spreads_load_across_the_pool_instead_of_draining_the_first_key()
         {
-            var manager = CreateManager(1, "first", "second");
+            var manager = CreateManager(6000, "first", "second", "third");
 
-            var first = await manager.GetAvailableApiKey();
-            await manager.MarkKeyAsUsed(first);
+            var keys = new List<string>();
+            for (var i = 0; i < 6; i++)
+            {
+                keys.Add(await manager.AcquireKeyAsync());
+            }
 
-            var second = await manager.GetAvailableApiKey();
-
-            second.Should().NotBe(first);
+            keys.Should().Equal("first", "second", "third", "first", "second", "third");
         }
 
         [Fact]
-        public async Task Hands_back_the_same_key_immediately_while_under_the_limit()
+        public async Task Lets_a_key_burst_up_to_its_per_minute_quota()
         {
-            var manager = CreateManager(6000, "single-key");
-
-            var first = await manager.GetAvailableApiKey();
-            await manager.MarkKeyAsUsed(first);
+            var manager = CreateManager(10, "single-key");
 
             var stopwatch = Stopwatch.StartNew();
-            var second = await manager.GetAvailableApiKey();
+            for (var i = 0; i < 10; i++)
+            {
+                (await manager.AcquireKeyAsync()).Should().Be("single-key");
+            }
             stopwatch.Stop();
 
-            second.Should().Be("single-key");
             stopwatch.ElapsedMilliseconds.Should().BeLessThan(1000);
         }
 
         [Fact]
-        public async Task Waits_once_a_single_key_reaches_its_limit()
+        public async Task Waits_once_a_single_key_has_spent_its_quota()
         {
-            var manager = CreateManager(300, "single-key");
+            var manager = CreateManager(600, "single-key");
 
-            await manager.MarkKeyAsUsed("single-key");
+            for (var i = 0; i < 600; i++)
+            {
+                await manager.AcquireKeyAsync();
+            }
 
             var stopwatch = Stopwatch.StartNew();
-            var key = await manager.GetAvailableApiKey();
+            var key = await manager.AcquireKeyAsync();
             stopwatch.Stop();
 
             key.Should().Be("single-key");
-
-            stopwatch.ElapsedMilliseconds.Should().BeGreaterThan(100);
+            stopwatch.ElapsedMilliseconds.Should().BeGreaterThan(30);
         }
 
         [Fact]
-        public async Task ReleaseKey_does_not_make_a_key_immediately_available()
+        public async Task Concurrent_callers_never_share_the_same_quota_slot()
         {
-            var manager = CreateManager(1, "first", "second");
+            const int slots = 50;
+            var manager = CreateManager(slots, "first", "second");
 
-            var first = await manager.GetAvailableApiKey();
-            await manager.MarkKeyAsUsed(first);
-            await manager.ReleaseKey(first);
+            var handed = await Task.WhenAll(Enumerable
+                .Range(0, slots * 2)
+                .Select(_ => Task.Run(() => manager.AcquireKeyAsync())));
 
-            var next = await manager.GetAvailableApiKey();
+            handed.Should().HaveCount(slots * 2);
+            handed.Count(key => key == "first").Should().Be(slots);
+            handed.Count(key => key == "second").Should().Be(slots);
 
-            next.Should().NotBe(first);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                () => manager.AcquireKeyAsync(cts.Token));
+        }
+
+        [Fact]
+        public async Task A_key_reported_as_quota_exceeded_is_benched_for_the_cooldown()
+        {
+            var manager = CreateManager(6000, quotaCooldownSeconds: 600, keys: new[] { "first", "second" });
+
+            manager.ReportQuotaExceeded("first");
+
+            for (var i = 0; i < 5; i++)
+            {
+                (await manager.AcquireKeyAsync()).Should().Be("second");
+            }
+        }
+
+        [Fact]
+        public async Task Waiting_for_a_key_honours_cancellation()
+        {
+            var manager = CreateManager(1, quotaCooldownSeconds: 600, keys: new[] { "only-key" });
+
+            await manager.AcquireKeyAsync();
+            manager.ReportQuotaExceeded("only-key");
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                () => manager.AcquireKeyAsync(cts.Token));
         }
     }
 }

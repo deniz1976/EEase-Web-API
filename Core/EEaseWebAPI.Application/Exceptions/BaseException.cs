@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,12 +15,12 @@ namespace EEaseWebAPI.Application.Exceptions
             EnumStatusCode = statusEnum;
         }
 
-        public BaseException(int statusEnum) 
+        public BaseException(int statusEnum)
         {
             EnumStatusCode = statusEnum;
         }
 
-        public BaseException(string message , int statusEnum , Exception innerException) : base(message,innerException) 
+        public BaseException(string message , int statusEnum , Exception innerException) : base(message,innerException)
         {
             EnumStatusCode = statusEnum;
         }

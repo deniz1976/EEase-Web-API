@@ -20,4 +20,4 @@ namespace EEaseWebAPI.Application.MapEntities.Cities
         public string CityName { get; set; }
         public string Country { get; set; }
     }
-} 
+}

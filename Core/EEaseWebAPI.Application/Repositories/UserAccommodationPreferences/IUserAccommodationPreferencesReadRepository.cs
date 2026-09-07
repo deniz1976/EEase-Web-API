@@ -10,4 +10,4 @@ namespace EEaseWebAPI.Application.Repositories
     public interface IUserAccommodationPreferencesReadRepository : IReadRepository<UserAccommodationPreferences>
     {
     }
-} 
+}

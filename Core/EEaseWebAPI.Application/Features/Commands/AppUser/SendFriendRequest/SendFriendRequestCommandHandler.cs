@@ -9,12 +9,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendFriendRequest
 {
     public class SendFriendRequestCommandHandler : IRequestHandler<SendFriendRequestCommandRequest, SendFriendRequestCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public SendFriendRequestCommandHandler(IUserService userService, IHeaderService headerService)
+        public SendFriendRequestCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
-            _userService = userService;
+            _friendshipService = friendshipService;
             _headerService = headerService;
         }
 
@@ -22,24 +22,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendFriendRequest
         {
             try
             {
-                if (request.RequesterUsername == request.AddresseeUsername)
-                    throw new CannotPerformActionOnSelfException();
-
-                var friendship = await _userService.GetFriendshipAsync(request.RequesterUsername, request.AddresseeUsername);
-
-                if (friendship != null)
-                {
-                    if (friendship.Status == Domain.Enums.FriendshipStatus.Blocked && 
-                        friendship.RequesterId != request.RequesterUsername)
-                        throw new UserBlockedException("You cannot send a friend request to this user.");
-
-                    if (friendship.Status == Domain.Enums.FriendshipStatus.Accepted)
-                        throw new FriendshipException("You are already friends with this user.", StatusEnum.FriendRequestSendFailed);
-
-                    throw new FriendRequestAlreadyExistsException();
-                }
-
-                bool result = await _userService.CreateFriendshipAsync(request.RequesterUsername,request.AddresseeUsername);
+                await _friendshipService.SendRequestAsync(request.RequesterUsername, request.AddresseeUsername);
 
                 return new SendFriendRequestCommandResponse
                 {
@@ -59,10 +42,14 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendFriendRequest
             {
                 throw;
             }
+            catch (FriendshipException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new FriendshipException("Failed to send friend request.", StatusEnum.FriendRequestSendFailed, ex);
             }
         }
     }
-} 
+}

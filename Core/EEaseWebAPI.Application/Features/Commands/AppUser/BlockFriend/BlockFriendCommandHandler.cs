@@ -9,12 +9,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
 {
     public class BlockFriendCommandHandler : IRequestHandler<BlockFriendCommand, BlockFriendCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public BlockFriendCommandHandler(IUserService userService, IHeaderService headerService)
+        public BlockFriendCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
-            _userService = userService;
+            _friendshipService = friendshipService;
             _headerService = headerService;
         }
 
@@ -22,23 +22,13 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
         {
             try
             {
-                if (request.Username == request.TargetUsername)
-                    throw new CannotPerformActionOnSelfException();
+                await _friendshipService.BlockAsync(request.Username, request.TargetUsername);
 
-                var result = await _userService.BlockUserAsync(request.TargetUsername, request.Username);
-
-                if (result) 
+                return new BlockFriendCommandResponse
                 {
-                    return new BlockFriendCommandResponse
-                    {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedSuccessfully),
-                        Body = new BlockFriendCommandResponseBody()
-                    };
-                }
-
-                throw new Exception("An unexpected error occured");
-
-                
+                    Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedSuccessfully),
+                    Body = new BlockFriendCommandResponseBody()
+                };
             }
             catch (UserNotFoundException)
             {
@@ -52,10 +42,14 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
             {
                 throw;
             }
+            catch (FriendshipException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new FriendshipException("Failed to block user.", StatusEnum.UserBlockFailed, ex);
             }
         }
     }
-} 
+}

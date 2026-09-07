@@ -10,4 +10,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById
     {
         public MapEntities.GetUserInfoById.GetUserInfoById? response { get; set; }
     }
-} 
+}

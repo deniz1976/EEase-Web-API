@@ -14,4 +14,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
     {
         public List<UserSearchDTO> Users { get; set; }
     }
-} 
+}

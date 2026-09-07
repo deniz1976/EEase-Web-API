@@ -119,6 +119,7 @@ namespace EEaseWebAPI.Application.Enums
         SearchUsersFailed = 115,
         ComponentChangedSuccessfully = 116,
         GetRoutesByUserIdRetrievedSuccessfully = 117,
+        RouteGenerationFailed = 118,
 
         ServiceUnavailable = 995,
         NetworkError = 996,
@@ -130,12 +131,12 @@ namespace EEaseWebAPI.Application.Enums
     public enum FriendRequestStatus
     {
         NoRequest = 0,
-        Requester = 1,  
-        Addressee = 2,  
+        Requester = 1,
+        Addressee = 2,
         AlreadyFriends = 3,
         Blocked = 4
     }
-    
+
     public enum ProfileVisibilityStatus
     {
         FullAccess = 0,

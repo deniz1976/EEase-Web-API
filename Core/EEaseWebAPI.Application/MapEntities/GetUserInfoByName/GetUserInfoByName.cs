@@ -1,7 +1,6 @@
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDescriptions;
 
-
 namespace EEaseWebAPI.Application.MapEntities.GetUserInfoByName
 {
     public class GetUserInfoByName
@@ -29,10 +28,9 @@ namespace EEaseWebAPI.Application.MapEntities.GetUserInfoByName
 
         public FriendRequestStatus? FriendRequestStatus { get; set; }
 
-
         public EEaseWebAPI.Application.Enums.ProfileVisibilityStatus visibilityStatus { get; set; }
         public List<PreferenceDetail>? PersonalizationPreferences { get; set; }
         public List<PreferenceDetail>? FoodPreferences { get; set; }
         public List<PreferenceDetail>? AccommodationPreferences { get; set; }
     }
-} 
+}

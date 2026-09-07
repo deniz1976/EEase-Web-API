@@ -18,4 +18,4 @@ namespace EEaseWebAPI.Application.Features.Queries.Cities.GetCitiesBySearch
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
     }
-} 
+}

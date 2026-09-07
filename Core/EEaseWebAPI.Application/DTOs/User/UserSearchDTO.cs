@@ -11,4 +11,4 @@ namespace EEaseWebAPI.Application.DTOs.User
         public string PhotoUrl { get; set; }
         public string? Gender { get; set; }
     }
-} 
+}

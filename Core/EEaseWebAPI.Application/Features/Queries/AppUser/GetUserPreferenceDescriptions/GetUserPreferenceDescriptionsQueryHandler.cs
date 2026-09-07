@@ -7,12 +7,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDesc
 {
     public class GetUserPreferenceDescriptionsQueryHandler : IRequestHandler<GetUserPreferenceDescriptionsQueryRequest, GetUserPreferenceDescriptionsQueryResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IUserPreferenceService _preferenceService;
         private readonly IHeaderService _headerService;
 
-        public GetUserPreferenceDescriptionsQueryHandler(IUserService userService, IHeaderService headerService)
+        public GetUserPreferenceDescriptionsQueryHandler(IUserPreferenceService preferenceService, IHeaderService headerService)
         {
-            _userService = userService;
+            _preferenceService = preferenceService;
             _headerService = headerService;
         }
 
@@ -20,7 +20,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDesc
         {
             try
             {
-                var descriptions = await _userService.GetUserPreferenceDescriptionsAsync(request.Username);
+                var descriptions = await _preferenceService.GetDescriptionsAsync(request.Username);
 
                 return new GetUserPreferenceDescriptionsQueryResponse
                 {
@@ -37,4 +37,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDesc
             }
         }
     }
-} 
+}

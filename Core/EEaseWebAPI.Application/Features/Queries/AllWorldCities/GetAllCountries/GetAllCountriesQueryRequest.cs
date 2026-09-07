@@ -5,4 +5,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountrie
     public class GetAllCountriesQueryRequest : IRequest<GetAllCountriesQueryResponse>
     {
     }
-} 
+}

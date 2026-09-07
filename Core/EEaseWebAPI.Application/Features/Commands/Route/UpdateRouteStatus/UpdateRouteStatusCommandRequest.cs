@@ -8,4 +8,4 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
         public int Status { get; set; }
         public string Username { get; set; }
     }
-} 
+}

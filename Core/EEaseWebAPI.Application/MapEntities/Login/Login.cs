@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.DTOs;
+using EEaseWebAPI.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace EEaseWebAPI.Application.MapEntities.Login
         public Header? Header { get; set; }
     }
 
-    public class LoginBody 
+    public class LoginBody
     {
         public Token? token { get; set; }
 
@@ -24,12 +24,12 @@ namespace EEaseWebAPI.Application.MapEntities.Login
 
     }
 
-    public class UserInfo 
+    public class UserInfo
     {
-        public string? name { get; set; } //
-        public string? surname { get; set; } //
-        public string? gender { get; set; } // 
-        public string? email { get; set; } //
+        public string? name { get; set; }
+        public string? surname { get; set; }
+        public string? gender { get; set; }
+        public string? email { get; set; }
         public string? username { get; set; }
         public DateOnly? bornDate { get; set; }
         public DateTime? deleteDate { get; set; }
@@ -41,7 +41,7 @@ namespace EEaseWebAPI.Application.MapEntities.Login
         public string? bio { get; set; }
 
         public string? photoPath { get; set; }
-        public bool? emailConfirmed { get; set; } //
+        public bool? emailConfirmed { get; set; }
         public DateTime? lastSeen { get; set; }
 
     }

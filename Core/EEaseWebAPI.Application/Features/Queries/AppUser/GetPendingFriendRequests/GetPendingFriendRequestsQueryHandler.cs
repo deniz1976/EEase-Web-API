@@ -7,12 +7,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
 {
     public class GetPendingFriendRequestsQueryHandler : IRequestHandler<GetPendingFriendRequestsQuery, GetPendingFriendRequestsQueryResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public GetPendingFriendRequestsQueryHandler(IUserService userService, IHeaderService headerService)
+        public GetPendingFriendRequestsQueryHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
-            _userService = userService;
+            _friendshipService = friendshipService;
             _headerService = headerService;
         }
 
@@ -20,7 +20,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
         {
             try
             {
-                var pendingRequests = await _userService.GetPendingFriendRequestsAsync(request.Username);
+                var pendingRequests = await _friendshipService.GetPendingRequestsAsync(request.Username);
                 var pendingRequestDtos = pendingRequests.Select(fr => new PendingFriendRequestDto
                 {
                     RequesterUsername = fr.Requester.UserName,
@@ -48,4 +48,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
             }
         }
     }
-} 
+}

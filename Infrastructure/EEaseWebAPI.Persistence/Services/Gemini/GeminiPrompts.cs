@@ -1,0 +1,496 @@
+using EEaseWebAPI.Domain.Entities.Identity;
+using EEaseWebAPI.Domain.Entities.Route;
+
+namespace EEaseWebAPI.Persistence.Services.Gemini
+{
+    public static class GeminiPrompts
+    {
+
+        public const string EntityDescription = @"
+You need to analyze the user's message and extract preferences according to these entity structures.
+All preferences are scored on a scale of 0-100
+
+IMPORTANT DIETARY RESTRICTIONS:
+When analyzing food preferences, pay special attention to dietary restrictions. If a user mentions being:
+- Vegan: Automatically set VeganPreference to 100 and set SeafoodPreference, DairyFreePreference to 0
+- Vegetarian: Automatically set VegetarianPreference to 100 and set SeafoodPreference to 0
+- Halal: Automatically set HalalPreference to 100
+- Kosher: Automatically set KosherPreference to 100
+- Gluten-Free: Automatically set GlutenFreePreference to 100
+- Dairy-Free: Automatically set DairyFreePreference to 100
+- Nut Allergy: Automatically set NutFreePreference to 100 and set AllergiesPreference to 100
+
+1. UserAccommodationPreferences (all fields are int, 0-100 scale):
+   - LuxuryHotelPreference: Preference for luxury hotels
+   - BudgetHotelPreference: Preference for budget hotels
+   - BoutiqueHotelPreference: Preference for boutique hotels
+   - HostelPreference: Preference for hostels
+   - ApartmentPreference: Preference for apartment stays
+   - ResortPreference: Preference for resorts
+   - VillaPreference: Preference for villas
+   - GuestHousePreference: Preference for guesthouses
+   - CampingPreference: Preference for camping
+   - GlampingPreference: Preference for glamping
+   - BedAndBreakfastPreference: Preference for bed and breakfast
+   - AllInclusivePreference: Preference for all-inclusive hotels
+   - SpaAndWellnessPreference: Preference for spa and wellness hotels
+   - PetFriendlyPreference: Preference for pet-friendly accommodations
+   - EcoFriendlyPreference: Preference for eco-friendly accommodations
+   - RemoteLocationPreference: Preference for remote locations
+   - CityCenterPreference: Preference for city center locations
+   - FamilyFriendlyPreference: Preference for family-friendly accommodations
+   - AdultsOnlyPreference: Preference for adults-only accommodations
+   - HomestayPreference: Preference for homestays
+   - WaterfrontPreference: Preference for waterfront locations
+   - HistoricalBuildingPreference: Preference for historical buildings
+   - AirbnbPreference: Preference for Airbnb accommodations
+   - CoLivingSpacePreference: Preference for co-living spaces
+   - ExtendedStayPreference: Preference for extended stay accommodations
+
+2. UserFoodPreferences (all fields are int, 0-100 scale):
+   - VegetarianPreference: Preference for vegetarian food (MUST be 100 if user is vegetarian)
+   - VeganPreference: Preference for vegan food (MUST be 100 if user is vegan)
+   - GlutenFreePreference: Preference for gluten-free food (MUST be 100 if user has celiac or gluten sensitivity)
+   - HalalPreference: Preference for halal food (MUST be 100 if user requires halal)
+   - KosherPreference: Preference for kosher food (MUST be 100 if user requires kosher)
+   - SeafoodPreference: Preference for seafood (MUST be 0 for vegetarian/vegan users)
+   - LocalCuisinePreference: Preference for local cuisine
+   - FastFoodPreference: Preference for fast food
+   - FinePreference: Preference for fine dining
+   - StreetFoodPreference: Preference for street food
+   - OrganicPreference: Preference for organic food
+   - BuffetPreference: Preference for buffet dining
+   - FoodTruckPreference: Preference for food trucks
+   - CafeteriaPreference: Preference for cafeteria dining
+   - DeliveryPreference: Preference for food delivery
+   - AllergiesPreference: Consideration for food allergies (MUST be 100 if any allergy mentioned)
+   - DairyFreePreference: Preference for dairy-free food (MUST be 100 if lactose intolerant)
+   - NutFreePreference: Preference for nut-free food (MUST be 100 if nut allergy)
+   - SpicyPreference: Preference for spicy food
+   - SweetPreference: Preference for sweet food
+   - SaltyPreference: Preference for salty food
+   - SourPreference: Preference for sour food
+   - BitterPreference: Preference for bitter food
+   - UmamiPreference: Preference for umami food
+   - FusionPreference: Preference for fusion cuisine
+
+3. UserPersonalization (all fields are int, 0-100 scale):
+   - AdventurePreference: Preference for adventure activities
+   - RelaxationPreference: Preference for relaxation
+   - CulturalPreference: Interest in cultural experiences
+   - NaturePreference: Interest in nature activities
+   - UrbanPreference: Preference for urban environments
+   - RuralPreference: Preference for rural environments
+   - LuxuryPreference: Preference for luxury experiences
+   - BudgetPreference: Preference for budget-friendly options
+   - SoloTravelPreference: Preference for solo travel
+   - GroupTravelPreference: Preference for group travel
+   - FamilyTravelPreference: Preference for family travel
+   - CoupleTravelPreference: Preference for couple travel
+   - BeachPreference: Interest in beach activities
+   - MountainPreference: Interest in mountain activities
+   - DesertPreference: Interest in desert environments
+   - ForestPreference: Interest in forest environments
+   - IslandPreference: Interest in island destinations
+   - LakePreference: Interest in lake activities
+   - RiverPreference: Interest in river activities
+   - WaterfallPreference: Interest in waterfall destinations
+   - CavePreference: Interest in cave exploration
+   - VolcanoPreference: Interest in volcanic sites
+   - GlacierPreference: Interest in glacier experiences
+   - CanyonPreference: Interest in canyon exploration
+   - ValleyPreference: Interest in valley destinations
+
+CRITICAL RULES FOR DIETARY RESTRICTIONS:
+1. Dietary restrictions MUST be treated as absolute rules, not preferences
+2. If a user mentions being vegan, they CANNOT have seafood or dairy preferences
+3. If a user mentions food allergies, those MUST be marked as 100 and considered in all recommendations
+4. Religious dietary requirements (Halal/Kosher) MUST be strictly respected
+5. When in doubt about a dietary restriction, ask for clarification rather than making assumptions
+6. I Want you to think as a real human what user likes. Do not fill fields only 25 50 75 100, you can use any number between 0 - 100 , example: ValleyPreference = 53.
+7. You have to choose at least 5 attributes per of these 3 personalization, food, accomodation";
+
+
+        public static string SeasonalContext(DateOnly? date)
+        {
+            if (!date.HasValue) return "Consider year-round activities and attractions";
+
+            var month = date.Value.Month;
+
+            return month switch
+            {
+                12 or 1 or 2 => @"Winter: Indoor attractions, winter sports, cozy dining, seasonal events",
+                3 or 4 or 5 => @"Spring: Parks, gardens, festivals, al fresco dining, nature activities",
+                6 or 7 or 8 => @"Summer: Outdoor fun, water activities, rooftop dining, summer events",
+                _ => @"Autumn: Festivals, foliage walks, seasonal food, flexible activities"
+            };
+
+        }
+
+
+        public static string BudgetContext(PRICE_LEVEL? priceLevel)
+        {
+            return priceLevel switch
+            {
+                PRICE_LEVEL.PRICE_LEVEL_INEXPENSIVE => @"Budget-Friendly Focus:
+- Prioritize affordable accommodations (hostels, budget hotels, guesthouses)
+- Select reasonably priced restaurants and cafes
+- Include free or low-cost attractions and activities
+- Suggest budget-friendly transportation options
+- Total daily budget (excluding accommodation): $50-100 per person",
+
+                PRICE_LEVEL.PRICE_LEVEL_MODERATE => @"Moderate Budget Focus:
+- Mid-range hotels and boutique accommodations
+- Mix of casual and upscale dining options
+- Balance of paid attractions and free activities
+- Comfortable transportation options
+- Total daily budget (excluding accommodation): $100-200 per person",
+
+                PRICE_LEVEL.PRICE_LEVEL_EXPENSIVE => @"Luxury Focus:
+- 4-5 star hotels and luxury accommodations
+- High-end restaurants and fine dining experiences
+- Premium attractions and exclusive activities
+- Private transportation options
+- Total daily budget (excluding accommodation): $200-500 per person",
+
+                PRICE_LEVEL.PRICE_LEVEL_VERY_EXPENSIVE => @"Ultra-Luxury Focus:
+- 5-star and boutique luxury hotels
+- Michelin-starred restaurants and exclusive dining experiences
+- VIP access to attractions and private tours
+- Luxury car services and private transfers
+- High-end shopping recommendations
+- Exclusive nightlife venues and entertainment
+- Spa and wellness experiences at premium establishments
+- Total daily budget (excluding accommodation): $500+ per person",
+
+                _ => @"Budget-Friendly Focus:
+- Prioritize affordable accommodations (hostels, budget hotels, guesthouses)
+- Select reasonably priced restaurants and cafes
+- Include free or low-cost attractions and activities
+- Suggest budget-friendly transportation options
+- Total daily budget (excluding accommodation): $50-100 per person"
+            };;
+        }
+
+
+        public static string AnonymousRoute(string destination, int dayCount, string budgetContext, string seasonalContext) =>
+            $@"Create a detailed {dayCount}-day travel itinerary for {destination}. Format the response as a JSON object with the following structure:
+
+{{
+  ""AnonymousDayList"": [
+        {{
+      ""DayDescription"": ""Detailed description of the day's activities and flow (cant be null)"",
+      ""AccomodationPlaceName"": ""{budgetContext} Specific hotel or accommodation name(think 5 hotel name first and then suggest one of them randomly for variety and every route day has SAME hotel name) (cant be null)"",
+      ""BreakfastPlaceName"": ""{budgetContext} Specific restaurant or cafe name, think 5 restaurant name first and then suggest one of them randomly for variety, be aware dont recommend the same place again(cant be null)"",
+      ""LunchPlaceName"": ""{budgetContext} Specific restaurant or cafe name, think 5 restaurant name first and then suggest one of them randomly for variety, be aware dont recommend the same place again (cant be null)"",
+      ""DinnerPlaceName"": ""{budgetContext} Specific restaurant or cafe name, think 5 restaurant name first and then suggest one of them randomly for variety, be aware dont recommend the same place again (cant be null)"",
+      ""FirstPlaceName"": ""{budgetContext} First attraction or activity venue name,think 5 attaction or activity venue name first and then suggest one of them randomly for variety, be aware dont recommend the same place again (cant be null)"",
+      ""SecondPlaceName"": ""{budgetContext} Second attraction or activity venue name,think 5 attaction or activity venue name first and then suggest one of them randomly for variety, be aware dont recommend the same place again (cant be null)"",
+      ""ThirdPlaceName"": ""{budgetContext} Third attraction or activity venue name,think 5 attaction or activity venue name first and then suggest one of them randomly for variety, be aware dont recommend the same place again (cant be null)"",
+      ""AfterDinnerPlaceName"": ""{budgetContext} Evening venue or activity location name,think 5 Evening venue or activity name first and then suggest one of them randomly for variety, be aware dont recommend the same place again (cant be null)"",
+      ""ApproxPrice"": ""Estimated total cost for the day in USD(cant be null)""
+        }}
+    ]
+}}
+
+### Season: {seasonalContext} ";
+
+
+        public static string Weather(string city, DateOnly date, TimeOnly time) =>
+            $@"Provide weather information for {city} on {date:yyyy-MM-dd} at {time:HH:mm}.
+
+Please include:
+1. Temperature in Celsius (realistic for the location and time of year)
+2. Brief weather description (sunny, cloudy, rainy, etc.)
+3. A helpful one-sentence warning or advice based on the weather, for example:
+   - For rain: ""Don't forget your umbrella!""
+   - For hot weather: ""Stay hydrated and use sunscreen.""
+   - For cold weather: ""Bring a warm jacket.""
+   - For wind: ""Hold onto your hat, it's windy!""
+   - For snow: ""Wear warm boots and watch for ice.""
+   - For perfect weather: ""Perfect weather for outdoor activities!""
+
+Format the response as JSON:
+{{
+  ""Degree"": number,
+  ""Description"": ""weather description"",
+  ""Warning"": ""helpful one-sentence warning or advice based on the weather"",
+  ""Date"": ""{date:yyyy-MM-dd}""
+}}";
+
+
+        public static string UserPreferences(string message) =>
+            $"{EntityDescription}\n\nUser Message: {message}\n\n" +
+            "Analyze this message and return a JSON object with three sections: " +
+            "accommodationPreferences, foodPreferences, and personalization. For each section, " +
+            "include ONLY the relevant fields with scores from 0-100 based on the user's preferences. " +
+            "Exclude any fields that cannot be confidently scored based on the message.";
+
+
+        public static string PlacePreferences(string placeName, string placeType, string placeDescription, List<string> availablePreferences) =>
+            $@"Analyze this place and determine which user preferences should be updated based on its characteristics.
+
+Place Information:
+- Name: {placeName}
+- Type: {placeType}
+- Description: {placeDescription}
+
+Available Preferences to Update:
+{string.Join("\n", availablePreferences.Select(p => $"- {p}"))}
+
+Rules:
+1. Return a list of preferences that should be updated based on the place's characteristics
+2. Only select preferences that are strongly relevant to the place
+3. Consider the place type, features, and overall experience
+4. Do not include preferences that don't clearly match the place's characteristics
+5. Return the response as a JSON array of preference names
+6. If a hotel is recommended where there should be a restaurant, consider it as the hotel's restaurant.
+
+Example Response Format:
+[""PreferenceOne"", ""PreferenceTwo"", ""PreferenceThree""]
+
+IMPORTANT:
+- Return ONLY the JSON array, no additional text
+- Only include preferences from the provided list
+- Select preferences that have a clear connection to the place
+- Do not include preferences just because they might be slightly relevant";
+
+
+        public static string PreferencesContext(
+            UserAccommodationPreferences accommodationPrefs,
+            UserFoodPreferences foodPrefs,
+            UserPersonalization personalPrefs) =>
+            $@"
+### User Preferences Context:
+
+ACCOMMODATION PREFERENCES (0-100 scale):
+{(accommodationPrefs.LuxuryHotelPreference > 0 ? $"- Luxury Hotels: {accommodationPrefs.LuxuryHotelPreference}" : "")}
+{(accommodationPrefs.BudgetHotelPreference > 0 ? $"- Budget Hotels: {accommodationPrefs.BudgetHotelPreference}" : "")}
+{(accommodationPrefs.BoutiqueHotelPreference > 0 ? $"- Boutique Hotels: {accommodationPrefs.BoutiqueHotelPreference}" : "")}
+{(accommodationPrefs.HostelPreference > 0 ? $"- Hostels: {accommodationPrefs.HostelPreference}" : "")}
+{(accommodationPrefs.ApartmentPreference > 0 ? $"- Apartments: {accommodationPrefs.ApartmentPreference}" : "")}
+{(accommodationPrefs.ResortPreference > 0 ? $"- Resorts: {accommodationPrefs.ResortPreference}" : "")}
+{(accommodationPrefs.VillaPreference > 0 ? $"- Villas: {accommodationPrefs.VillaPreference}" : "")}
+{(accommodationPrefs.GuestHousePreference > 0 ? $"- Guest Houses: {accommodationPrefs.GuestHousePreference}" : "")}
+{(accommodationPrefs.CampingPreference > 0 ? $"- Camping: {accommodationPrefs.CampingPreference}" : "")}
+{(accommodationPrefs.GlampingPreference > 0 ? $"- Glamping: {accommodationPrefs.GlampingPreference}" : "")}
+{(accommodationPrefs.BedAndBreakfastPreference > 0 ? $"- Bed & Breakfast: {accommodationPrefs.BedAndBreakfastPreference}" : "")}
+{(accommodationPrefs.AllInclusivePreference > 0 ? $"- All Inclusive: {accommodationPrefs.AllInclusivePreference}" : "")}
+{(accommodationPrefs.SpaAndWellnessPreference > 0 ? $"- Spa & Wellness: {accommodationPrefs.SpaAndWellnessPreference}" : "")}
+{(accommodationPrefs.PetFriendlyPreference > 0 ? $"- Pet Friendly: {accommodationPrefs.PetFriendlyPreference}" : "")}
+{(accommodationPrefs.EcoFriendlyPreference > 0 ? $"- Eco Friendly: {accommodationPrefs.EcoFriendlyPreference}" : "")}
+{(accommodationPrefs.CityCenterPreference > 0 ? $"- City Center Location: {accommodationPrefs.CityCenterPreference}" : "")}
+{(accommodationPrefs.RemoteLocationPreference > 0 ? $"- Remote Location: {accommodationPrefs.RemoteLocationPreference}" : "")}
+{(accommodationPrefs.FamilyFriendlyPreference > 0 ? $"- Family Friendly: {accommodationPrefs.FamilyFriendlyPreference}" : "")}
+{(accommodationPrefs.AdultsOnlyPreference > 0 ? $"- Adults Only: {accommodationPrefs.AdultsOnlyPreference}" : "")}
+{(accommodationPrefs.HomestayPreference > 0 ? $"- Homestay: {accommodationPrefs.HomestayPreference}" : "")}
+{(accommodationPrefs.WaterfrontPreference > 0 ? $"- Waterfront: {accommodationPrefs.WaterfrontPreference}" : "")}
+{(accommodationPrefs.HistoricalBuildingPreference > 0 ? $"- Historical Building: {accommodationPrefs.HistoricalBuildingPreference}" : "")}
+{(accommodationPrefs.AirbnbPreference > 0 ? $"- Airbnb: {accommodationPrefs.AirbnbPreference}" : "")}
+{(accommodationPrefs.CoLivingSpacePreference > 0 ? $"- Co-Living Space: {accommodationPrefs.CoLivingSpacePreference}" : "")}
+{(accommodationPrefs.ExtendedStayPreference > 0 ? $"- Extended Stay: {accommodationPrefs.ExtendedStayPreference}" : "")}
+
+FOOD PREFERENCES (0-100 scale):
+{(foodPrefs.VeganPreference > 50 ? "- STRICT VEGAN - No animal products allowed" : "\n")}
+{(foodPrefs.VegetarianPreference > 50 ? "- STRICT VEGETARIAN - No meat allowed" : "\n")}
+{(foodPrefs.GlutenFreePreference > 50 ? "- STRICT GLUTEN-FREE required" : "\n")}
+{(foodPrefs.HalalPreference > 50 ? "- STRICT HALAL food required" : "\n")}
+{(foodPrefs.KosherPreference > 50 ? "- STRICT KOSHER food required" : "\n")}
+{(foodPrefs.SeafoodPreference > 0 ? $"- Seafood: {foodPrefs.SeafoodPreference}" : "\n")}
+{(foodPrefs.LocalCuisinePreference > 0 ? $"- Local Cuisine: {foodPrefs.LocalCuisinePreference}" : "\n")}
+{(foodPrefs.FastFoodPreference > 0 ? $"- Fast Food: {foodPrefs.FastFoodPreference}" : "\n")}
+{(foodPrefs.FinePreference > 0 ? $"- Fine Dining: {foodPrefs.FinePreference}" : "\n")}
+{(foodPrefs.StreetFoodPreference > 0 ? $"- Street Food: {foodPrefs.StreetFoodPreference}" : "\n")}
+{(foodPrefs.OrganicPreference > 0 ? $"- Organic Food: {foodPrefs.OrganicPreference}" : "\n")}
+{(foodPrefs.BuffetPreference > 0 ? $"- Buffet: {foodPrefs.BuffetPreference}" : "\n")}
+{(foodPrefs.FoodTruckPreference > 0 ? $"- Food Truck: {foodPrefs.FoodTruckPreference}" : "\n")}
+{(foodPrefs.CafeteriaPreference > 0 ? $"- Cafeteria: {foodPrefs.CafeteriaPreference}" : "\n")}
+{(foodPrefs.DeliveryPreference > 0 ? $"- Delivery: {foodPrefs.DeliveryPreference}" : "\n")}
+{(foodPrefs.AllergiesPreference > 0 ? $"- Food Allergies: {foodPrefs.AllergiesPreference}" : "\n")}
+{(foodPrefs.DairyFreePreference > 0 ? $"- Dairy Free: {foodPrefs.DairyFreePreference}" : "\n")}
+{(foodPrefs.NutFreePreference > 0 ? $"- Nut Free: {foodPrefs.NutFreePreference}" : "\n")}
+{(foodPrefs.SpicyPreference > 0 ? $"- Spicy Food: {foodPrefs.SpicyPreference}" : "\n")}
+{(foodPrefs.SweetPreference > 0 ? $"- Sweet Food: {foodPrefs.SweetPreference}" : "\n")}
+{(foodPrefs.SaltyPreference > 0 ? $"- Salty Food: {foodPrefs.SaltyPreference}" : "\n")}
+{(foodPrefs.SourPreference > 0 ? $"- Sour Food: {foodPrefs.SourPreference}" : "\n")}
+{(foodPrefs.BitterPreference > 0 ? $"- Bitter Food: {foodPrefs.BitterPreference}" : "\n")}
+{(foodPrefs.UmamiPreference > 0 ? $"- Umami Food: {foodPrefs.UmamiPreference}" : "\n")}
+{(foodPrefs.FusionPreference > 0 ? $"- Fusion Cuisine: {foodPrefs.FusionPreference}" : "\n")}
+
+ACTIVITY PREFERENCES (0-100 scale):
+{(personalPrefs.AdventurePreference > 0 ? $"- Adventure Activities: {personalPrefs.AdventurePreference}" : "\n")}
+{(personalPrefs.RelaxationPreference > 0 ? $"- Relaxation Activities: {personalPrefs.RelaxationPreference}" : "\n")}
+{(personalPrefs.CulturalPreference > 0 ? $"- Cultural Experiences: {personalPrefs.CulturalPreference}" : "\n")}
+{(personalPrefs.NaturePreference > 0 ? $"- Nature Activities: {personalPrefs.NaturePreference}" : "\n")}
+{(personalPrefs.UrbanPreference > 0 ? $"- Urban Experiences: {personalPrefs.UrbanPreference}" : "\n")}
+{(personalPrefs.RuralPreference > 0 ? $"- Rural Experiences: {personalPrefs.RuralPreference}" : "\n")}
+{(personalPrefs.LuxuryPreference > 0 ? $"- Luxury Experiences: {personalPrefs.LuxuryPreference}" : "\n")}
+{(personalPrefs.BudgetPreference > 0 ? $"- Budget Activities: {personalPrefs.BudgetPreference}" : "\n")}
+{(personalPrefs.SoloTravelPreference > 0 ? $"- Solo Travel: {personalPrefs.SoloTravelPreference}" : "\n")}
+{(personalPrefs.GroupTravelPreference > 0 ? $"- Group Travel: {personalPrefs.GroupTravelPreference}" : "\n")}
+{(personalPrefs.FamilyTravelPreference > 0 ? $"- Family Travel: {personalPrefs.FamilyTravelPreference}" : "\n")}
+{(personalPrefs.CoupleTravelPreference > 0 ? $"- Couple Travel: {personalPrefs.CoupleTravelPreference}" : "\n")}
+{(personalPrefs.BeachPreference > 0 ? $"- Beach Activities: {personalPrefs.BeachPreference}" : "\n")}
+{(personalPrefs.MountainPreference > 0 ? $"- Mountain Activities: {personalPrefs.MountainPreference}" : "\n")}
+{(personalPrefs.DesertPreference > 0 ? $"- Desert Activities: {personalPrefs.DesertPreference}" : "\n")}
+{(personalPrefs.ForestPreference > 0 ? $"- Forest Activities: {personalPrefs.ForestPreference}" : "\n")}
+{(personalPrefs.IslandPreference > 0 ? $"- Island Activities: {personalPrefs.IslandPreference}" : "\n")}
+{(personalPrefs.LakePreference > 0 ? $"- Lake Activities: {personalPrefs.LakePreference}" : "\n")}
+{(personalPrefs.RiverPreference > 0 ? $"- River Activities: {personalPrefs.RiverPreference}" : "\n")}
+{(personalPrefs.WaterfallPreference > 0 ? $"- Waterfall Activities: {personalPrefs.WaterfallPreference}" : "\n")}
+{(personalPrefs.CavePreference > 0 ? $"- Cave Exploration: {personalPrefs.CavePreference}" : "\n")}
+{(personalPrefs.VolcanoPreference > 0 ? $"- Volcano Activities: {personalPrefs.VolcanoPreference}" : "\n")}
+{(personalPrefs.GlacierPreference > 0 ? $"- Glacier Activities: {personalPrefs.GlacierPreference}" : "\n")}
+{(personalPrefs.CanyonPreference > 0 ? $"- Canyon Activities: {personalPrefs.CanyonPreference}" : "\n")}
+{(personalPrefs.ValleyPreference > 0 ? $"- Valley Activities: {personalPrefs.ValleyPreference}" : "\n")}";
+
+
+        public static string CustomRouteWithPreferences(
+            string destination,
+            int dayCount,
+            string budgetContext,
+            string seasonalContext,
+            string preferencesContext) =>
+            $@"Create a detailed {dayCount}-day travel itinerary for {destination} based on specific user preferences. Format the response as a JSON object with the following structure:
+
+{{
+  ""AnonymousDayList"": [
+        {{
+      ""DayDescription"": ""Detailed description of the day's activities and flow"",
+      ""AccomodationPlaceName"": ""Specific hotel or accommodation name"",
+      ""BreakfastPlaceName"": ""Specific restaurant or cafe name"",
+      ""LunchPlaceName"": ""Specific restaurant name"",
+      ""DinnerPlaceName"": ""Specific restaurant name"",
+      ""FirstPlaceName"": ""First attraction or activity venue name"",
+      ""SecondPlaceName"": ""Second attraction or activity venue name"",
+      ""ThirdPlaceName"": ""Third attraction or activity venue name"",
+      ""AfterDinnerPlaceName"": ""Evening venue or activity location name"",
+      ""ApproxPrice"": ""Estimated total cost for the day in USD""
+        }}
+    ]
+}}
+
+{preferencesContext}
+
+### Budget Context:
+{budgetContext}
+
+### Season:
+{seasonalContext}
+
+### CRITICAL RULES:
+1. NEVER use NULL, null, N/A, or placeholder values
+2. Every field MUST contain a real, existing venue name in {destination}
+3. AccomodationPlaceName MUST be the same for all days - do not change hotels during the trip. But do not suggest same place in same route except its accomodation.
+4. STRICTLY follow dietary restrictions when selecting restaurants
+5. Ensure accommodation matches user's top preferences
+6. Activities should align with personality preferences
+7. All venues must be searchable on Google Maps
+8. Never repeat restaurants in the itinerary
+9. Balance between different areas of {destination}
+10. Mix popular spots with hidden gems
+11. Consider weather and seasonal factors
+12. Four Seasons Hotel Istanbul At Sultanahmet IS FORBIDDEN DONT SUGGEST!
+
+### VENUE SELECTION GUIDELINES:
+1. Hotels: Use Accomodation preferences above.
+2. Restaurants: Use Food preferences above.
+3. Attractions: Balance iconic landmarks with local favorites use user personalizations above
+4. Entertainment: Combine famous venues with unique local experiences use user personalizations above
+
+### STRICTLY PROHIBITED:
+1. Generic terms like ""Local market"", ""Street bazaar"", ""City center""
+2. Descriptive locations like ""Old town square"", ""Shopping district"", ""Beach area""
+3. Unnamed venues like ""Traditional restaurant"", ""Tourist spot"", ""Local cafe""
+
+### REQUIRED VENUE TYPES:
+1. Popular tourist attractions (e.g., ""Eiffel Tower"", ""Colosseum"", ""Taj Mahal"")
+2. Well-known restaurants with actual names (e.g., ""Le Jules Verne"", ""Gordon Ramsay's Restaurant"")
+3. Famous landmarks and museums (e.g., ""Louvre Museum"", ""British Museum"")
+4. Established entertainment venues (e.g., ""Royal Albert Hall"", ""Sydney Opera House"")
+
+### ADDITIONAL REQUIREMENTS:
+1. Treat the last day like any other day - do not suggest airport or transport venues
+2. Every venue must be searchable on Google Maps and have reviews/ratings
+3. Focus on established venues that are popular with visitors
+4. If unsure about a venue name, choose a more famous alternative
+5. For price estimation, consider:
+   - Hotel room cost per night
+   - Average meal costs at each restaurant based on their price level
+   - Entrance fees or tickets for attractions
+   - Additional costs like drinks, snacks, or entertainment
+   - Transportation between venues (approximate taxi/uber costs)";
+
+
+        public static string CustomRoute(
+            string destination,
+            int dayCount,
+            PRICE_LEVEL? priceLevel,
+            DateOnly? startDate,
+            string budgetContext,
+            string seasonalContext,
+            IReadOnlyList<string> accommodation,
+            IReadOnlyList<string> food,
+            IReadOnlyList<string> personal)
+        {
+            var days = string.Join(",\n", Enumerable.Range(0, dayCount)
+                .Select(dayIndex => CustomRouteDay(dayIndex, startDate, accommodation, food, personal)));
+
+            return $@"I want you to create a custom travel route for {dayCount} day in {destination}.This route will be in English and every place in this route must be unique and different from others. Your budget is {priceLevel} and your budget context is : {budgetContext}.Also I want you to consider the season and season is {seasonalContext}. Every component in these route must be a real place in {destination} and cant be null , NULL or N/A.Remember this is a touristic route so think like a tourist.And please dont recommend airport for the last day. here is the json format
+
+{{
+  ""AnonymousDayList"": [
+{days}
+    ]
+}}
+
+";
+        }
+
+        private static string CustomRouteDay(int dayIndex, DateOnly? startDate, IReadOnlyList<string> accommodation, IReadOnlyList<string> food, IReadOnlyList<string> personal)
+        {
+            var when = dayIndex switch
+            {
+                0 => $"{startDate}",
+                1 => $"next day of {startDate}",
+                _ => $"{dayIndex} days later of {startDate}"
+            };
+
+            var hotelRule = dayIndex == 0
+                ? "(only hotel name and star e.g X hotel - 5 star)"
+                : "(only hotel name and star e.g X hotel - 5 star)(must be same for all route days)";
+
+            return $@"        {{
+      ""DayDescription"": ""Detailed description of the day's activities and flow"",
+      ""AccomodationPlaceName"": ""{accommodation[0]} Hotel name.{hotelRule}"",
+      ""BreakfastPlaceName"": ""{food[dayIndex * 4]} Specific restaurant or cafe name, be aware dont recommend the same place again"",
+      ""LunchPlaceName"": ""{food[dayIndex * 4 + 1]} Specific restaurant or cafe name, be aware dont recommend the same place again"",
+      ""DinnerPlaceName"": ""{food[dayIndex * 4 + 2]} Specific restaurant or cafe name, be aware dont recommend the same place again"",
+      ""FirstPlaceName"": ""{personal[dayIndex * 3]} First attraction or activity venue name, be aware dont recommend the same place again"",
+      ""SecondPlaceName"": ""{personal[dayIndex * 3 + 1]} First attraction or activity venue name, be aware dont recommend the same place again"",
+      ""ThirdPlaceName"": ""{personal[dayIndex * 3 + 2]} First attraction or activity venue name, be aware dont recommend the same place again"",
+      ""AfterDinnerPlaceName"": ""{food[dayIndex * 4 + 3]} Evening venue or activity location name,, be aware dont recommend the same place again"",
+      ""ApproxPrice"": ""Estimated total cost for the day in USD"",
+      ""WeatherForMorning"" : {{
+        ""Degree"" : ""int celcius degree for {when} morning"",
+        ""Description"" : ""string short 5-6 words weather description"",
+        ""Warning"" : ""string short 5-6 words weather warning e.g Don't forget your umbrella!"",
+        ""Date"" : ""DateOnly date""
+}},
+        ""WeatherForNoon"" : {{
+        ""Degree"" : ""int celcius degree for {when} noon"",
+        ""Description"" : ""string short 5-6 words weather description"",
+        ""Warning"" : ""string short 5-6 words weather warning e.g Don't forget your umbrella!"",
+        ""Date"" : ""DateOnly date""
+}},
+        ""WeatherForNight"" : {{
+        ""Degree"" : ""int celcius degree for {when} night"",
+        ""Description"" : ""string short 5-6 words weather description"",
+        ""Warning"" : ""string short 5-6 words weather warning e.g Don't forget your umbrella!"",
+        ""Date"" : ""DateOnly date""
+}}
+}}";
+        }
+
+    }
+}

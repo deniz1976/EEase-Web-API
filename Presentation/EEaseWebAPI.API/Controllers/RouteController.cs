@@ -1,26 +1,26 @@
-using EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogin;
 using EEaseWebAPI.API.Constants;
-using Microsoft.AspNetCore.RateLimiting;
+using EEaseWebAPI.Application.DTOs.Route.CreateCustomRoute;
+using EEaseWebAPI.Application.DTOs.Route.DislikePlaceOrRestaurantDTO;
+using EEaseWebAPI.Application.DTOs.Route.LikePlaceOrRestaurantDTO;
+using EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute;
+using EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogin;
+using EEaseWebAPI.Application.Features.Commands.Route.DeleteAllRoutes;
+using EEaseWebAPI.Application.Features.Commands.Route.DeleteRoute;
+using EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant;
 using EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto;
+using EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant;
 using EEaseWebAPI.Application.Features.Commands.Route.LikeRoute;
+using EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus;
+using EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus;
 using EEaseWebAPI.Application.Features.Queries.Route.GetAllRoutes;
 using EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes;
+using EEaseWebAPI.Application.Features.Queries.Route.GetRouteById;
+using EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using EEaseWebAPI.Application.Features.Commands.Route.DeleteRoute;
-using EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute;
-using EEaseWebAPI.Application.DTOs.Route.CreateCustomRoute;
-using EEaseWebAPI.Application.Features.Queries.Route.GetRouteById;
-using EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus;
-using EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant;
-using EEaseWebAPI.Application.DTOs.Route.LikePlaceOrRestaurantDTO;
-using EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus;
-using EEaseWebAPI.Application.DTOs.Route.DislikePlaceOrRestaurantDTO;
-using EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant;
-using EEaseWebAPI.Application.Features.Commands.Route.DeleteAllRoutes;
-using EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EEaseWebAPI.API.Controllers
 {
@@ -30,7 +30,7 @@ namespace EEaseWebAPI.API.Controllers
     {
         private readonly IMediator _mediator;
 
-        public RouteController(IMediator mediator) 
+        public RouteController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -48,7 +48,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(GlobalError),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRouteComponentPhotoCommandResponse),StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRouteComponentPhoto(GetRouteComponentPhotoCommandRequest request) 
+        public async Task<IActionResult> GetRouteComponentPhoto(GetRouteComponentPhotoCommandRequest request)
         {
             GetRouteComponentPhotoCommandResponse response = await _mediator.Send(request);
             return Ok(response);
@@ -74,7 +74,7 @@ namespace EEaseWebAPI.API.Controllers
 
             GetAllRoutesQueryResponse response = await _mediator.Send(request);
             return Ok(response);
-            
+
         }
 
         [HttpGet("[Action]/{userId}")]
@@ -82,7 +82,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetRoutesByUserIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        public async Task<IActionResult> GetAllRoutes([FromRoute] string userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10) 
+        public async Task<IActionResult> GetAllRoutes([FromRoute] string userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             var requesterUsername = User.Identity?.Name;
             if (string.IsNullOrEmpty(requesterUsername))
@@ -105,7 +105,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetLikedRoutesQueryResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetLikedRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10) 
+        public async Task<IActionResult> GetLikedRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             var requesterUsername = User.Identity?.Name;
             if (string.IsNullOrEmpty(requesterUsername))
@@ -177,7 +177,7 @@ namespace EEaseWebAPI.API.Controllers
             if (string.IsNullOrEmpty(requesterUsername))
                 return Unauthorized();
 
-#pragma warning disable CS8601 
+#pragma warning disable CS8601
             CreateCustomRouteCommandRequest request = new CreateCustomRouteCommandRequest()
             {
                 usernames = createCustomRouteDTO.usernames,
@@ -187,7 +187,7 @@ namespace EEaseWebAPI.API.Controllers
                 EndDate = createCustomRouteDTO.EndDate,
                 destination = createCustomRouteDTO.destination
             };
-#pragma warning restore CS8601 
+#pragma warning restore CS8601
 
             var response = await _mediator.Send(request);
             return Ok(response);
@@ -308,7 +308,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(CheckRouteLikeStatusQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckRouteLikeStatus([FromRoute] Guid routeId)
         {
-            
+
                 var requesterUsername = User.Identity?.Name;
                 if (string.IsNullOrEmpty(requesterUsername))
                     return Unauthorized();
@@ -320,9 +320,9 @@ namespace EEaseWebAPI.API.Controllers
                 };
 
                 CheckRouteLikeStatusQueryResponse response = await _mediator.Send(request);
-  
+
                 return Ok(response);
-            
+
         }
 
         [HttpDelete("[Action]")]
@@ -330,7 +330,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteAllRoutesCommandResponse), StatusCodes.Status200OK)]
 
-        public async Task<IActionResult> DeleteAllRoutes() 
+        public async Task<IActionResult> DeleteAllRoutes()
         {
             var requesterUsername = User.Identity?.Name;
             if (string.IsNullOrEmpty(requesterUsername))

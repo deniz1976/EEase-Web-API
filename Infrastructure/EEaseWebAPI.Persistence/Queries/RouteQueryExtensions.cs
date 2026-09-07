@@ -67,5 +67,13 @@ namespace EEaseWebAPI.Persistence.Queries
                 .Include(route => route.TravelDays!).ThenInclude(day => day.PlaceAfterDinner!.Photos)
                 .Include(route => route.TravelDays!).ThenInclude(day => day.PlaceAfterDinner!.Weather);
         }
+
+        public static IQueryable<StandardRoute> IncludeRoutePreferences(this IQueryable<StandardRoute> query)
+        {
+            return query
+                .Include(route => route.UserAccommodationPreferences)
+                .Include(route => route.UserFoodPreferences)
+                .Include(route => route.UserPersonalization);
+        }
     }
 }

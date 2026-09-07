@@ -12,4 +12,4 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
         public string? username { get; set; }
         public string? targetUsername { get; set; }
     }
-} 
+}
