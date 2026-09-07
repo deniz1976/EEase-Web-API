@@ -9,9 +9,12 @@ friends, and share their routes with those friends.
 
 - **Authentication:** JWT-based sign-up, sign-in, refresh tokens, email confirmation and password reset
 - **Route generation:** day plans via Gemini, place details via Google Places
-- **Personalisation:** accommodation, food and sightseeing preferences learned from liked places
+- **Personalisation:** accommodation, food and sightseeing preferences learned from liked
+  and disliked places, with dietary restrictions treated as hard constraints
+- **Group routes:** a route can be planned for a user and their friends, merging everyone's preferences
+- **Place replacement:** a disliked place is swapped for a fresh one and never suggested to that user again
 - **Social:** friend requests, blocking, route visibility (private / friends / public)
-- **Resilience:** per-client rate limiting, a Gemini key pool and retries
+- **Resilience:** per-client rate limiting, a Gemini key pool (shared through Redis when configured) and retries
 - **Operations:** a `/health` endpoint, configurable migrations, one-command start-up with Docker Compose
 
 ## Architecture
@@ -25,6 +28,12 @@ Infrastructure/
   EEaseWebAPI.Infrastructure  JWT issuing, mail delivery, HTTP helpers
   EEaseWebAPI.Persistence     EF Core DbContext and mappings, repositories,
                               domain services, Gemini and Google Places clients
+    Services/Authentication   Sign-in, password reset, account deletion policy
+    Services/User             Registration, profile, account lifecycle, preferences
+    Services/Social           Friendships and blocks
+    Services/Route            Place search/selection, preference scoring,
+                              query building, place replacement, route enrichment
+    Services/Gemini           Gemini client, prompts, API key pool
 Presentation/
   EEaseWebAPI.API             Controllers, pipeline setup, Swagger
 tests/
@@ -38,8 +47,32 @@ settings live in `Directory.Build.props`.
 
 ## Technology
 
-.NET 8 · ASP.NET Core · EF Core 8 + Npgsql · PostgreSQL · ASP.NET Core Identity ·
-MediatR · FluentValidation · AutoMapper · Swashbuckle · MailKit · xunit
+.NET 8 · ASP.NET Core · EF Core 8 + Npgsql · PostgreSQL · Redis (optional) ·
+ASP.NET Core Identity · MediatR · FluentValidation · AutoMapper · Swashbuckle ·
+MailKit · xunit · FluentAssertions · NSubstitute
+
+## Personalisation
+
+Every preference is a score between 0 and 100. Liking or disliking a place moves the
+scores of the preferences that place matches:
+
+```
+new = current + 0.25 * (target - current)      target: 100 on a like, 0 on a dislike
+```
+
+The step shrinks as a score approaches either end, so repeated feedback converges
+instead of saturating, and a dislike genuinely pulls a score back down.
+
+When a route is planned for several travellers the scores are merged per preference:
+
+```
+group = 0.6 * mean(all travellers, absent = 0) + 0.4 * max
+```
+
+so a preference one person feels strongly about survives the group, without letting a
+single voice outvote everyone. Dietary restrictions (vegan, halal, kosher, gluten free,
+allergies, ...) are not weighted at all — one traveller declaring one applies it to the
+whole group, and it wins every selection.
 
 ---
 
@@ -124,6 +157,7 @@ variables (use the `__` separator for nested keys, e.g. `Token__SecurityKey`).
 | `Token` | JWT issuer, audience and signing key. **Required**; the key must be at least 32 characters. |
 | `Database` | Command timeout, retries, sensitive data logging, migrate on startup |
 | `Cors:AllowedOrigins` | Allowed origins. When empty, every origin is allowed in the Development environment only. |
+| `Redis` | Connection string, key prefix and connect timeout. When empty, the Gemini key pool is limited per process instead of being shared. |
 | `RateLimiting` | The per-client global limit and a separate limit for expensive endpoints |
 | `GeminiAI` | Key pool, model id, timeout, retry count |
 | `GooglePlaces:ApiKey` | Places API key |
@@ -140,9 +174,17 @@ model, API version and base address all come from configuration — no code chan
 
 ## Database schema
 
-The schema lives in a single `InitialSchema` migration.
+Migrations, in order:
 
-**If you have an existing database** created before this rework, run the idempotent
+| Migration | Change |
+|---|---|
+| `InitialSchema` | The whole baseline schema |
+| `FriendshipPairUniquenessAndUserBlocks` | Normalised friendship pairs, block table |
+| `AddResetPasswordCodeExpiry` | Expiry and attempt counter for password reset codes |
+| `AddDeleteCodeExpiry` | Expiry for account deletion codes |
+| `AddUserDislikedPlaces` | Per-user list of places never to suggest again |
+
+**If you have a database** created before the `InitialSchema` rework, run the idempotent
 script prepared to bring the schema onto the new layout:
 
 ```sh
@@ -158,6 +200,11 @@ The Swagger UI is served at the root path: `http://localhost:8080/`
 
 Protected endpoints expect an `Authorization: Bearer <token>` header. Obtain a token
 from `POST /api/Auth/Login`.
+
+Password reset is a three-step flow, and every step is scoped to one account:
+`ResetPassword` (mails a code), `ResetPasswordCodeCheck` (validates it) and
+`ResetPasswordWithCode`, which takes `usernameOrEmail`, `code` and `newPassword`. Codes
+expire after 15 minutes and are discarded after five wrong attempts.
 
 | Controller | Scope |
 |---|---|
