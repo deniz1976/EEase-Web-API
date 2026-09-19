@@ -31,7 +31,9 @@ Infrastructure/
     Services/Authentication   Sign-in, password reset, account deletion policy
     Services/User             Registration, profile, account lifecycle, preferences
     Services/Social           Friendships and blocks
-    Services/Route            Place search/selection, preference scoring,
+    Services/Route            Route reading, likes/visibility, dislike handling,
+                              random and preference-based route building,
+                              place search/selection, preference scoring,
                               query building, place replacement, route enrichment
     Services/Gemini           Gemini client, prompts, API key pool
 Presentation/
