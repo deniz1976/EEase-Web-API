@@ -10,7 +10,7 @@ namespace EEaseWebAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CityController : ControllerBase
+    public class CityController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -49,7 +49,7 @@ namespace EEaseWebAPI.API.Controllers
                 SearchTerm = searchTerm,
                 PageSize = pageSize,
                 PageNumber = pageNumber,
-                Username = User.Identity?.Name
+                Username = CurrentUsername
             });
 
             return Ok(response);

@@ -27,12 +27,11 @@ using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 namespace EEaseWebAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -75,7 +74,7 @@ namespace EEaseWebAPI.API.Controllers
                 BornDate = updateUserDTO.BornDate,
                 Gender = updateUserDTO.Gender,
                 bio = updateUserDTO.Bio,
-                user = User.FindFirst(ClaimTypes.Name)?.Value
+                user = CurrentUsername
             };
 
             UpdateUserCommandResponse updateUserCommandResponse = await _mediator.Send(updateUserCommandRequest);
@@ -89,7 +88,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpGet("[Action]")]
         public async Task<IActionResult> GetUserInfo()
         {
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userName = CurrentUsername;
             GetUserInfoQueryRequest request = new() { username = userName };
             GetUserInfoQueryResponse response = await _mediator.Send(request);
             return Ok(response);
@@ -123,7 +122,7 @@ namespace EEaseWebAPI.API.Controllers
         {
 
             DeleteUserCommandRequest deleteUserCommandRequest = new DeleteUserCommandRequest()
-            { username=  User.FindFirst(ClaimTypes.Name)?.Value };
+            { username=  CurrentUsername };
             DeleteUserCommandResponse response = await _mediator.Send(deleteUserCommandRequest);
             return Ok(response);
         }
@@ -136,7 +135,7 @@ namespace EEaseWebAPI.API.Controllers
 
         public async Task<IActionResult> DeleteAccountWithCode([FromBody] DeleteAccountWithCode code)
         {
-            DeleteUserWithCodeCommandRequest deleteUserWithCodeCommandRequest = new DeleteUserWithCodeCommandRequest() {username = User.FindFirst(ClaimTypes.Name)?.Value,code = code.Code };
+            DeleteUserWithCodeCommandRequest deleteUserWithCodeCommandRequest = new DeleteUserWithCodeCommandRequest() {username = CurrentUsername,code = code.Code };
             DeleteUserWithCodeCommandResponse deleteUserWithCodeCommandResponse = await _mediator.Send(deleteUserWithCodeCommandRequest);
             return Ok(deleteUserWithCodeCommandResponse);
 
@@ -149,7 +148,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> StatusCheck()
         {
-            StatusCheckQueryRequest statusCheckQueryRequest = new StatusCheckQueryRequest() { username = User.FindFirst(ClaimTypes.Name)?.Value};
+            StatusCheckQueryRequest statusCheckQueryRequest = new StatusCheckQueryRequest() { username = CurrentUsername};
             StatusCheckQueryResponse statusCheckQueryResponse = await _mediator.Send(statusCheckQueryRequest);
 
             return Ok(statusCheckQueryResponse);
@@ -165,7 +164,7 @@ namespace EEaseWebAPI.API.Controllers
             UpdateUserPreferencesCommandRequest request = new()
             {
                 Message = message,
-                Username = User.FindFirst(ClaimTypes.Name)?.Value
+                Username = CurrentUsername
             };
 
             UpdateUserPreferencesCommandResponse response = await _mediator.Send(request);
@@ -181,7 +180,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new UpdateUserPreferencesWithTopicsCommandRequest
             {
-                Username = User.FindFirst(ClaimTypes.Name)?.Value,
+                Username = CurrentUsername,
                 Topics = topics
             };
             var result = await _mediator.Send(request);
@@ -197,7 +196,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             ResetUserPreferencesCommandRequest request = new()
             {
-                Username = User.FindFirst(ClaimTypes.Name)?.Value
+                Username = CurrentUsername
             };
 
             ResetUserPreferencesCommandResponse response = await _mediator.Send(request);
@@ -214,7 +213,7 @@ namespace EEaseWebAPI.API.Controllers
             var request = new UpdateUserCountryCommandRequest
             {
                 Country = country,
-                Username = User.FindFirst(ClaimTypes.Name)?.Value
+                Username = CurrentUsername
             };
 
             var response = await _mediator.Send(request);
@@ -230,7 +229,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserPreferenceDescriptionsQueryRequest
             {
-                Username = User.FindFirst(ClaimTypes.Name)?.Value
+                Username = CurrentUsername
             };
 
             var response = await _mediator.Send(request);
@@ -257,7 +256,7 @@ namespace EEaseWebAPI.API.Controllers
 
             var request = new UpdateUserCurrencyCommandRequest
             {
-                Username = User.FindFirst(ClaimTypes.Name)?.Value,
+                Username = CurrentUsername,
                 CurrencyCode = currencyCode
             };
 
@@ -274,7 +273,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserCurrencyQueryRequest
             {
-                Username = User.FindFirst(ClaimTypes.Name)?.Value
+                Username = CurrentUsername
             };
 
             var response = await _mediator.Send(request);
@@ -290,7 +289,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserInfoByNameQueryRequest()
             {
-                username = User.FindFirst(ClaimTypes.Name)?.Value,
+                username = CurrentUsername,
                 targetUsername = TargetUsername
             };
 
@@ -307,7 +306,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserInfoByIdQueryRequest()
             {
-                username = User.FindFirst(ClaimTypes.Name)?.Value,
+                username = CurrentUsername,
                 userId = UserId
             };
 
@@ -324,7 +323,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserPhotoQueryRequest
             {
-                username = User.FindFirst(ClaimTypes.Name)?.Value
+                username = CurrentUsername
             };
 
             var response = await _mediator.Send(request);
@@ -340,7 +339,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserPhotoByNameQueryRequest()
             {
-                username = User.FindFirst(ClaimTypes.Name)?.Value,
+                username = CurrentUsername,
                 targetUsername = TargetUsername
             };
 
@@ -357,7 +356,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new SetUserPhotoCommandRequest
             {
-                Username = User.FindFirst(ClaimTypes.Name)?.Value,
+                Username = CurrentUsername,
                 PhotoUrl = photoPath
             };
 

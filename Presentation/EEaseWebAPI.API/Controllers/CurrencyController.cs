@@ -5,14 +5,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Security.Claims;
 
 namespace EEaseWebAPI.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     [EnableRateLimiting("global_key")]
-    public class CurrencyController : ControllerBase
+    [ApiController]
+    public class CurrencyController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -29,7 +28,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> GetCurrencies([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userName = CurrentUsername;
             GetCurrenciesQueryRequest request = new()
             {
                 username = userName,

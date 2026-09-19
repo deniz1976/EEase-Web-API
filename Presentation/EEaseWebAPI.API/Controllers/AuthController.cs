@@ -13,13 +13,12 @@ using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace EEaseWebAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -81,7 +80,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
         {
-            ChangePasswordCommandRequest request = new ChangePasswordCommandRequest() { username = User.FindFirst(ClaimTypes.Name)?.Value,oldPassword = changePasswordDTO.oldpassword, newPassword = changePasswordDTO.newpassword};
+            ChangePasswordCommandRequest request = new ChangePasswordCommandRequest() { username = CurrentUsername,oldPassword = changePasswordDTO.oldpassword, newPassword = changePasswordDTO.newpassword};
             ChangePasswordCommandResponse response = await _mediator.Send(request);
             return Ok(response);
         }
