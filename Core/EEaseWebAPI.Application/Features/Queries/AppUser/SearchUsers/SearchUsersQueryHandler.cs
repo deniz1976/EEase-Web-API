@@ -19,40 +19,21 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
 
         public async Task<SearchUsersQueryResponse> Handle(SearchUsersQueryRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var users = _userCacheService.SearchUsers(request.Body.SearchTerm);
+            var users = _userCacheService.SearchUsers(request.Body.SearchTerm);
 
-                return new SearchUsersQueryResponse
-                {
-                    Header = new Header
-                    {
-                        Success = true,
-                        ResponseDate = DateTime.UtcNow,
-                        EnumStatusCode = (int)StatusEnum.SearchUsersSuccessfully
-                    },
-                    Body = new SearchUsersQueryResponseBody
-                    {
-                        Users = users
-                    }
-                };
-            }
-            catch (Exception ex)
+            return new SearchUsersQueryResponse
             {
-                return new SearchUsersQueryResponse
+                Header = new Header
                 {
-                    Header = new Header
-                    {
-                        Success = false,
-                        ResponseDate = DateTime.UtcNow,
-                        EnumStatusCode = (int)StatusEnum.SearchUsersFailed
-                    },
-                    Body = new SearchUsersQueryResponseBody
-                    {
-                        Users = null
-                    }
-                };
-            }
+                    Success = true,
+                    ResponseDate = DateTime.UtcNow,
+                    EnumStatusCode = (int)StatusEnum.SearchUsersSuccessfully
+                },
+                Body = new SearchUsersQueryResponseBody
+                {
+                    Users = users
+                }
+            };
         }
     }
 }

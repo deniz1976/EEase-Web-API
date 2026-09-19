@@ -21,24 +21,13 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
 
         public async Task<UpdateUserCountryCommandResponse> Handle(UpdateUserCountryCommandRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                bool result = await _profileService.UpdateUserCountry(request.Username, request.Country);
+            bool result = await _profileService.UpdateUserCountry(request.Username, request.Country);
 
-                return new UpdateUserCountryCommandResponse
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.UpdateUserCountrySuccess),
-                    Body = new UpdateUserCountryCommandResponseBody()
-                };
-            }
-            catch (InvalidCountryException ex)
+            return new UpdateUserCountryCommandResponse
             {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to update user country: {ex.Message}", ex);
-            }
+                Header = _headerService.HeaderCreate((int)StatusEnum.UpdateUserCountrySuccess),
+                Body = new UpdateUserCountryCommandResponseBody()
+            };
         }
     }
 }

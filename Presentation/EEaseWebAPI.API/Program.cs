@@ -14,6 +14,8 @@ builder.Services.AddApiServices(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
+app.UseMiddleware<RequestLogScopeMiddleware>();
+
 app.UseExceptionHandler();
 
 app.UseSwaggerDocumentation();

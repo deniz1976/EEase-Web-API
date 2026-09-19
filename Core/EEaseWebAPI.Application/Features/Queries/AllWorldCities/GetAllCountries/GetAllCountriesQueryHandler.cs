@@ -22,20 +22,13 @@ namespace EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountrie
 
         public async Task<GetAllCountriesQueryResponse> Handle(GetAllCountriesQueryRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var countries = await _cityService.GetAllCountries();
+            var countries = await _cityService.GetAllCountries();
 
-                return new GetAllCountriesQueryResponse
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.GetAllCountriesSuccess),
-                    Body = new GetAllCountriesQueryResponseBody { Countries = countries }
-                };
-            }
-            catch (Exception ex)
+            return new GetAllCountriesQueryResponse
             {
-                throw new GetAllCountriesFailedException($"Failed to get all countries: {ex.Message}", ex);
-            }
+                Header = _headerService.HeaderCreate((int)StatusEnum.GetAllCountriesSuccess),
+                Body = new GetAllCountriesQueryResponseBody { Countries = countries }
+            };
         }
     }
 }

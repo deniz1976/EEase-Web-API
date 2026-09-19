@@ -18,35 +18,24 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers
 
         public async Task<GetBlockedUsersQueryResponse> Handle(GetBlockedUsersQuery request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var blockedUsers = await _friendshipService.GetBlockedUsersAsync(request.Username);
+            var blockedUsers = await _friendshipService.GetBlockedUsersAsync(request.Username);
 
-                var blockedUserDtos = blockedUsers.Select(block => new BlockedUserDto
-                {
-                    Username = block.Blocked.UserName,
-                    Name = block.Blocked.Name,
-                    Surname = block.Blocked.Surname,
-                    BlockedDate = block.BlockedDate
-                }).ToList();
+            var blockedUserDtos = blockedUsers.Select(block => new BlockedUserDto
+            {
+                Username = block.Blocked.UserName,
+                Name = block.Blocked.Name,
+                Surname = block.Blocked.Surname,
+                BlockedDate = block.BlockedDate
+            }).ToList();
 
-                return new GetBlockedUsersQueryResponse
+            return new GetBlockedUsersQueryResponse
+            {
+                Header = _headerService.HeaderCreate((int)StatusEnum.GetBlockedUsersSuccessfully),
+                Body = new GetBlockedUsersQueryResponseBody
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.GetBlockedUsersSuccessfully),
-                    Body = new GetBlockedUsersQueryResponseBody
-                    {
-                        BlockedUsers = blockedUserDtos
-                    }
-                };
-            }
-            catch (UserNotFoundException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to get blocked users: {ex.Message}", ex);
-            }
+                    BlockedUsers = blockedUserDtos
+                }
+            };
         }
     }
 }

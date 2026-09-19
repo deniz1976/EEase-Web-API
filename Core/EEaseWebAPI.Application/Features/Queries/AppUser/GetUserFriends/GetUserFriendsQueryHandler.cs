@@ -25,39 +25,28 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
                 throw new UserNotFoundException();
-            try
+            var friends = await _friendshipService.GetFriendsAsync(request.Username);
+            var friendDtos = friends.Select(f =>
             {
-                var friends = await _friendshipService.GetFriendsAsync(request.Username);
-                var friendDtos = friends.Select(f =>
+                var friend = f.RequesterId == user.Id ? f.Addressee : f.Requester;
+                return new UserFriendDto
                 {
-                    var friend = f.RequesterId == user.Id ? f.Addressee : f.Requester;
-                    return new UserFriendDto
-                    {
-                        Username = friend.UserName,
-                        Name = friend.Name,
-                        Surname = friend.Surname,
-                        PhotoPath = friend.PhotoPath,
-                        FriendshipDate = f.ResponseDate ?? f.RequestDate
-                    };
-                }).ToList();
-
-                return new GetUserFriendsQueryResponse
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.GetUserFriendsSuccessfully),
-                    Body = new GetUserFriendsQueryResponseBody
-                    {
-                        Friends = friendDtos
-                    }
+                    Username = friend.UserName,
+                    Name = friend.Name,
+                    Surname = friend.Surname,
+                    PhotoPath = friend.PhotoPath,
+                    FriendshipDate = f.ResponseDate ?? f.RequestDate
                 };
-            }
-            catch (UserNotFoundException ex)
+            }).ToList();
+
+            return new GetUserFriendsQueryResponse
             {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to get user friends: {ex.Message}", ex);
-            }
+                Header = _headerService.HeaderCreate((int)StatusEnum.GetUserFriendsSuccessfully),
+                Body = new GetUserFriendsQueryResponseBody
+                {
+                    Friends = friendDtos
+                }
+            };
         }
     }
 }

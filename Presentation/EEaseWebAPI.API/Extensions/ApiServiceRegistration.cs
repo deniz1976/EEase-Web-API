@@ -30,6 +30,7 @@ namespace EEaseWebAPI.API.Extensions
             services.AddSwaggerDocumentation();
 
             services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.AddScoped<RequestLogScopeMiddleware>();
             services.AddProblemDetails();
 
             services.AddHealthChecks()

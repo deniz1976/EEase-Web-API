@@ -18,23 +18,16 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
 
         public async Task<GetRouteByIdQueryResponse> Handle(GetRouteByIdQueryRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var route = await _routeService.GetRouteById(request.Username, request.RouteId);
+            var route = await _routeService.GetRouteById(request.Username, request.RouteId);
 
-                return new GetRouteByIdQueryResponse
-                {
-                    Body = new GetRouteByIdQueryResponseBody
-                    {
-                        Route = route
-                    },
-                    Header = _headerService.HeaderCreate((int)StatusEnum.RouteRetrievedSuccessfully)
-                };
-            }
-            catch (UnauthorizedAccessException)
+            return new GetRouteByIdQueryResponse
             {
-                throw new GetRouteException();
-            }
+                Body = new GetRouteByIdQueryResponseBody
+                {
+                    Route = route
+                },
+                Header = _headerService.HeaderCreate((int)StatusEnum.RouteRetrievedSuccessfully)
+            };
         }
     }
 }

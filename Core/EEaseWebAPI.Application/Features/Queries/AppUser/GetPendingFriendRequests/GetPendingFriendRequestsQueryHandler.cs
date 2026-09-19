@@ -18,34 +18,23 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
 
         public async Task<GetPendingFriendRequestsQueryResponse> Handle(GetPendingFriendRequestsQuery request, CancellationToken cancellationToken)
         {
-            try
+            var pendingRequests = await _friendshipService.GetPendingRequestsAsync(request.Username);
+            var pendingRequestDtos = pendingRequests.Select(fr => new PendingFriendRequestDto
             {
-                var pendingRequests = await _friendshipService.GetPendingRequestsAsync(request.Username);
-                var pendingRequestDtos = pendingRequests.Select(fr => new PendingFriendRequestDto
-                {
-                    RequesterUsername = fr.Requester.UserName,
-                    RequesterName = fr.Requester.Name,
-                    RequesterSurname = fr.Requester.Surname,
-                    RequestDate = fr.RequestDate
-                }).ToList();
+                RequesterUsername = fr.Requester.UserName,
+                RequesterName = fr.Requester.Name,
+                RequesterSurname = fr.Requester.Surname,
+                RequestDate = fr.RequestDate
+            }).ToList();
 
-                return new GetPendingFriendRequestsQueryResponse
+            return new GetPendingFriendRequestsQueryResponse
+            {
+                Header = _headerService.HeaderCreate((int)StatusEnum.GetPendingRequestSuccessfully),
+                Body = new GetPendingFriendRequestsQueryResponseBody
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.GetPendingRequestSuccessfully),
-                    Body = new GetPendingFriendRequestsQueryResponseBody
-                    {
-                        PendingRequests = pendingRequestDtos
-                    }
-                };
-            }
-            catch (UserNotFoundException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to get pending friend requests: {ex.Message}", ex);
-            }
+                    PendingRequests = pendingRequestDtos
+                }
+            };
         }
     }
 }

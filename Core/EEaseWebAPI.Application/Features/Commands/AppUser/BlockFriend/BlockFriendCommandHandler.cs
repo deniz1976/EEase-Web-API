@@ -20,36 +20,13 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
 
         public async Task<BlockFriendCommandResponse> Handle(BlockFriendCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _friendshipService.BlockAsync(request.Username, request.TargetUsername);
+            await _friendshipService.BlockAsync(request.Username, request.TargetUsername);
 
-                return new BlockFriendCommandResponse
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedSuccessfully),
-                    Body = new BlockFriendCommandResponseBody()
-                };
-            }
-            catch (UserNotFoundException)
+            return new BlockFriendCommandResponse
             {
-                throw;
-            }
-            catch (CannotPerformActionOnSelfException)
-            {
-                throw;
-            }
-            catch (UserAlreadyBlockedException)
-            {
-                throw;
-            }
-            catch (FriendshipException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new FriendshipException("Failed to block user.", StatusEnum.UserBlockFailed, ex);
-            }
+                Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedSuccessfully),
+                Body = new BlockFriendCommandResponseBody()
+            };
         }
     }
 }

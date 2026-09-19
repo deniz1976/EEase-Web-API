@@ -19,37 +19,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendReque
 
         public async Task<RespondToFriendRequestCommandResponse> Handle(RespondToFriendRequestCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _friendshipService.RespondToRequestAsync(
-                    request.RequesterUsername, request.AddresseeUsername, request.Response);
+            await _friendshipService.RespondToRequestAsync(
+                request.RequesterUsername, request.AddresseeUsername, request.Response);
 
-                var statusCode = request.Response == Domain.Enums.FriendshipStatus.Accepted
-                    ? StatusEnum.FriendRequestAcceptedSuccessfully
-                    : StatusEnum.FriendRequestRejectedSuccessfully;
+            var statusCode = request.Response == Domain.Enums.FriendshipStatus.Accepted
+                ? StatusEnum.FriendRequestAcceptedSuccessfully
+                : StatusEnum.FriendRequestRejectedSuccessfully;
 
-                return new RespondToFriendRequestCommandResponse
-                {
-                    Header = _headerService.HeaderCreate((int)statusCode),
-                    Body = new RespondToFriendRequestCommandResponseBody()
-                };
-            }
-            catch (UserNotFoundException ex)
+            return new RespondToFriendRequestCommandResponse
             {
-                throw;
-            }
-            catch (FriendshipNotFoundException ex)
-            {
-                throw;
-            }
-            catch (FriendshipException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new FriendshipException("Failed to process friend request response.", StatusEnum.FriendRequestResponseFailed, ex);
-            }
+                Header = _headerService.HeaderCreate((int)statusCode),
+                Body = new RespondToFriendRequestCommandResponseBody()
+            };
         }
     }
 }

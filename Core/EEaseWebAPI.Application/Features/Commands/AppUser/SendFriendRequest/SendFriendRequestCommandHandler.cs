@@ -20,36 +20,13 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendFriendRequest
 
         public async Task<SendFriendRequestCommandResponse> Handle(SendFriendRequestCommandRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _friendshipService.SendRequestAsync(request.RequesterUsername, request.AddresseeUsername);
+            await _friendshipService.SendRequestAsync(request.RequesterUsername, request.AddresseeUsername);
 
-                return new SendFriendRequestCommandResponse
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.FriendRequestSentSuccessfully),
-                    Body = new SendFriendRequestCommandResponseBody()
-                };
-            }
-            catch (CannotPerformActionOnSelfException ex)
+            return new SendFriendRequestCommandResponse
             {
-                throw;
-            }
-            catch (FriendRequestAlreadyExistsException ex)
-            {
-                throw;
-            }
-            catch (UserBlockedException ex)
-            {
-                throw;
-            }
-            catch (FriendshipException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new FriendshipException("Failed to send friend request.", StatusEnum.FriendRequestSendFailed, ex);
-            }
+                Header = _headerService.HeaderCreate((int)StatusEnum.FriendRequestSentSuccessfully),
+                Body = new SendFriendRequestCommandResponseBody()
+            };
         }
     }
 }

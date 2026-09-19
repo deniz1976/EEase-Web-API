@@ -19,36 +19,13 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
 
         public async Task<RemoveFriendCommandResponse> Handle(RemoveFriendCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _friendshipService.RemoveFriendAsync(request.Username, request.FriendUsername);
+            await _friendshipService.RemoveFriendAsync(request.Username, request.FriendUsername);
 
-                return new RemoveFriendCommandResponse
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.FriendRemovedSuccessfully),
-                    Body = new RemoveFriendCommandResponseBody()
-                };
-            }
-            catch (UserNotFoundException ex)
+            return new RemoveFriendCommandResponse
             {
-                throw;
-            }
-            catch (FriendshipNotFoundException ex)
-            {
-                throw;
-            }
-            catch (CannotPerformActionOnSelfException ex)
-            {
-                throw;
-            }
-            catch (FriendshipException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new FriendshipException("Failed to remove friend.", StatusEnum.FriendRemovalFailed, ex);
-            }
+                Header = _headerService.HeaderCreate((int)StatusEnum.FriendRemovedSuccessfully),
+                Body = new RemoveFriendCommandResponseBody()
+            };
         }
     }
 }

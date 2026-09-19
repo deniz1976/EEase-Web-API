@@ -18,23 +18,16 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDesc
 
         public async Task<GetUserPreferenceDescriptionsQueryResponse> Handle(GetUserPreferenceDescriptionsQueryRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var descriptions = await _preferenceService.GetDescriptionsAsync(request.Username);
+            var descriptions = await _preferenceService.GetDescriptionsAsync(request.Username);
 
-                return new GetUserPreferenceDescriptionsQueryResponse
-                {
-                    response = new GetUserPreferenceDescriptionsResponse
-                    {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.PreferenceDescriptionsRetrievedSuccessfully),
-                        Body = descriptions
-                    }
-                };
-            }
-            catch (Exception ex)
+            return new GetUserPreferenceDescriptionsQueryResponse
             {
-                throw new BaseException(ex.Message, (int)StatusEnum.PreferenceDescriptionsRetrievalFailed);
-            }
+                response = new GetUserPreferenceDescriptionsResponse
+                {
+                    Header = _headerService.HeaderCreate((int)StatusEnum.PreferenceDescriptionsRetrievedSuccessfully),
+                    Body = descriptions
+                }
+            };
         }
     }
 }

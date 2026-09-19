@@ -20,34 +20,19 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
 
         public async Task<ResetUserPreferencesCommandResponse> Handle(ResetUserPreferencesCommandRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _preferenceService.ResetAsync(request.Username);
+            await _preferenceService.ResetAsync(request.Username);
 
-                return new ResetUserPreferencesCommandResponse
+            return new ResetUserPreferencesCommandResponse
+            {
+                Response = new ResetUserPreferencesResponse
                 {
-                    Response = new ResetUserPreferencesResponse
+                    Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesResetSuccessfully),
+                    Body = new ResetUserPreferencesBody
                     {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesResetSuccessfully),
-                        Body = new ResetUserPreferencesBody
-                        {
-                            Message = "User preferences have been reset successfully"
-                        }
+                        Message = "User preferences have been reset successfully"
                     }
-                };
-            }
-            catch (UserPreferencesNotFoundException ex)
-            {
-                throw;
-            }
-            catch (ResetUserPreferencesFailedException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ResetUserPreferencesFailedException("An unexpected error occurred while resetting user preferences", ex);
-            }
+                }
+            };
         }
     }
 }
