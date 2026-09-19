@@ -174,6 +174,36 @@ development possible without any keys.
 The Gemini model is selected through `GeminiAI:Model` (default `gemini-3.8-flash`). The
 model, API version and base address all come from configuration — no code change needed.
 
+## Errors and logging
+
+Handlers and services throw; nothing catches to translate. A single
+`IExceptionHandler` turns an exception into the status code and the JSON body the
+client sees, so there is no `try`/`catch` scaffolding in the request path.
+
+Every error carries an `enumStatusCode` (see `StatusEnum`). That code is the stable
+contract; the `message` next to it is localised from it at the edge, honouring the
+`Accept-Language` header (`en` by default, `tr` supported, translations in
+`Presentation/EEaseWebAPI.API/Resources/ErrorMessages.*.resx`). A code with no
+translation keeps the message the exception was thrown with, which is usually a
+detail no resource file could hold ("No hotel could be found in Rome."). Field level
+validation messages come from FluentValidation and are not localised yet.
+
+`401` means no valid token was presented; `403` means the caller is signed in but the
+route is not theirs to see or change.
+
+Logging: a MediatR behaviour records every command and query with its duration and
+outcome, and a middleware scopes each request to the caller, so a handler's log, a
+warning from a service and the error the global handler writes can be read together:
+
+```
+info: LoginUserCommandRequest failed after 82 ms with UserNotFoundException.
+warn: ... RequestPath:/api/Auth/Login => UserName:anonymous
+      Request rejected (404). Path: /api/Auth/Login, Reason: User not found
+info: POST /api/Auth/Login responded 404 in 139 ms.
+```
+
+Requests themselves are never logged: they carry passwords and reset codes.
+
 ## Database schema
 
 Migrations, in order:

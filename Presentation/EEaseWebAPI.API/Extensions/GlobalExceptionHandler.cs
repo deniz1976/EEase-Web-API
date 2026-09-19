@@ -5,6 +5,7 @@ using EEaseWebAPI.Application.Exceptions.GetCitiesBySearch;
 using EEaseWebAPI.Application.Exceptions.Route;
 using EEaseWebAPI.Application.MapEntities;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Localization;
 using System.Net;
 using System.Net.Mime;
 
@@ -14,11 +15,16 @@ namespace EEaseWebAPI.API.Extensions
     {
         private readonly ILogger<GlobalExceptionHandler> _logger;
         private readonly IHostEnvironment _environment;
+        private readonly IStringLocalizer<ErrorMessages> _messages;
 
-        public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IHostEnvironment environment)
+        public GlobalExceptionHandler(
+            ILogger<GlobalExceptionHandler> logger,
+            IHostEnvironment environment,
+            IStringLocalizer<ErrorMessages> messages)
         {
             _logger = logger;
             _environment = environment;
+            _messages = messages;
         }
 
         public async ValueTask<bool> TryHandleAsync(
@@ -56,7 +62,7 @@ namespace EEaseWebAPI.API.Extensions
                 StatusCode = statusCode,
                 EnumStatusCode = enumStatusCode,
                 Title = ReasonPhrase(statusCode),
-                Message = ResolveMessage(exception, statusCode)
+                Message = ResolveMessage(exception, enumStatusCode, statusCode)
             };
 
             if (exception is RequestValidationException validationException)
@@ -84,6 +90,9 @@ namespace EEaseWebAPI.API.Extensions
             RequestValidationException => StatusCodes.Status400BadRequest,
 
             UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+
+            ForbiddenException
+                or DeleteRouteException => StatusCodes.Status403Forbidden,
 
             Application.Exceptions.UserNotFoundException
                 or Application.Exceptions.Login.UserNotFoundException
@@ -114,16 +123,34 @@ namespace EEaseWebAPI.API.Extensions
             _ => StatusCodes.Status500InternalServerError
         };
 
-        private string ResolveMessage(Exception exception, int statusCode)
+        /// <summary>
+        /// The message the caller reads. Exceptions carry a status code rather than a
+        /// sentence, so the code is looked up in the caller's language; an exception whose
+        /// code has no translation keeps the message it was thrown with, which is often a
+        /// detail no resource file could hold ("no hotel could be found in Rome").
+        /// </summary>
+        private string ResolveMessage(Exception exception, int enumStatusCode, int statusCode)
         {
-            if (statusCode < StatusCodes.Status500InternalServerError)
+            if (statusCode >= StatusCodes.Status500InternalServerError)
             {
-                return exception.Message;
+                return _environment.IsDevelopment()
+                    ? exception.ToString()
+                    : Translate(StatusEnum.UnknownError) ?? "An unexpected error occurred. Please try again later.";
             }
 
-            return _environment.IsDevelopment()
-                ? exception.ToString()
-                : "An unexpected error occurred. Please try again later.";
+            return Translate((StatusEnum)enumStatusCode) ?? exception.Message;
+        }
+
+        private string? Translate(StatusEnum statusEnum)
+        {
+            if (!Enum.IsDefined(statusEnum))
+            {
+                return null;
+            }
+
+            var translation = _messages[statusEnum.ToString()];
+
+            return translation.ResourceNotFound ? null : translation.Value;
         }
 
         private static string ReasonPhrase(int statusCode) =>

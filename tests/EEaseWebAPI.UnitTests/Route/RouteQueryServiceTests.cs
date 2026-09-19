@@ -173,7 +173,7 @@ namespace EEaseWebAPI.UnitTests.Route
                 .Returns(RouteAccessResult.Denied("private route"));
 
             var thrown = await _service.Invoking(service => service.CheckRouteLikeStatus("bob", _privateRouteId))
-                .Should().ThrowAsync<BaseException>();
+                .Should().ThrowAsync<ForbiddenException>();
 
             thrown.Which.EnumStatusCode.Should().Be((int)StatusEnum.UnauthorizedToViewRoute);
         }

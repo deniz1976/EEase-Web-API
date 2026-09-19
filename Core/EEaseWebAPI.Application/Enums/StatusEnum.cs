@@ -120,6 +120,7 @@ namespace EEaseWebAPI.Application.Enums
         ComponentChangedSuccessfully = 116,
         GetRoutesByUserIdRetrievedSuccessfully = 117,
         RouteGenerationFailed = 118,
+        UnauthorizedToModifyRoute = 119,
 
         ServiceUnavailable = 995,
         NetworkError = 996,

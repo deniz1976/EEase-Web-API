@@ -1,5 +1,6 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.DTOs.Route;
+using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Route;
 using EEaseWebAPI.Domain.Entities.Common;
@@ -112,8 +113,10 @@ namespace EEaseWebAPI.UnitTests.Route
             _accessPolicy.EvaluateAsync(Arg.Any<StandardRoute>(), "bob", Arg.Any<string>())
                 .Returns(RouteAccessResult.Denied("private route"));
 
-            await _service.Invoking(service => service.LikeRoute("bob", _routeId))
-                .Should().ThrowAsync<UnauthorizedAccessException>();
+            var thrown = await _service.Invoking(service => service.LikeRoute("bob", _routeId))
+                .Should().ThrowAsync<ForbiddenException>();
+
+            thrown.Which.EnumStatusCode.Should().Be((int)StatusEnum.UnauthorizedToViewRoute);
         }
 
         [Fact]
@@ -157,7 +160,7 @@ namespace EEaseWebAPI.UnitTests.Route
         public async Task Only_the_owner_may_change_visibility()
         {
             await _service.Invoking(service => service.UpdateRouteStatusAsync(_routeId, 0, "bob"))
-                .Should().ThrowAsync<UnauthorizedAccessException>();
+                .Should().ThrowAsync<ForbiddenException>();
         }
 
         [Fact]

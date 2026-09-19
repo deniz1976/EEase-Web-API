@@ -132,7 +132,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var access = await _routeAccessPolicy.EvaluateAsync(route, username, user.Id);
 
             if (!access.IsAccessible)
-                throw new BaseException(access.Message!, (int)StatusEnum.UnauthorizedToViewRoute);
+                throw new ForbiddenException(access.Message!, StatusEnum.UnauthorizedToViewRoute);
 
             return route.LikedUsers.Any(liker => liker.Id == user.Id);
         }

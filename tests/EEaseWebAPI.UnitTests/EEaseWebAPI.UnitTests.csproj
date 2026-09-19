@@ -10,6 +10,11 @@
     <ProjectReference Include="..\..\Core\EEaseWebAPI.Domain\EEaseWebAPI.Domain.csproj" />
     <ProjectReference Include="..\..\Infrastructure\EEaseWebAPI.Infrastructure\EEaseWebAPI.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\EEaseWebAPI.Persistence\EEaseWebAPI.Persistence.csproj" />
+    <ProjectReference Include="..\..\Presentation\EEaseWebAPI.API\EEaseWebAPI.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>

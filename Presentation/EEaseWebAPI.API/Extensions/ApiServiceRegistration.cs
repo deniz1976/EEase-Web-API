@@ -29,6 +29,16 @@ namespace EEaseWebAPI.API.Extensions
             services.AddApiRateLimiting(configuration);
             services.AddSwaggerDocumentation();
 
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                // The client picks the language with the Accept-Language header;
+                // anything else falls back to English.
+                options.SetDefaultCulture("en");
+                options.AddSupportedCultures("en", "tr");
+                options.AddSupportedUICultures("en", "tr");
+            });
+
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddScoped<RequestLogScopeMiddleware>();
             services.AddProblemDetails();

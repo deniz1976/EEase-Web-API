@@ -203,7 +203,7 @@ namespace EEaseWebAPI.UnitTests.Route
         public async Task Nobody_can_change_a_route_they_do_not_own()
         {
             await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(username: "bob")))
-                .Should().ThrowAsync<UnauthorizedAccessException>();
+                .Should().ThrowAsync<ForbiddenException>();
         }
 
         [Fact]

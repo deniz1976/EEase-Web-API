@@ -51,7 +51,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var access = await _routeAccessPolicy.EvaluateAsync(route, username, user.Id);
 
             if (!access.IsAccessible)
-                throw new UnauthorizedAccessException(access.Message);
+                throw new ForbiddenException(access.Message!, StatusEnum.UnauthorizedToViewRoute);
 
             var wasLiked = route.LikedUsers.Any(liker => liker.Id == user.Id);
 
@@ -117,7 +117,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 ?? throw new RouteNotFoundException("Route not found", RouteNotFoundCode);
 
             if (route.UserId != user.Id)
-                throw new UnauthorizedAccessException("Only route owner can update route status");
+                throw new ForbiddenException(
+                    "Only route owner can update route status", StatusEnum.UnauthorizedToModifyRoute);
 
             if (!Enum.IsDefined(typeof(RouteVisibility), status))
                 throw new InvalidRouteStatusException();

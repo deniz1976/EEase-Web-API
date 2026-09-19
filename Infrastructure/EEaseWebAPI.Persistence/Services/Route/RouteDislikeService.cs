@@ -68,7 +68,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 ?? throw new RouteNotFoundException("Route not found", (int)StatusEnum.RouteNotFound);
 
             if (route.UserId != user.Id)
-                throw new UnauthorizedAccessException("You do not have permission to modify this route");
+                throw new ForbiddenException(
+                    "You do not have permission to modify this route", StatusEnum.UnauthorizedToModifyRoute);
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
 

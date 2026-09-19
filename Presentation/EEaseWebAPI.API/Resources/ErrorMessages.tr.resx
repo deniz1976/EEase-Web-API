@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EmailAlreadyInUse" xml:space="preserve">
+    <value>Bu e-posta adresi zaten kullanımda.</value>
+  </data>
+  <data name="EmailNotConfirmed" xml:space="preserve">
+    <value>E-posta doğrulaması gerekli, adresinize yeni bir kod gönderildi.</value>
+  </data>
+  <data name="InvalidEmailConfirmationCode" xml:space="preserve">
+    <value>Doğrulama kodu geçerli değil.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Kullanıcı bulunamadı.</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Kullanıcı adı veya parola hatalı.</value>
+  </data>
+  <data name="InvalidCurrentPassword" xml:space="preserve">
+    <value>Mevcut parola hatalı.</value>
+  </data>
+  <data name="InvalidResetPasswordCode" xml:space="preserve">
+    <value>Parola sıfırlama kodu geçerli değil.</value>
+  </data>
+  <data name="ResetPasswordCodeExpired" xml:space="preserve">
+    <value>Parola sıfırlama kodunun süresi doldu.</value>
+  </data>
+  <data name="InvalidDeleteCode" xml:space="preserve">
+    <value>Hesap silme kodu geçerli değil.</value>
+  </data>
+  <data name="DeleteCodeExpired" xml:space="preserve">
+    <value>Hesap silme kodunun süresi doldu.</value>
+  </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>Yenileme anahtarı geçerli değil.</value>
+  </data>
+  <data name="RefreshTokenExpired" xml:space="preserve">
+    <value>Yenileme anahtarının süresi doldu.</value>
+  </data>
+  <data name="InvalidCountry" xml:space="preserve">
+    <value>Seçilen ülke geçerli değil.</value>
+  </data>
+  <data name="InvalidSearchTerm" xml:space="preserve">
+    <value>Arama terimi en az iki karakter olmalı.</value>
+  </data>
+  <data name="UserAlreadyHasPreferences" xml:space="preserve">
+    <value>Bu kullanıcının tercihleri zaten belirlenmiş.</value>
+  </data>
+  <data name="CannotPerformActionOnSelf" xml:space="preserve">
+    <value>Bu işlem kendi hesabınız üzerinde yapılamaz.</value>
+  </data>
+  <data name="TargetIsUser" xml:space="preserve">
+    <value>Bu işlem kendi hesabınız üzerinde yapılamaz.</value>
+  </data>
+  <data name="FriendRequestAlreadyExists" xml:space="preserve">
+    <value>Bu kullanıcılar arasında zaten bir arkadaşlık isteği var.</value>
+  </data>
+  <data name="FriendshipNotFound" xml:space="preserve">
+    <value>Bu kullanıcılar arasında arkadaşlık bulunamadı.</value>
+  </data>
+  <data name="FriendRequestNotFound" xml:space="preserve">
+    <value>Arkadaşlık isteği bulunamadı.</value>
+  </data>
+  <data name="UserAlreadyBlocked" xml:space="preserve">
+    <value>Bu kullanıcı zaten engellenmiş.</value>
+  </data>
+  <data name="NotFriends" xml:space="preserve">
+    <value>Bu kullanıcıyla arkadaş değilsiniz.</value>
+  </data>
+  <data name="UserBlockedByTarget" xml:space="preserve">
+    <value>Bu kullanıcı sizi engellemiş.</value>
+  </data>
+  <data name="UserBlockedTarget" xml:space="preserve">
+    <value>Bu kullanıcıyı engellediniz.</value>
+  </data>
+  <data name="RouteNotFound" xml:space="preserve">
+    <value>Rota bulunamadı.</value>
+  </data>
+  <data name="UnauthorizedToViewRoute" xml:space="preserve">
+    <value>Bu rotayı görüntüleme yetkiniz yok.</value>
+  </data>
+  <data name="UnauthorizedToDeleteRoute" xml:space="preserve">
+    <value>Bu rotayı silme yetkiniz yok.</value>
+  </data>
+  <data name="UnauthorizedToModifyRoute" xml:space="preserve">
+    <value>Bu rotayı değiştirme yetkiniz yok.</value>
+  </data>
+  <data name="InvalidStatusRoute" xml:space="preserve">
+    <value>Rota görünürlük değeri geçerli değil.</value>
+  </data>
+  <data name="InvalidPlaceType" xml:space="preserve">
+    <value>Mekan tipi geçerli değil.</value>
+  </data>
+  <data name="GeminiAPIKeyLimitExceeded" xml:space="preserve">
+    <value>Rota servisi şu anda yoğun. Lütfen kısa süre sonra tekrar deneyin.</value>
+  </data>
+  <data name="ServiceUnavailable" xml:space="preserve">
+    <value>Bu özellik şu anda kullanılamıyor.</value>
+  </data>
+  <data name="DatabaseError" xml:space="preserve">
+    <value>Servis geçici olarak kullanılamıyor.</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Servis geçici olarak kullanılamıyor.</value>
+  </data>
+  <data name="ValidationError" xml:space="preserve">
+    <value>Gönderilen istek doğrulama kurallarını sağlamıyor.</value>
+  </data>
+  <data name="UnknownError" xml:space="preserve">
+    <value>Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.</value>
+  </data>
+</root>
