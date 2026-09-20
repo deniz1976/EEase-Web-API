@@ -9,40 +9,33 @@ namespace EEaseWebAPI.Application.Options
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddOptions<TokenOptions>()
-                .Bind(configuration.GetSection(TokenOptions.SectionName))
+            services
+                .Register<TokenOptions>(configuration, TokenOptions.SectionName)
+                .Register<DatabaseOptions>(configuration, DatabaseOptions.SectionName)
+                .Register<RateLimitOptions>(configuration, RateLimitOptions.SectionName)
+                .Register<CorsOptions>(configuration, CorsOptions.SectionName)
+                .Register<CacheOptions>(configuration, CacheOptions.SectionName)
+                .Register<MailOptions>(configuration, MailOptions.SectionName)
+                .Register<RedisOptions>(configuration, RedisOptions.SectionName)
+                .Register<GeminiOptions>(configuration, GeminiOptions.SectionName)
+                .Register<GooglePlacesOptions>(configuration, GooglePlacesOptions.SectionName);
+
+            return services;
+        }
+
+        /// <summary>
+        /// Every section is checked while the application starts. Only the token section
+        /// used to be: a bad mail port or cache lifetime was found by the first request that
+        /// needed it, which answered a 500 to whoever happened to make it.
+        /// </summary>
+        private static IServiceCollection Register<TOptions>(
+            this IServiceCollection services, IConfiguration configuration, string sectionName)
+            where TOptions : class
+        {
+            services.AddOptions<TOptions>()
+                .Bind(configuration.GetSection(sectionName))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
-
-            services.AddOptions<DatabaseOptions>()
-                .Bind(configuration.GetSection(DatabaseOptions.SectionName))
-                .ValidateDataAnnotations();
-
-            services.AddOptions<RateLimitOptions>()
-                .Bind(configuration.GetSection(RateLimitOptions.SectionName))
-                .ValidateDataAnnotations();
-
-            services.AddOptions<CorsOptions>()
-                .Bind(configuration.GetSection(CorsOptions.SectionName));
-
-            services.AddOptions<CacheOptions>()
-                .Bind(configuration.GetSection(CacheOptions.SectionName));
-
-            services.AddOptions<MailOptions>()
-                .Bind(configuration.GetSection(MailOptions.SectionName))
-                .ValidateDataAnnotations();
-
-            services.AddOptions<RedisOptions>()
-                .Bind(configuration.GetSection(RedisOptions.SectionName))
-                .ValidateDataAnnotations();
-
-            services.AddOptions<GeminiOptions>()
-                .Bind(configuration.GetSection(GeminiOptions.SectionName))
-                .ValidateDataAnnotations();
-
-            services.AddOptions<GooglePlacesOptions>()
-                .Bind(configuration.GetSection(GooglePlacesOptions.SectionName))
-                .ValidateDataAnnotations();
 
             return services;
         }
