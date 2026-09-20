@@ -28,7 +28,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
 
         public async Task<GetUserInfoByNameQueryResponse> Handle(GetUserInfoByNameQueryRequest request, CancellationToken cancellationToken)
         {
-var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(request.Username, request.TargetUsername);
+            var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(request.Username, request.TargetUsername);
 
             var response = new GetUserInfoByNameQueryResponse
             {

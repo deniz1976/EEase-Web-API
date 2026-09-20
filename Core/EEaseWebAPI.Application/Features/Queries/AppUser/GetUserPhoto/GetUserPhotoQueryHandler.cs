@@ -22,7 +22,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
 
         public async Task<GetUserPhotoQueryResponse> Handle(GetUserPhotoQueryRequest request, CancellationToken cancellationToken)
         {
-return new GetUserPhotoQueryResponse()
+            return new GetUserPhotoQueryResponse()
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoReceivedSuccessfully),
                 Body = new() { Path= await _profileService.GetUserPhotoAsync(request.Username) }

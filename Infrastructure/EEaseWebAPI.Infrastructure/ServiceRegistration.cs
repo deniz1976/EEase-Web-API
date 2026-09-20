@@ -16,7 +16,6 @@ namespace EEaseWebAPI.Infrastructure
             services.AddScoped<IMailService, MailService>();
 
             services.AddHttpClient();
-            services.AddScoped<IHttpService, HttpService>();
 
             return services;
         }

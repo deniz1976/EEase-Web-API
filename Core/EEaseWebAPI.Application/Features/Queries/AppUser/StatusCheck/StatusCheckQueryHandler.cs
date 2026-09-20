@@ -24,7 +24,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck
 
         public async Task<StatusCheckQueryResponse> Handle(StatusCheckQueryRequest request, CancellationToken cancellationToken)
         {
-return new StatusCheckQueryResponse
+            return new StatusCheckQueryResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.GetUserStatusSuccessfully),
                 Body = await _accountService.StatusCheck(request.Username)

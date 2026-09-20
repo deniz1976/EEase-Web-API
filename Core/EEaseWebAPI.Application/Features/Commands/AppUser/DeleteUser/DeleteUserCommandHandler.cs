@@ -23,11 +23,15 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
 
         public async Task<DeleteUserCommandResponse> Handle(DeleteUserCommandRequest request, CancellationToken cancellationToken)
         {
-var outcome = await _accountService.RequestDeletionAsync(request.Username);
+            var outcome = await _accountService.RequestDeletionAsync(request.Username);
 
+            // Asking to delete an account that is already on its way out cancels the
+            // deletion. That is an outcome of its own, not the failure it used to be
+            // reported as, which read as "deletion failed" over a message saying the
+            // account had been brought back.
             return outcome == DeleteRequestOutcome.CodeSent
                 ? CreateResponse((int)StatusEnum.UserDeleteCodeSentSuccessfully, AppMessages.DeleteCodeSent)
-                : CreateResponse((int)StatusEnum.UserDeletionFailed, AppMessages.AccountReactivated);
+                : CreateResponse((int)StatusEnum.AccountReactivated, AppMessages.AccountReactivated);
         }
 
         private DeleteUserCommandResponse CreateResponse(int headerCode, string message)

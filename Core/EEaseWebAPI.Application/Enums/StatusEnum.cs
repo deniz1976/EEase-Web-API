@@ -125,6 +125,7 @@ namespace EEaseWebAPI.Application.Enums
         VerificationCodeSendFailed = 121,
         AuthenticationRequired = 122,
         AccessForbidden = 123,
+        AccountReactivated = 124,
 
         ServiceUnavailable = 995,
         NetworkError = 996,
