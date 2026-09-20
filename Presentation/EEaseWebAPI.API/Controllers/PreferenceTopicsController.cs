@@ -1,5 +1,4 @@
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetAllTopics;
-using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +21,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(GetAllTopicsQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTopics(CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new GetAllTopicsQueryRequest(), cancellationToken);

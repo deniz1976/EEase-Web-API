@@ -12,7 +12,6 @@ using EEaseWebAPI.Application.Features.Queries.Route.GetAllRoutes;
 using EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes;
 using EEaseWebAPI.Application.Features.Queries.Route.GetRouteById;
 using EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId;
-using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,8 +36,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CreateCustomRouteCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> CreateRoute(
@@ -60,7 +57,6 @@ namespace EEaseWebAPI.API.Controllers
 
         /// <summary>The same plan for somebody who has not signed in, so nothing is kept.</summary>
         [HttpPost("guest")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CreateRouteWithoutLoginCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> CreateGuestRoute(
@@ -72,9 +68,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetAllRoutesQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetMyRoutes(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
@@ -93,7 +87,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpDelete]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteAllRoutesCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteAllRoutes(CancellationToken cancellationToken)
         {
@@ -105,8 +98,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("liked")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetLikedRoutesQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLikedRoutes(
             [FromQuery] int pageNumber = 1,
@@ -126,9 +117,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("{routeId:guid}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRouteByIdQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRouteById(
             [FromRoute] Guid routeId, CancellationToken cancellationToken)
@@ -145,8 +133,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpDelete("{routeId:guid}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteRouteCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteRoute(
             [FromRoute] Guid routeId, CancellationToken cancellationToken)
@@ -167,8 +153,7 @@ namespace EEaseWebAPI.API.Controllers
         /// </summary>
         [HttpPost("{routeId:guid}/likes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(LikeRouteCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> LikeRoute(
             [FromRoute] Guid routeId, CancellationToken cancellationToken)
@@ -186,7 +171,7 @@ namespace EEaseWebAPI.API.Controllers
         /// <summary>Whether the caller's like is one of the ones on this route.</summary>
         [HttpGet("{routeId:guid}/likes/me")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(CheckRouteLikeStatusQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMyRouteLike(
             [FromRoute] Guid routeId, CancellationToken cancellationToken)
@@ -203,8 +188,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPut("{routeId:guid}/visibility")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(UpdateRouteStatusCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateRouteVisibility(
             [FromRoute] Guid routeId,
@@ -228,9 +212,7 @@ namespace EEaseWebAPI.API.Controllers
         /// </summary>
         [HttpGet("/api/users/by-id/{userId}/routes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRoutesByUserIdQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetRoutesByUserId(
             [FromRoute] string userId,
             [FromQuery] int pageNumber = 1,

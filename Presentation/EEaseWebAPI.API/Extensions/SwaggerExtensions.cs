@@ -46,6 +46,7 @@ namespace EEaseWebAPI.API.Extensions
                 });
 
                 options.SchemaFilter<DateOnlySchemaFilter>();
+                options.OperationFilter<ErrorResponseOperationFilter>();
             });
 
             return services;

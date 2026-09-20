@@ -4,7 +4,6 @@ using EEaseWebAPI.Application.DTOs.Route.LikePlaceOrRestaurantDTO;
 using EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant;
 using EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto;
 using EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant;
-using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +28,6 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpGet("photos")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRouteComponentPhotoCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPlacePhoto(
             [FromQuery] GetRouteComponentPhotoCommandRequest request, CancellationToken cancellationToken)
@@ -44,8 +42,6 @@ namespace EEaseWebAPI.API.Controllers
         /// </summary>
         [HttpPost("likes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> LikePlace(
             [FromBody] LikePlaceOrRestaurantEndpointDTO request, CancellationToken cancellationToken)
@@ -67,9 +63,8 @@ namespace EEaseWebAPI.API.Controllers
         /// </summary>
         [HttpPost("dislikes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> DislikePlace(
             [FromBody] DislikePlaceOrRestaurantDTO request, CancellationToken cancellationToken)

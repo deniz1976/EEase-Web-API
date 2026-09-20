@@ -9,7 +9,6 @@ using EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendRequests;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends;
-using EEaseWebAPI.Application.MapEntities;
 using EEaseWebAPI.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -36,8 +35,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(GetUserFriendsQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetFriends(CancellationToken cancellationToken)
         {
             var query = new GetUserFriendsQuery { Username = CurrentUsername };
@@ -48,8 +45,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpDelete("{username}")]
         [ProducesResponseType(typeof(RemoveFriendCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RemoveFriend(
             [FromRoute] string username, CancellationToken cancellationToken)
         {
@@ -83,8 +78,6 @@ namespace EEaseWebAPI.API.Controllers
         /// <summary>Everything waiting for the caller to answer.</summary>
         [HttpGet]
         [ProducesResponseType(typeof(GetPendingFriendRequestsQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetPendingRequests(CancellationToken cancellationToken)
         {
             var query = new GetPendingFriendRequestsQuery { Username = CurrentUsername };
@@ -95,8 +88,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPost("{username}")]
         [ProducesResponseType(typeof(SendFriendRequestCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SendFriendRequest(
             [FromRoute] string username, CancellationToken cancellationToken)
         {
@@ -113,8 +104,6 @@ namespace EEaseWebAPI.API.Controllers
         /// <summary>Where the caller stands with this person: none, pending, friends, blocked.</summary>
         [HttpGet("{username}")]
         [ProducesResponseType(typeof(CheckFriendRequestQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetFriendRequestStatus(
             [FromRoute] string username, CancellationToken cancellationToken)
         {
@@ -131,8 +120,6 @@ namespace EEaseWebAPI.API.Controllers
         /// <summary>Answers a request this person sent to the caller.</summary>
         [HttpPut("{username}")]
         [ProducesResponseType(typeof(RespondToFriendRequestCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RespondToFriendRequest(
             [FromRoute] string username,
             [FromBody] FriendshipStatus response,
@@ -152,8 +139,6 @@ namespace EEaseWebAPI.API.Controllers
         /// <summary>Withdraws a request the caller sent to this person.</summary>
         [HttpDelete("{username}")]
         [ProducesResponseType(typeof(CancelFriendRequestCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CancelFriendRequest(
             [FromRoute] string username, CancellationToken cancellationToken)
         {
@@ -182,8 +167,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(GetBlockedUsersQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetBlockedUsers(CancellationToken cancellationToken)
         {
             var query = new GetBlockedUsersQuery { Username = CurrentUsername };
@@ -194,8 +177,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPost("{username}")]
         [ProducesResponseType(typeof(BlockFriendCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> BlockUser(
             [FromRoute] string username, CancellationToken cancellationToken)
         {
@@ -211,8 +192,6 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpDelete("{username}")]
         [ProducesResponseType(typeof(UnblockUserCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UnblockUser(
             [FromRoute] string username, CancellationToken cancellationToken)
         {

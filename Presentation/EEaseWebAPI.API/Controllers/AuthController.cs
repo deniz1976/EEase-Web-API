@@ -8,7 +8,6 @@ using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPassword;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser;
 using EEaseWebAPI.Application.Features.Queries;
 using EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeCheck;
-using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +31,6 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LoginUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> Login(
@@ -43,7 +41,6 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("refresh")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(RefreshTokenLoginUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> RefreshTokenLogin(
@@ -56,9 +53,7 @@ namespace EEaseWebAPI.API.Controllers
         /// <summary>Changing a password you still know, which needs the old one.</summary>
         [HttpPut("password")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ChangePasswordCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> ChangePassword(
             [FromBody] ChangePasswordDTO changePasswordDTO, CancellationToken cancellationToken)
@@ -76,7 +71,6 @@ namespace EEaseWebAPI.API.Controllers
 
         /// <summary>Starts a reset for a password nobody remembers, by sending a code.</summary>
         [HttpPost("password-resets")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> RequestPasswordReset(
@@ -87,7 +81,6 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("password-resets/verify")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCodeCheckQueryResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> VerifyPasswordResetCode(
@@ -98,7 +91,6 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("password-resets/complete")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> CompletePasswordReset(

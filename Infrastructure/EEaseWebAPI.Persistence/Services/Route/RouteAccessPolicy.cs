@@ -49,7 +49,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
             string requesterUserId,
             CancellationToken cancellationToken = default)
         {
-            var access = await EvaluateAsync(route, requesterUsername, requesterUserId);
+            var access = await EvaluateAsync(
+                route, requesterUsername, requesterUserId, cancellationToken);
 
             var dto = new StandardRouteDTO
             {
