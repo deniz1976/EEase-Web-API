@@ -22,10 +22,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
 
         public async Task<ChangePasswordCommandResponse> Handle(ChangePasswordCommandRequest request, CancellationToken cancellationToken)
         {
-            if(request == null || request.username == null || request.oldPassword == null)
-                throw new ArgumentNullException(nameof(request));
-
-            var result = await _passwordService.ChangePasswordAsync(request.username, request.oldPassword,request.newPassword);
+var result = await _passwordService.ChangePasswordAsync(request.username, request.oldPassword,request.newPassword);
 
             return new ChangePasswordCommandResponse()
                 {

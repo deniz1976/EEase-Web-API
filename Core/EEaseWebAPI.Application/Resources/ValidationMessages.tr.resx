@@ -154,4 +154,28 @@
   <data name="BornDate_TooYoung" xml:space="preserve">
     <value>En az {0} yaşında olmalısınız.</value>
   </data>
+  <data name="Code_Required" xml:space="preserve">
+    <value>Kod gereklidir.</value>
+  </data>
+  <data name="EmailOrUsername_Required" xml:space="preserve">
+    <value>E-posta adresi veya kullanıcı adı gereklidir.</value>
+  </data>
+  <data name="NewPassword_Required" xml:space="preserve">
+    <value>Yeni şifre gereklidir.</value>
+  </data>
+  <data name="OldPassword_Required" xml:space="preserve">
+    <value>Mevcut şifre gereklidir.</value>
+  </data>
+  <data name="PhotoPath_Required" xml:space="preserve">
+    <value>Fotoğraf adresi gereklidir.</value>
+  </data>
+  <data name="RefreshToken_Required" xml:space="preserve">
+    <value>Yenileme anahtarı gereklidir.</value>
+  </data>
+  <data name="TargetUsername_Required" xml:space="preserve">
+    <value>Diğer kullanıcının kullanıcı adı gereklidir.</value>
+  </data>
+  <data name="UserId_Required" xml:space="preserve">
+    <value>Kullanıcı kimliği gereklidir.</value>
+  </data>
 </root>

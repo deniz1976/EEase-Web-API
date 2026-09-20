@@ -24,10 +24,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmailUser
 
         public async Task<ConfirmEmailUserCommandResponse> Handle(ConfirmEmailUserCommandRequest request, CancellationToken cancellationToken)
         {
-            if(request == null || request.code == null || request.emailOrUsername == null )
-                throw new ArgumentNullException(nameof(request));
-
-            var result = await _registrationService.EmailConfirm(request.code, request.emailOrUsername);
+var result = await _registrationService.EmailConfirm(request.code, request.emailOrUsername);
 
             return new ConfirmEmailUserCommandResponse
             {

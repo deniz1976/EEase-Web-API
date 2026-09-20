@@ -20,12 +20,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DeleteAllRoutes
         }
         public async Task<DeleteAllRoutesCommandResponse> Handle(DeleteAllRoutesCommandRequest request, CancellationToken cancellationToken)
         {
-            if (request == null || request.Username == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            var response = await _routeService.DeleteAllRoutes(request.Username);
+var response = await _routeService.DeleteAllRoutes(request.Username);
 
             return new DeleteAllRoutesCommandResponse
             {

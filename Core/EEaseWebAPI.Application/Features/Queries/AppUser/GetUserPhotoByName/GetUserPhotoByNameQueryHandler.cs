@@ -23,10 +23,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName
 
         public async Task<GetUserPhotoByNameQueryResponse> Handle(GetUserPhotoByNameQueryRequest request, CancellationToken cancellationToken)
         {
-            if (request == null || request.username == null || request.targetUsername == null)
-                throw new ArgumentNullException(nameof(request));
-
-            var isSelf = request.username == request.targetUsername;
+var isSelf = request.username == request.targetUsername;
 
             if (!isSelf && !await _friendshipService.AreFriendsAsync(request.username, request.targetUsername))
             {

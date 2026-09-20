@@ -23,10 +23,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse
 
         public async Task<CheckEmailIsInUseQueryResponse> Handle(CheckEmailIsInUseQueryRequest request, CancellationToken cancellationToken)
         {
-            if(request == null ||request.email == null)
-                throw new ArgumentNullException(nameof(request));
-
-            var isEmailInUse = await _authService.IsEmailInUse(request.email);
+var isEmailInUse = await _authService.IsEmailInUse(request.email);
             var message = isEmailInUse ? AppMessages.EmailInUse : AppMessages.EmailAvailable;
 
             return new CheckEmailIsInUseQueryResponse()

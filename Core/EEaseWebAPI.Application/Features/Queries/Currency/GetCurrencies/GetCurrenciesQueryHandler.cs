@@ -26,10 +26,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies
 
         public async Task<GetCurrenciesQueryResponse> Handle(GetCurrenciesQueryRequest request, CancellationToken cancellationToken)
         {
-            if (request == null || request.username == null)
-                throw new ArgumentNullException(nameof(request));
-
-            var currencies = await GetCurrenciesFromCache();
+var currencies = await GetCurrenciesFromCache();
 
             var paginatedCurrencies = currencies
                 .Skip((request.PageNumber - 1) * request.PageSize)

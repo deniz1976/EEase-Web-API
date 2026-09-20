@@ -23,10 +23,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfo
 
         public async Task<GetUserInfoQueryResponse> Handle(GetUserInfoQueryRequest request, CancellationToken cancellationToken)
         {
-            if (request == null || request.username == null)
-                throw new ArgumentNullException(nameof(request));
-
-            DTOs.User.GetUserInfo response = await _profileService.GetUserInfoQuery(request.username);
+DTOs.User.GetUserInfo response = await _profileService.GetUserInfoQuery(request.username);
 
             return new GetUserInfoQueryResponse()
             {

@@ -14,7 +14,15 @@ namespace EEaseWebAPI.API.Extensions
             services.AddHttpContextAccessor();
 
             services
-                .AddControllers(options => options.Filters.Add<ValidationFilter>())
+                .AddControllers(options =>
+                {
+                    options.Filters.Add<ValidationFilter>();
+
+                    // Model binding otherwise rejects a missing non-nullable field itself,
+                    // with an English sentence of its own. The validators own that, so the
+                    // caller reads one voice in their own language.
+                    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+                })
                 .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
                 .AddJsonOptions(options =>
                 {

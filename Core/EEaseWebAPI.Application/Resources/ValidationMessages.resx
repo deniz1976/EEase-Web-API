@@ -154,4 +154,28 @@
   <data name="BornDate_TooYoung" xml:space="preserve">
     <value>You must be at least {0} years old.</value>
   </data>
+  <data name="Code_Required" xml:space="preserve">
+    <value>The code is required.</value>
+  </data>
+  <data name="EmailOrUsername_Required" xml:space="preserve">
+    <value>An email address or a username is required.</value>
+  </data>
+  <data name="NewPassword_Required" xml:space="preserve">
+    <value>The new password is required.</value>
+  </data>
+  <data name="OldPassword_Required" xml:space="preserve">
+    <value>The current password is required.</value>
+  </data>
+  <data name="PhotoPath_Required" xml:space="preserve">
+    <value>A photo path is required.</value>
+  </data>
+  <data name="RefreshToken_Required" xml:space="preserve">
+    <value>The refresh token is required.</value>
+  </data>
+  <data name="TargetUsername_Required" xml:space="preserve">
+    <value>The username of the other user is required.</value>
+  </data>
+  <data name="UserId_Required" xml:space="preserve">
+    <value>A user id is required.</value>
+  </data>
 </root>

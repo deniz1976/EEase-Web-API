@@ -23,10 +23,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
 
         public async Task<DeleteUserCommandResponse> Handle(DeleteUserCommandRequest request, CancellationToken cancellationToken)
         {
-            if (request?.username == null)
-                throw new ArgumentNullException(nameof(request));
-
-            var outcome = await _accountService.RequestDeletionAsync(request.username);
+var outcome = await _accountService.RequestDeletionAsync(request.username);
 
             return outcome == DeleteRequestOutcome.CodeSent
                 ? CreateResponse((int)StatusEnum.UserDeleteCodeSentSuccessfully, AppMessages.DeleteCodeSent)

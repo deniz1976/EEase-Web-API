@@ -25,12 +25,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RefreshTokenLoginUse
 
         public async Task<RefreshTokenLoginUserCommandResponse> Handle(RefreshTokenLoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            if (request == null || request.RefreshToken == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            RefreshTokenLoginBody token = await _authService.RefreshTokenLoginAsync(request.RefreshToken);
+RefreshTokenLoginBody token = await _authService.RefreshTokenLoginAsync(request.RefreshToken);
 
             return new RefreshTokenLoginUserCommandResponse
             {

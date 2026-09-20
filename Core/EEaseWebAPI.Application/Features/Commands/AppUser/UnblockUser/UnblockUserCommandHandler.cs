@@ -24,12 +24,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
 
         public async Task<UnblockUserCommandResponse> Handle(UnblockUserCommandRequest request, CancellationToken cancellationToken)
         {
-            if(request == null || request.username == null || request.targetUsername == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            await _friendshipService.UnblockAsync(request.username, request.targetUsername);
+await _friendshipService.UnblockAsync(request.username, request.targetUsername);
 
             return new UnblockUserCommandResponse()
             {

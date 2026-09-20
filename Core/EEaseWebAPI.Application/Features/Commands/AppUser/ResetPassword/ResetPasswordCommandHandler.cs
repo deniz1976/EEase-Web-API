@@ -26,10 +26,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser
         public async Task<ResetPasswordCommandResponse> Handle(ResetPasswordCommandRequest request, CancellationToken cancellationToken)
         {
 
-         if(request == null ||request.usernameOrEmail == null || request.code == null || request.newPassword == null)
-                throw new ArgumentNullException(nameof(request));
-
-         await _passwordService.ResetPasswordAsync(request.usernameOrEmail, request.code, request.newPassword);
+await _passwordService.ResetPasswordAsync(request.usernameOrEmail, request.code, request.newPassword);
 
             return new ResetPasswordCommandResponse()
             {

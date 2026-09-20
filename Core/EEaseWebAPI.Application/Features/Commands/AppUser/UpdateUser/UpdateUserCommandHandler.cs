@@ -30,9 +30,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
 
         public async Task<UpdateUserCommandResponse> Handle(UpdateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            if(request == null)
-                throw new ArgumentNullException(nameof(request));
-            if (request.user == null)
+if (request.user == null)
                 throw new UserNotFoundException("User not found",(int)StatusEnum.UserNotFound);
 
             // An update that did not happen leaves the service by throwing, so there is no
