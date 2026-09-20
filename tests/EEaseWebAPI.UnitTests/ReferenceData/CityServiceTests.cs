@@ -52,11 +52,11 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
             string name, string country, bool capital, double population, string? ascii = null) =>
             new()
             {
-                city = name,
-                city_ascii = ascii ?? name,
-                country = country,
-                capital = capital ? "primary" : "admin",
-                population = population
+                City = name,
+                CityAscii = ascii ?? name,
+                Country = country,
+                Capital = capital ? "primary" : "admin",
+                Population = population
             };
 
         [Theory]

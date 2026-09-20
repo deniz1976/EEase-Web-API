@@ -1,29 +1,45 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EEaseWebAPI.Domain.Entities.AllWorldCities
 {
+    /// <summary>
+    /// The world cities table, loaded from a published dataset whose columns are named the
+    /// way that dataset names them. The properties read like the rest of the code and each
+    /// one says which column it comes from, so the table does not have to be renamed.
+    /// </summary>
     public class AllWorldCities
     {
-        public string? city { get; set; }
+        [Column("city")]
+        public string? City { get; set; }
 
-        public string? city_ascii { get; set; }
+        [Column("city_ascii")]
+        public string? CityAscii { get; set; }
 
-        public double? lat { get; set; }
+        [Column("lat")]
+        public double? Latitude { get; set; }
 
-        public double? lng { get; set; }
+        [Column("lng")]
+        public double? Longitude { get; set; }
 
-        public string? country { get; set; }
+        [Column("country")]
+        public string? Country { get; set; }
 
-        public string? iso2 { get; set; }
+        [Column("iso2")]
+        public string? Iso2 { get; set; }
 
-        public string? iso3 { get; set; }
+        [Column("iso3")]
+        public string? Iso3 { get; set; }
 
-        public string? admin_name { get; set; }
+        [Column("admin_name")]
+        public string? AdminName { get; set; }
 
-        public string? capital { get; set; }
+        [Column("capital")]
+        public string? Capital { get; set; }
 
-        public double? population { get; set; }
+        [Column("population")]
+        public double? Population { get; set; }
 
-        public int? id { get; set; }
+        [Column("id")]
+        public int? Id { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
         public Task<List<string>> GetAllCityNames() =>
             _cache.GetOrLoadAsync(_cache.Keys.CityNamesCacheKey, async () =>
                 (await GetAllCitiesAsync())
-                    .Select(city => city.city ?? city.city_ascii ?? string.Empty)
+                    .Select(city => city.City ?? city.CityAscii ?? string.Empty)
                     .Where(name => !string.IsNullOrEmpty(name))
                     .Distinct()
                     .ToList());
@@ -40,7 +40,7 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
         public Task<List<string>> GetAllCountries() =>
             _cache.GetOrLoadAsync(_cache.Keys.AllCountriesCacheKey, async () =>
                 (await GetAllCitiesAsync())
-                    .Select(city => city.country ?? string.Empty)
+                    .Select(city => city.Country ?? string.Empty)
                     .Where(country => !string.IsNullOrEmpty(country))
                     .Distinct()
                     .OrderBy(country => country)
@@ -59,9 +59,9 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
             // a search for "san" should not open with a village.
             var matches = cities
                 .Where(city => Matches(city, searchTerm))
-                .OrderByDescending(city => city.country == homeCountry)
-                .ThenByDescending(city => city.capital == CapitalCity)
-                .ThenByDescending(city => city.population)
+                .OrderByDescending(city => city.Country == homeCountry)
+                .ThenByDescending(city => city.Capital == CapitalCity)
+                .ThenByDescending(city => city.Population)
                 .ToList();
 
             var page = matches
@@ -69,8 +69,8 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
                 .Take(pageSize)
                 .Select(city => new CityDto
                 {
-                    CityName = city.city ?? city.city_ascii ?? string.Empty,
-                    Country = city.country ?? string.Empty
+                    CityName = city.City ?? city.CityAscii ?? string.Empty,
+                    Country = city.Country ?? string.Empty
                 })
                 .ToList();
 
@@ -91,8 +91,8 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
         private Task<List<AllWorldCities>> GetAllCitiesAsync() =>
             _cache.GetOrLoadAsync(_cache.Keys.AllCitiesCacheKey, async () =>
                 (await _cities.GetAllCitiesAsync())
-                    .OrderByDescending(city => city.capital == CapitalCity)
-                    .ThenByDescending(city => city.population)
+                    .OrderByDescending(city => city.Capital == CapitalCity)
+                    .ThenByDescending(city => city.Population)
                     .ToList());
 
         private async Task<string> HomeCountryOfAsync(string? username)
@@ -108,7 +108,7 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
         }
 
         private static bool Matches(AllWorldCities city, string searchTerm) =>
-            city.city?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true ||
-            city.city_ascii?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true;
+            city.City?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true ||
+            city.CityAscii?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true;
     }
 }

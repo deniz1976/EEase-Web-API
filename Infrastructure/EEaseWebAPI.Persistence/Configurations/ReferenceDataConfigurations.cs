@@ -11,8 +11,8 @@ namespace EEaseWebAPI.Persistence.Configurations
         {
             builder.HasNoKey();
 
-            builder.HasIndex(city => city.city);
-            builder.HasIndex(city => city.country);
+            builder.HasIndex(city => city.City);
+            builder.HasIndex(city => city.Country);
         }
     }
 
