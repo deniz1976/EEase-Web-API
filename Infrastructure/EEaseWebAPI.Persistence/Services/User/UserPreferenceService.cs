@@ -82,18 +82,16 @@ namespace EEaseWebAPI.Persistence.Services.User
 
             foreach (var topic in topics ?? Array.Empty<string>())
             {
-                if (TravelPreferenceGroups.AccommodationGroups.Groups.TryGetValue(topic, out var accommodationNames))
+                if (!TravelPreferenceGroups.TryGetPreferenceNames(topic, out var preferenceNames))
                 {
-                    Score(accommodation, accommodationNames);
+                    // Ignoring it answered "preferences saved" to a caller whose topics were
+                    // all misspelled and whose preferences were therefore all empty.
+                    throw new UpdateUserSaveException(
+                        $"'{topic}' is not one of the topics. Ask for the topic list first.",
+                        (int)StatusEnum.PreferencesUpdateFailed);
                 }
-                else if (TravelPreferenceGroups.FoodGroups.Groups.TryGetValue(topic, out var foodNames))
-                {
-                    Score(food, foodNames);
-                }
-                else if (TravelPreferenceGroups.TravelGroups.Groups.TryGetValue(topic, out var travelNames))
-                {
-                    Score(personalization, travelNames);
-                }
+
+                Score(preferenceNames, accommodation, food, personalization);
             }
 
             await SaveNewPreferencesAsync(user.Id, accommodation, food, personalization);
@@ -196,12 +194,42 @@ namespace EEaseWebAPI.Persistence.Services.User
             }
         }
 
-        private static void Score(object preferences, IEnumerable<string> propertyNames)
+        /// <summary>
+        /// A topic crosses the three rows: "Waterfront Getaways" is an accommodation topic
+        /// that also says something about the places the traveller likes. Each name goes to
+        /// the row that owns it, rather than to the group the topic was listed under, which
+        /// used to drop every name that lived elsewhere without a word.
+        /// </summary>
+        private static void Score(
+            IEnumerable<string> propertyNames,
+            UserAccommodationPreferences accommodation,
+            UserFoodPreferences food,
+            UserPersonalization personalization)
         {
             foreach (var propertyName in propertyNames)
             {
-                preferences.GetType().GetProperty(propertyName)?.SetValue(preferences, SelectedTopicScore);
+                if (!TryScore(accommodation, propertyName) &&
+                    !TryScore(food, propertyName) &&
+                    !TryScore(personalization, propertyName))
+                {
+                    throw new InvalidOperationException(
+                        $"No preference row has a '{propertyName}' column.");
+                }
             }
+        }
+
+        private static bool TryScore(object preferences, string propertyName)
+        {
+            var property = preferences.GetType().GetProperty(propertyName);
+
+            if (property?.PropertyType != typeof(int?))
+            {
+                return false;
+            }
+
+            property.SetValue(preferences, SelectedTopicScore);
+
+            return true;
         }
 
         private static void Describe<TPreferenceType>(object? preferences, List<PreferenceDetail> target)

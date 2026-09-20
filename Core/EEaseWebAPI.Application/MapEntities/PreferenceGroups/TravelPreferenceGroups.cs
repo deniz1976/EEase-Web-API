@@ -1,12 +1,29 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EEaseWebAPI.Application.MapEntities.PreferenceGroups
 {
-    public class TravelPreferenceGroups
+    public static class TravelPreferenceGroups
     {
-        public class AccommodationGroups
+        /// <summary>
+        /// Every topic in one place. A topic names preferences that can live on any of the
+        /// three preference rows, so the caller applies each name to whichever row owns it
+        /// rather than to the group it was listed under.
+        /// </summary>
+        private static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> AllGroups =
+            new[] { AccommodationGroups.Groups, FoodGroups.Groups, TravelGroups.Groups }
+                .SelectMany(group => group)
+                .ToDictionary(entry => entry.Key, entry => entry.Value);
+
+        public static IEnumerable<KeyValuePair<string, IReadOnlyList<string>>> All => AllGroups;
+
+        public static bool TryGetPreferenceNames(string topic, out IReadOnlyList<string> preferenceNames) =>
+            AllGroups.TryGetValue(topic, out preferenceNames!);
+
+        public static class AccommodationGroups
         {
-            public static readonly Dictionary<string, List<string>> Groups = new()
+            public static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> Groups =
+                new Dictionary<string, IReadOnlyList<string>>
             {
                 {
                     "Luxury Stays", new List<string>
@@ -124,9 +141,10 @@ namespace EEaseWebAPI.Application.MapEntities.PreferenceGroups
             };
         }
 
-        public class FoodGroups
+        public static class FoodGroups
         {
-            public static readonly Dictionary<string, List<string>> Groups = new()
+            public static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> Groups =
+                new Dictionary<string, IReadOnlyList<string>>
             {
                 {
                     "Vegan & Vegetarian Options", new List<string>
@@ -232,15 +250,15 @@ namespace EEaseWebAPI.Application.MapEntities.PreferenceGroups
             };
         }
 
-        public class TravelGroups
+        public static class TravelGroups
         {
-            public static readonly Dictionary<string, List<string>> Groups = new()
+            public static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> Groups =
+                new Dictionary<string, IReadOnlyList<string>>
             {
                 {
                     "Adventure & Sports", new List<string>
                     {
-                        "AdventurePreference",
-                        "SportsPreference"
+                        "AdventurePreference"
                     }
                 },
                 {

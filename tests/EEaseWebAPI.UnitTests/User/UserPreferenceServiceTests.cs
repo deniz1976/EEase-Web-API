@@ -123,11 +123,25 @@ namespace EEaseWebAPI.UnitTests.User
         }
 
         [Fact]
-        public async Task An_unknown_topic_is_ignored_rather_than_failing()
+        public async Task An_unknown_topic_is_reported_instead_of_saving_nothing()
         {
-            await _service.SetFromTopicsAsync("alice", new[] { "Not A Topic" });
+            // It used to be skipped, so a caller whose topics were all misspelled was told
+            // their preferences were saved and got three empty rows.
+            await Assert.ThrowsAsync<UpdateUserSaveException>(
+                () => _service.SetFromTopicsAsync("alice", new[] { "Not A Topic" }));
+        }
 
-            _context.Set<UserAccommodationPreferences>().Should().ContainSingle();
+        [Fact]
+        public async Task A_topic_reaches_every_row_it_names()
+        {
+            // "Waterfront Getaways" is listed under accommodation but also names a
+            // personalization preference, which used to be dropped without a word.
+            await _service.SetFromTopicsAsync("alice", new[] { "Waterfront Getaways" });
+
+            (await _context.Set<UserAccommodationPreferences>().SingleAsync())
+                .WaterfrontPreference.Should().Be(60);
+            (await _context.Set<UserPersonalization>().SingleAsync())
+                .BeachPreference.Should().Be(60);
         }
 
         [Fact]
