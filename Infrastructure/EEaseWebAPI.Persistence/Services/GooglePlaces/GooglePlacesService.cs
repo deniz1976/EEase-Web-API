@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.DTOs.GooglePlaces;
 using EEaseWebAPI.Application.Exceptions;
@@ -18,6 +19,13 @@ namespace EEaseWebAPI.Persistence.Services.GooglePlaces
             "servesVegetarianFood,servesBrunch,reservable,takeout,delivery,curbsidePickup," +
             "servesBeer,servesWine,servesCocktails,internationalPhoneNumber";
 
+        /// <summary>
+        /// The photo name comes from the caller and is pasted into the outbound URL, which
+        /// carries our API key. Only the shape Google hands out gets through.
+        /// </summary>
+        private static readonly Regex PhotoName =
+            new(@"^places/[A-Za-z0-9_.\-]+/photos/[A-Za-z0-9_.\-]+$", RegexOptions.Compiled);
+
         private static readonly JsonSerializerSettings JsonOptions = new()
         {
             MissingMemberHandling = MissingMemberHandling.Ignore,
@@ -33,7 +41,8 @@ namespace EEaseWebAPI.Persistence.Services.GooglePlaces
             _options = options.Value;
         }
 
-        public async Task<PlaceSearchResponse> SearchPlacesAsync(string query, string? type = null)
+        public async Task<PlaceSearchResponse> SearchPlacesAsync(
+            string query, CancellationToken cancellationToken = default)
         {
             using var request = CreateRequest(HttpMethod.Post, "v1/places:searchText");
 
@@ -44,31 +53,41 @@ namespace EEaseWebAPI.Persistence.Services.GooglePlaces
 
             request.Headers.Add("X-Goog-FieldMask", "places.id");
 
-            var body = await SendAsync(request);
+            var body = await SendAsync(request, cancellationToken);
 
             return JsonConvert.DeserializeObject<PlaceSearchResponse>(body, JsonOptions)
                    ?? new PlaceSearchResponse();
         }
 
-        public async Task<string> GetPlaceDetailsAsync(string placeId)
+        public async Task<string> GetPlaceDetailsAsync(
+            string placeId, CancellationToken cancellationToken = default)
         {
-            using var request = CreateRequest(HttpMethod.Get, $"v1/places/{placeId}");
+            using var request = CreateRequest(
+                HttpMethod.Get, $"v1/places/{Uri.EscapeDataString(placeId)}");
+
             request.Headers.Add("X-Goog-FieldMask", PlaceDetailsFieldMask);
 
-            return await SendAsync(request);
+            return await SendAsync(request, cancellationToken);
         }
 
         public async Task<GetRouteComponentPhotoCommandResponseBody> GetPlacePhotosAsync(
             string photoName,
             int maxWidth = 400,
-            int maxHeight = 400)
+            int maxHeight = 400,
+            CancellationToken cancellationToken = default)
         {
+            if (!PhotoName.IsMatch(photoName))
+            {
+                throw new ArgumentException(
+                    "A photo name looks like places/{placeId}/photos/{photoId}.", nameof(photoName));
+            }
+
             var url = $"v1/{photoName}/media" +
                       $"?maxHeightPx={maxHeight}&maxWidthPx={maxWidth}&skipHttpRedirect=true";
 
             using var request = CreateRequest(HttpMethod.Get, url);
 
-            var body = await SendAsync(request);
+            var body = await SendAsync(request, cancellationToken);
 
             return JsonConvert.DeserializeObject<GetRouteComponentPhotoCommandResponseBody>(body, JsonOptions)
                    ?? new GetRouteComponentPhotoCommandResponseBody();
@@ -87,10 +106,11 @@ namespace EEaseWebAPI.Persistence.Services.GooglePlaces
             return request;
         }
 
-        private async Task<string> SendAsync(HttpRequestMessage request)
+        private async Task<string> SendAsync(
+            HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            using var response = await _httpClient.SendAsync(request);
-            var body = await response.Content.ReadAsStringAsync();
+            using var response = await _httpClient.SendAsync(request, cancellationToken);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {

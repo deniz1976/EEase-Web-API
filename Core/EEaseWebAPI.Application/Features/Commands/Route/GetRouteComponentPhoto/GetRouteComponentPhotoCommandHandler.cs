@@ -2,46 +2,49 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions.GetRouteComponent;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto
 {
-    public class GetRouteComponentPhotoCommandHandler : IRequestHandler<GetRouteComponentPhotoCommandRequest, GetRouteComponentPhotoCommandResponse>
+    public class GetRouteComponentPhotoCommandHandler
+        : IRequestHandler<GetRouteComponentPhotoCommandRequest, GetRouteComponentPhotoCommandResponse>
     {
+        private const int MaximumPixels = 4800;
+
         private readonly IHeaderService _headerService;
         private readonly IGooglePlacesService _googlePlacesService;
 
-        public GetRouteComponentPhotoCommandHandler(IHeaderService headerService, IGooglePlacesService googlePlacesService)
+        public GetRouteComponentPhotoCommandHandler(
+            IHeaderService headerService, IGooglePlacesService googlePlacesService)
         {
             _headerService = headerService;
             _googlePlacesService = googlePlacesService;
         }
 
-        public async Task<GetRouteComponentPhotoCommandResponse> Handle(GetRouteComponentPhotoCommandRequest request, CancellationToken cancellationToken)
+        public async Task<GetRouteComponentPhotoCommandResponse> Handle(
+            GetRouteComponentPhotoCommandRequest request, CancellationToken cancellationToken)
         {
-            if (GetRouteComponentPhotoRequestControl(request))
+            Validate(request);
+
+            return new GetRouteComponentPhotoCommandResponse
             {
-                return new GetRouteComponentPhotoCommandResponse()
-                {
-                    Body = await _googlePlacesService.GetPlacePhotosAsync(request.photoName, request.maxWidthPx, request.maxHeightPx),
-                    Header = _headerService.HeaderCreate((int)StatusEnum.RouteComponentPhotoRetrievedSuccessfully)
-                };
-            }
-            throw new Exception();
+                Body = await _googlePlacesService.GetPlacePhotosAsync(
+                    request.photoName, request.maxWidthPx, request.maxHeightPx, cancellationToken),
+                Header = _headerService.HeaderCreate((int)StatusEnum.RouteComponentPhotoRetrievedSuccessfully)
+            };
         }
 
-        public bool GetRouteComponentPhotoRequestControl(GetRouteComponentPhotoCommandRequest request)
+        private static void Validate(GetRouteComponentPhotoCommandRequest request)
         {
-            if(request == null || request.photoName == null) throw new ArgumentNullException(nameof(request));
+            if (string.IsNullOrWhiteSpace(request.photoName))
+            {
+                throw new ArgumentException("A photo name is required.", nameof(request));
+            }
 
-            if (request.maxWidthPx > 4800 || request.maxHeightPx > 4800 || request.maxWidthPx <= 0 || request.maxHeightPx <= 0) throw new RouteComponentRequestOutOfRangeException();
-
-            return true;
-
+            if (request.maxWidthPx <= 0 || request.maxHeightPx <= 0 ||
+                request.maxWidthPx > MaximumPixels || request.maxHeightPx > MaximumPixels)
+            {
+                throw new RouteComponentRequestOutOfRangeException();
+            }
         }
     }
 }

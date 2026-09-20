@@ -77,7 +77,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var response = await _googlePlacesService.SearchPlacesAsync(query);
+            var response = await _googlePlacesService.SearchPlacesAsync(query, cancellationToken);
 
             var places = (response?.Places ?? new List<Place>())
                 .Where(place => place != null)

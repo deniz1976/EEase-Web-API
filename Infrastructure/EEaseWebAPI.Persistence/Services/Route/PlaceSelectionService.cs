@@ -77,7 +77,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var details = await _googlePlacesService.GetPlaceDetailsAsync(googleId);
+            var details = await _googlePlacesService.GetPlaceDetailsAsync(googleId, cancellationToken);
 
             T? place;
 

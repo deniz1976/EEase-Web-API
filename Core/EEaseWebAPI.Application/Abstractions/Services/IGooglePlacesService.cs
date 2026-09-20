@@ -1,15 +1,18 @@
 using EEaseWebAPI.Application.DTOs.GooglePlaces;
 using EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto;
-using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface IGooglePlacesService
     {
-        Task<PlaceSearchResponse> SearchPlacesAsync(string query, string? type = null);
+        Task<PlaceSearchResponse> SearchPlacesAsync(string query, CancellationToken cancellationToken = default);
 
-        Task<string> GetPlaceDetailsAsync(string placeId);
+        Task<string> GetPlaceDetailsAsync(string placeId, CancellationToken cancellationToken = default);
 
-        Task<GetRouteComponentPhotoCommandResponseBody> GetPlacePhotosAsync(string photoName, int maxWidth = 400, int maxHeight = 400);
+        Task<GetRouteComponentPhotoCommandResponseBody> GetPlacePhotosAsync(
+            string photoName,
+            int maxWidth = 400,
+            int maxHeight = 400,
+            CancellationToken cancellationToken = default);
     }
 }
