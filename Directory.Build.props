@@ -8,6 +8,9 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <!-- A field that is never assigned is always null: a dependency that was declared and
+         then forgotten in the constructor took an endpoint down this way. -->
+    <WarningsAsErrors>$(WarningsAsErrors);CS0649</WarningsAsErrors>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 

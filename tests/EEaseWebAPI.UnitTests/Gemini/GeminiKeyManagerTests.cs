@@ -134,5 +134,25 @@ namespace EEaseWebAPI.UnitTests.Gemini
             await Assert.ThrowsAnyAsync<OperationCanceledException>(
                 () => manager.AcquireKeyAsync(cts.Token));
         }
+        [Fact]
+        public async Task A_request_gives_up_instead_of_waiting_for_a_key_forever()
+        {
+            var manager = new GeminiKeyManager(Options.Create(new GeminiOptions
+            {
+                ApiKeys = new[] { "only-key" },
+                RequestsPerMinutePerKey = 1,
+                QuotaCooldownSeconds = 600,
+                KeyWaitTimeoutSeconds = 1
+            }));
+
+            await manager.AcquireKeyAsync();
+            manager.ReportQuotaExceeded("only-key");
+
+            // The pool used to loop until the caller cancelled, so an exhausted quota left
+            // the request hanging rather than answering 429.
+            await Assert.ThrowsAsync<GeminiAPIKeyLimitExceededException>(
+                () => manager.AcquireKeyAsync());
+        }
+
     }
 }

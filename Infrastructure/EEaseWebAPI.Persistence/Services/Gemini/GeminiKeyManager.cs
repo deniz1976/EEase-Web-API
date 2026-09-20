@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Options;
@@ -12,6 +13,7 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
         private readonly double _capacity;
         private readonly double _refillPerSecond;
         private readonly TimeSpan _quotaCooldown;
+        private readonly TimeSpan _keyWaitTimeout;
 
         private int _nextIndex;
 
@@ -23,6 +25,7 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
             _capacity = Math.Max(1, geminiOptions.RequestsPerMinutePerKey);
             _refillPerSecond = _capacity / 60d;
             _quotaCooldown = TimeSpan.FromSeconds(geminiOptions.QuotaCooldownSeconds);
+            _keyWaitTimeout = TimeSpan.FromSeconds(geminiOptions.KeyWaitTimeoutSeconds);
 
             _keys = geminiOptions.ApiKeys
                 .Where(key => !string.IsNullOrWhiteSpace(key))
@@ -37,6 +40,8 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
                 throw new GeminiAPIKeyNotFoundException();
             }
 
+            var waitingSince = Stopwatch.StartNew();
+
             while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -49,6 +54,12 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
                     {
                         return apiKey;
                     }
+                }
+
+                if (waitingSince.Elapsed + wait > _keyWaitTimeout)
+                {
+                    throw new GeminiAPIKeyLimitExceededException(
+                        $"No Gemini key became available within {_keyWaitTimeout.TotalSeconds:0} seconds.");
                 }
 
                 await Task.Delay(wait, cancellationToken);

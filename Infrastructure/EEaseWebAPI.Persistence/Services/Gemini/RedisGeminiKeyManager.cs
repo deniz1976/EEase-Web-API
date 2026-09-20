@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using EEaseWebAPI.Application.Abstractions.Services;
@@ -79,6 +80,7 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
         private readonly IConnectionMultiplexer _connection;
         private readonly IGeminiKeyManager _fallback;
         private readonly ILogger<RedisGeminiKeyManager> _logger;
+        private readonly TimeSpan _keyWaitTimeout;
 
         private readonly string[] _apiKeys;
         private readonly RedisKey[] _bucketKeys;
@@ -103,6 +105,8 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
             _logger = logger;
 
             var gemini = geminiOptions.Value;
+
+            _keyWaitTimeout = TimeSpan.FromSeconds(gemini.KeyWaitTimeoutSeconds);
             var prefix = redisOptions.Value.InstanceName;
 
             _apiKeys = gemini.ApiKeys
@@ -130,6 +134,8 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
             {
                 throw new GeminiAPIKeyNotFoundException();
             }
+
+            var waitingSince = Stopwatch.StartNew();
 
             while (true)
             {
@@ -171,6 +177,13 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
                 }
 
                 var waitMilliseconds = Math.Clamp((int)values[1], 10, 1000);
+
+                if (waitingSince.Elapsed + TimeSpan.FromMilliseconds(waitMilliseconds) > _keyWaitTimeout)
+                {
+                    throw new GeminiAPIKeyLimitExceededException(
+                        $"No Gemini key became available within {_keyWaitTimeout.TotalSeconds:0} seconds.");
+                }
+
                 await Task.Delay(waitMilliseconds, cancellationToken);
             }
         }

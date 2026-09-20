@@ -16,10 +16,14 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById
         private readonly IUserProfileService _profileService;
         private readonly IUserPreferenceService _preferenceService;
 
-        public GetUserInfoByIdQueryHandler(IHeaderService headerService, IUserProfileService profileService)
+        public GetUserInfoByIdQueryHandler(
+            IHeaderService headerService,
+            IUserProfileService profileService,
+            IUserPreferenceService preferenceService)
         {
             _headerService = headerService;
             _profileService = profileService;
+            _preferenceService = preferenceService;
         }
 
         public async Task<GetUserInfoByIdQueryResponse> Handle(GetUserInfoByIdQueryRequest request, CancellationToken cancellationToken)

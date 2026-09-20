@@ -1,26 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using EEaseWebAPI.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Infrastructure.Filters
 {
-    public class ValidationFilter : IAsyncActionFilter
+    /// <summary>
+    /// Turns a model binding failure into the same exception FluentValidation raises, so a
+    /// missing field and a field that breaks a rule are reported in one shape rather than
+    /// two: the global handler writes both.
+    /// </summary>
+    public sealed class ValidationFilter : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             if (!context.ModelState.IsValid)
             {
                 var errors = context.ModelState
-                       .Where(predicate: x => x.Value.Errors.Any())
-                       .ToDictionary(e => e.Key, e => e.Value.Errors.Select(e => e.ErrorMessage))
-                       .ToArray();
+                    .Where(entry => entry.Value?.Errors.Count > 0)
+                    .ToDictionary(
+                        entry => entry.Key,
+                        entry => entry.Value!.Errors.Select(error => error.ErrorMessage).ToArray());
 
-                context.Result = new BadRequestObjectResult(errors);
-                return;
+                throw new RequestValidationException(errors);
             }
 
             await next();
