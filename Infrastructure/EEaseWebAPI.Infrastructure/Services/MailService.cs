@@ -60,19 +60,19 @@ namespace EEaseWebAPI.Infrastructure.Services
         }
 
         public bool SendVerificationEmail(string email, string subject, string code) =>
-            SendTemplate("VerificationCode", email, subject, code);
+            SendTemplate(MailTemplate.VerificationCode, email, subject, code);
 
         public bool SendResetPasswordEmail(string email, string subject, string code) =>
-            SendTemplate("ResetPassword", email, subject, code);
+            SendTemplate(MailTemplate.ResetPassword, email, subject, code);
 
         public bool SendDeleteCodeEmail(string email, string subject, string code) =>
-            SendTemplate("DeleteAccount", email, subject, code);
+            SendTemplate(MailTemplate.DeleteAccount, email, subject, code);
 
-        private bool SendTemplate(string templateName, string email, string subject, string code)
+        private bool SendTemplate(MailTemplate template, string email, string subject, string code)
         {
             try
             {
-                SendEmail(email, subject, _templateProvider.Render(templateName, code));
+                SendEmail(email, subject, _templateProvider.Render(template, code));
                 return true;
             }
             catch (Exception exception)
@@ -80,7 +80,7 @@ namespace EEaseWebAPI.Infrastructure.Services
                 _logger.LogError(
                     exception,
                     "Could not send the {Template} email. Recipient: {Email}",
-                    templateName,
+                    template,
                     email);
 
                 return false;

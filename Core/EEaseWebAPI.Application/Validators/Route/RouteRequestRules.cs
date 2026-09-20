@@ -1,5 +1,5 @@
 using FluentValidation;
-using Microsoft.Extensions.Localization;
+using EEaseWebAPI.Application.Resources;
 
 namespace EEaseWebAPI.Application.Validators.Route
 {
@@ -9,32 +9,30 @@ namespace EEaseWebAPI.Application.Validators.Route
         public const int MaximumCompanions = 4;
 
         public static IRuleBuilderOptions<T, string?> Destination<T>(
-            IRuleBuilder<T, string?> rule,
-            IStringLocalizer<ValidationMessages> messages) =>
-            rule.NotEmpty().WithMessage(messages["Route_DestinationRequired"])
-                .MaximumLength(100).WithMessage(messages["Route_DestinationTooLong"]);
+            IRuleBuilder<T, string?> rule) =>
+            rule.NotEmpty().WithMessage(ValidationMessages.Route_DestinationRequired)
+                .MaximumLength(100).WithMessage(ValidationMessages.Route_DestinationTooLong);
 
         public static void DateRange<T>(
             AbstractValidator<T> validator,
             Func<T, DateOnly?> start,
-            Func<T, DateOnly?> end,
-            IStringLocalizer<ValidationMessages> messages)
+            Func<T, DateOnly?> end)
         {
             validator.RuleFor(request => start(request))
-                .NotNull().WithMessage(messages["Route_StartDateRequired"]);
+                .NotNull().WithMessage(ValidationMessages.Route_StartDateRequired);
 
             validator.RuleFor(request => end(request))
-                .NotNull().WithMessage(messages["Route_EndDateRequired"]);
+                .NotNull().WithMessage(ValidationMessages.Route_EndDateRequired);
 
             validator.RuleFor(request => request)
                 .Must(request => IsNotInThePast(start(request), end(request)))
-                .WithMessage(messages["Route_DateInThePast"])
+                .WithMessage(ValidationMessages.Route_DateInThePast)
                 .Must(request => IsWithinAYear(start(request), end(request)))
-                .WithMessage(messages["Route_DateTooFarAway"])
+                .WithMessage(ValidationMessages.Route_DateTooFarAway)
                 .Must(request => IsOrdered(start(request), end(request)))
-                .WithMessage(messages["Route_DatesOutOfOrder"])
+                .WithMessage(ValidationMessages.Route_DatesOutOfOrder)
                 .Must(request => IsWithinDayLimit(start(request), end(request)))
-                .WithMessage(messages["Route_TooManyDays", MaximumDays])
+                .WithMessage(string.Format(ValidationMessages.Route_TooManyDays, MaximumDays))
                 .When(request => start(request).HasValue && end(request).HasValue);
         }
 

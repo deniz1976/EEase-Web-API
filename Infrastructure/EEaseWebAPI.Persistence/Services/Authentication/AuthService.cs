@@ -9,8 +9,8 @@ using EEaseWebAPI.Application.MapEntities.RefreshTokenLogin;
 using EEaseWebAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using EEaseWebAPI.Application;
+using EEaseWebAPI.Application.Resources;
 
 namespace EEaseWebAPI.Persistence.Services.Authentication
 {
@@ -28,9 +28,6 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
         private readonly IAccountDeletionPolicy _deletionPolicy;
         private readonly IVerificationCodeGenerator _codeGenerator;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
         public AuthService(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
@@ -38,10 +35,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             IMailService mailService,
             IUserAccountService accountService,
             IAccountDeletionPolicy deletionPolicy,
-            IVerificationCodeGenerator codeGenerator,
-
-            IStringLocalizer<AppMessages> messages)
-
+            IVerificationCodeGenerator codeGenerator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -50,8 +44,6 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             _accountService = accountService;
             _deletionPolicy = deletionPolicy;
             _codeGenerator = codeGenerator;
-
-            _messages = messages;
         }
 
         public async Task<Token> CreateUserExternalAsync(
@@ -202,7 +194,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
             await _userManager.UpdateAsync(user);
 
-            _mailService.SendVerificationEmail(user.Email, _messages["Mail_VerificationSubject"], user.VerificationCode);
+            _mailService.SendVerificationEmail(user.Email, AppMessages.Mail_VerificationSubject, user.VerificationCode);
         }
     }
 }

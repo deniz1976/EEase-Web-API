@@ -1,7 +1,7 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName
 {
@@ -11,22 +11,14 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName
         private readonly IUserProfileService _profileService;
         private readonly IFriendshipService _friendshipService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
         public GetUserPhotoByNameQueryHandler(
             IHeaderService headerService,
             IUserProfileService profileService,
-            IFriendshipService friendshipService,
-
-            IStringLocalizer<AppMessages> messages)
-
+            IFriendshipService friendshipService)
         {
             _headerService = headerService;
             _profileService = profileService;
             _friendshipService = friendshipService;
-
-            _messages = messages;
         }
 
         public async Task<GetUserPhotoByNameQueryResponse> Handle(GetUserPhotoByNameQueryRequest request, CancellationToken cancellationToken)
@@ -46,7 +38,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName
                         Body = new()
                         {
                             path = null,
-                            errorMessage = _messages["NotFriendsPhoto"]
+                            errorMessage = AppMessages.NotFriendsPhoto
                         }
                     }
                 };

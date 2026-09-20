@@ -1,13 +1,13 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions.Friendship;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
 {
@@ -16,18 +16,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
         private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public UnblockUserCommandHandler(IFriendshipService friendshipService, IHeaderService headerService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public UnblockUserCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
             _friendshipService = friendshipService;
             _headerService = headerService;
-
-            _messages = messages;
         }
 
         public async Task<UnblockUserCommandResponse> Handle(UnblockUserCommandRequest request, CancellationToken cancellationToken)
@@ -44,7 +36,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserUnblockedSuccessfully),
                 Body = new UnblockFriendCommandResponseBody()
                 {
-                    Message = _messages["UserUnblocked"]
+                    Message = AppMessages.UserUnblocked
                 }
             };
         }

@@ -27,4 +27,25 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
   </ItemGroup>
 
+  <!-- The neutral .resx files generate a class with one property per message, so a typo
+       in a key is a build error instead of an English sentence in a Turkish response. -->
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\AppMessages.resx">
+      <Generator>MSBuild:Compile</Generator>
+      <StronglyTypedFileName>$(IntermediateOutputPath)AppMessages.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedNamespace>EEaseWebAPI.Application.Resources</StronglyTypedNamespace>
+      <StronglyTypedClassName>AppMessages</StronglyTypedClassName>
+      <PublicClass>true</PublicClass>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ValidationMessages.resx">
+      <Generator>MSBuild:Compile</Generator>
+      <StronglyTypedFileName>$(IntermediateOutputPath)ValidationMessages.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedNamespace>EEaseWebAPI.Application.Resources</StronglyTypedNamespace>
+      <StronglyTypedClassName>ValidationMessages</StronglyTypedClassName>
+      <PublicClass>true</PublicClass>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

@@ -7,8 +7,8 @@ using EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser;
 using EEaseWebAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using System.Globalization;
-using Microsoft.Extensions.Localization;
 using EEaseWebAPI.Application;
+using EEaseWebAPI.Application.Resources;
 
 namespace EEaseWebAPI.Persistence.Services.User
 {
@@ -24,26 +24,18 @@ namespace EEaseWebAPI.Persistence.Services.User
         private readonly IUserCacheService _userCacheService;
         private readonly IVerificationCodeGenerator _codeGenerator;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
         public UserRegistrationService(
             UserManager<AppUser> userManager,
             IHeaderService headerService,
             IMailService mailService,
             IUserCacheService userCacheService,
-            IVerificationCodeGenerator codeGenerator,
-
-            IStringLocalizer<AppMessages> messages)
-
+            IVerificationCodeGenerator codeGenerator)
         {
             _userManager = userManager;
             _headerService = headerService;
             _mailService = mailService;
             _userCacheService = userCacheService;
             _codeGenerator = codeGenerator;
-
-            _messages = messages;
         }
 
         public async Task<CreateUserResponse> CreateAsync(CreateUser model)
@@ -86,7 +78,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                     $"Failed to create user: {Describe(result)}", (int)StatusEnum.UserUpdateFailed);
             }
 
-            _mailService.SendVerificationEmail(model.Email, _messages["Mail_VerificationSubject"], verificationCode);
+            _mailService.SendVerificationEmail(model.Email, AppMessages.Mail_VerificationSubject, verificationCode);
 
             return new CreateUserResponse
             {
@@ -95,7 +87,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                     Header = _headerService.HeaderCreate((int)StatusEnum.SuccessfullyCreated),
                     Body = new Application.MapEntities.CreateUser.CreateUserBody
                     {
-                        message = _messages["AccountCreated"]
+                        message = AppMessages.AccountCreated
                     }
                 }
             };
@@ -121,7 +113,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                     $"Failed to store the verification code: {Describe(result)}", (int)StatusEnum.UserUpdateFailed);
             }
 
-            _mailService.SendVerificationEmail(user.Email, _messages["Mail_VerificationSubject"], user.VerificationCode);
+            _mailService.SendVerificationEmail(user.Email, AppMessages.Mail_VerificationSubject, user.VerificationCode);
 
             return true;
         }

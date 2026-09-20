@@ -170,7 +170,7 @@
     <value>Bu rotayı beğenmediniz</value>
   </data>
   <data name="NoRoutesToDelete" xml:space="preserve">
-    <value>Silinecek rota yok.</value>
+    <value>Silinecek rotanız yok.</value>
   </data>
   <data name="RoutesDeleted" xml:space="preserve">
     <value>Rotalarınız silindi.</value>

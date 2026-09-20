@@ -5,13 +5,12 @@ using EEaseWebAPI.API.Extensions;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Route;
+using EEaseWebAPI.UnitTests.Localization;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using Xunit;
 using UserNotFoundException = EEaseWebAPI.Application.Exceptions.Login.UserNotFoundException;
 
@@ -23,14 +22,10 @@ namespace EEaseWebAPI.UnitTests.Api
 
         public GlobalExceptionHandlerTests()
         {
-            var localizerFactory = new ResourceManagerStringLocalizerFactory(
-                Options.Create(new LocalizationOptions { ResourcesPath = "Resources" }),
-                NullLoggerFactory.Instance);
-
             _handler = new GlobalExceptionHandler(
                 NullLogger<GlobalExceptionHandler>.Instance,
                 new ProductionEnvironment(),
-                new StringLocalizer<ErrorMessages>(localizerFactory));
+                Localizers.For<ErrorMessages>());
         }
 
         private async Task<(int StatusCode, JsonElement Body)> HandleAsync(Exception exception, string? culture = null)

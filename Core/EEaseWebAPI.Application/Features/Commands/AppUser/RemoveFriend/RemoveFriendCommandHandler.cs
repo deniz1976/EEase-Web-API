@@ -2,8 +2,8 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Friendship;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
 {
@@ -12,18 +12,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
         private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public RemoveFriendCommandHandler(IFriendshipService friendshipService, IHeaderService headerService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public RemoveFriendCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
             _friendshipService = friendshipService;
             _headerService = headerService;
-
-            _messages = messages;
         }
 
         public async Task<RemoveFriendCommandResponse> Handle(RemoveFriendCommand request, CancellationToken cancellationToken)
@@ -35,7 +27,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
                 Header = _headerService.HeaderCreate((int)StatusEnum.FriendRemovedSuccessfully),
                 Body = new RemoveFriendCommandResponseBody
                 {
-                    Message = _messages["FriendRemoved"]
+                    Message = AppMessages.FriendRemoved
                 }
             };
         }

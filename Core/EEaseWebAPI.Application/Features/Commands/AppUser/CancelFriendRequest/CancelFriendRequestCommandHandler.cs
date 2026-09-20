@@ -1,12 +1,12 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.CancelFriendRequest
 {
@@ -16,18 +16,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CancelFriendRequest
         private readonly IFriendshipService _friendshipService;
         
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public CancelFriendRequestCommandHandler(IHeaderService headerService, IFriendshipService friendshipService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public CancelFriendRequestCommandHandler(IHeaderService headerService, IFriendshipService friendshipService)
         {
             _headerService = headerService;
             _friendshipService = friendshipService;
-
-            _messages = messages;
         }
 
         public async Task<CancelFriendRequestCommandResponse> Handle(CancelFriendRequestCommandRequest request, CancellationToken cancellationToken)
@@ -44,11 +36,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CancelFriendRequest
                 Body = new()
                 {
                     success = true,
-                    message = _messages["FriendRequestCancelled"]
+                    message = AppMessages.FriendRequestCancelled
                 },
                 Header = _headerService.HeaderCreate(((int)StatusEnum.FriendRequestCancelledSuccessfully))
             };
-
         }
     }
 }

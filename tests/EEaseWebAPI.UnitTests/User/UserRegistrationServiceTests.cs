@@ -39,7 +39,7 @@ namespace EEaseWebAPI.UnitTests.User
             _codes.Generate().Returns("123456");
 
             _service = new UserRegistrationService(
-                _userManager, _headers, _mail, _cache, _codes, Localizers.For<AppMessages>());
+                _userManager, _headers, _mail, _cache, _codes);
         }
 
         private static CreateUser Registration(DateOnly? bornDate = null, string name = "deniz", string surname = "mutlu") =>

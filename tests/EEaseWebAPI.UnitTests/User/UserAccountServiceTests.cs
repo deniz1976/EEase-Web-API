@@ -37,7 +37,7 @@ namespace EEaseWebAPI.UnitTests.User
             _userManager.UpdateAsync(Arg.Any<AppUser>()).Returns(IdentityResult.Success);
             _codes.Generate().Returns("123456");
 
-            _service = new UserAccountService(_userManager, _mail, _codes, Localizers.For<AppMessages>());
+            _service = new UserAccountService(_userManager, _mail, _codes);
         }
 
         private void WithDeleteCode(string code = "123456", TimeSpan? age = null)

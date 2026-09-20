@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EEaseWebAPI.Application.Enums;
-using Microsoft.Extensions.Localization;
+using EEaseWebAPI.Application.Resources;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
 {
@@ -15,18 +15,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
         private readonly IHeaderService _headerService;
         private readonly IUserAccountService _accountService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public DeleteUserCommandHandler(IHeaderService headerService, IUserAccountService accountService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public DeleteUserCommandHandler(IHeaderService headerService, IUserAccountService accountService)
         {
             _headerService = headerService;
             _accountService = accountService;
-
-            _messages = messages;
         }
 
         public async Task<DeleteUserCommandResponse> Handle(DeleteUserCommandRequest request, CancellationToken cancellationToken)
@@ -37,8 +29,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
             var outcome = await _accountService.RequestDeletionAsync(request.username);
 
             return outcome == DeleteRequestOutcome.CodeSent
-                ? CreateResponse((int)StatusEnum.UserDeleteCodeSentSuccessfully, _messages["DeleteCodeSent"])
-                : CreateResponse((int)StatusEnum.UserDeletionFailed, _messages["AccountReactivated"]);
+                ? CreateResponse((int)StatusEnum.UserDeleteCodeSentSuccessfully, AppMessages.DeleteCodeSent)
+                : CreateResponse((int)StatusEnum.UserDeletionFailed, AppMessages.AccountReactivated);
         }
 
         private DeleteUserCommandResponse CreateResponse(int headerCode, string message)

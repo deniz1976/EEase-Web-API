@@ -55,7 +55,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
                 new Token { AccessToken = "access", RefreshToken = "refresh", Expiration = DateTime.UtcNow.AddMinutes(15) });
 
             _service = new AuthService(
-                _userManager, _signInManager, _tokenHandler, _mail, _accountService, _deletionPolicy, _codes, Localizers.For<AppMessages>());
+                _userManager, _signInManager, _tokenHandler, _mail, _accountService, _deletionPolicy, _codes);
         }
 
         [Fact]

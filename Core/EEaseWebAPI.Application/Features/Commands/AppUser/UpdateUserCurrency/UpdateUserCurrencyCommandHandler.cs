@@ -1,12 +1,12 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency
 {
@@ -15,18 +15,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency
         private readonly IUserProfileService _profileService;
         private readonly IHeaderService _headerService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public UpdateUserCurrencyCommandHandler(IUserProfileService profileService, IHeaderService headerService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public UpdateUserCurrencyCommandHandler(IUserProfileService profileService, IHeaderService headerService)
         {
             _profileService = profileService;
             _headerService = headerService;
-
-            _messages = messages;
         }
 
         public async Task<UpdateUserCurrencyCommandResponse> Handle(UpdateUserCurrencyCommandRequest request, CancellationToken cancellationToken)
@@ -40,7 +32,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency
                     Header = _headerService.HeaderCreate((int)StatusEnum.UserCurrencyUpdatedSuccessfully),
                     Body = new()
                     {
-                        Message = _messages["CurrencyUpdated"]
+                        Message = AppMessages.CurrencyUpdated
                     }
                 }
             };

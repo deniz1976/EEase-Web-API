@@ -2,8 +2,8 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.MapEntities;
 using EEaseWebAPI.Application.MapEntities.UpdateUserPreferences;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferences
 {
@@ -12,18 +12,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
         private readonly IUserPreferenceService _preferenceService;
         private readonly IHeaderService _headerService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public UpdateUserPreferencesCommandHandler(IUserPreferenceService preferenceService, IHeaderService headerService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public UpdateUserPreferencesCommandHandler(IUserPreferenceService preferenceService, IHeaderService headerService)
         {
             _preferenceService = preferenceService;
             _headerService = headerService;
-
-            _messages = messages;
         }
 
         public async Task<UpdateUserPreferencesCommandResponse> Handle(UpdateUserPreferencesCommandRequest request, CancellationToken cancellationToken)
@@ -37,7 +29,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
                     Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesUpdatedSuccessfully),
                     Body = new UpdateUserPreferencesBody
                     {
-                        message = _messages["PreferencesUpdated"]
+                        message = AppMessages.PreferencesUpdated
                     }
                 }
             };

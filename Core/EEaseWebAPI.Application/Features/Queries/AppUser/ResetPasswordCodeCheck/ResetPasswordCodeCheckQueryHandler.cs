@@ -1,13 +1,13 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Exceptions.ResetPassword;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeCheck
 {
@@ -17,18 +17,10 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeChec
         private readonly IPasswordService _passwordService;
         private readonly IHeaderService _headerService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public ResetPasswordCodeCheckQueryHandler(IPasswordService passwordService, IHeaderService headerService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public ResetPasswordCodeCheckQueryHandler(IPasswordService passwordService, IHeaderService headerService)
         {
             _passwordService = passwordService;
             _headerService = headerService;
-
-            _messages = messages;
         }
 
         public async Task<ResetPasswordCodeCheckQueryResponse> Handle(ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
@@ -45,13 +37,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeChec
                     ResetPasswordCodeCheck = new MapEntities.ResetPasswordCodeCheck.ResetPasswordCodeCheck
                     {
                         Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
-                        Body = new() { message = _messages["ResetCodeCorrect"] }
+                        Body = new() { message = AppMessages.ResetCodeCorrect }
                     }
                 };
             }
 
             throw new ResetPasswordCodeNotCorrectException("Reset password code not correct", (int)StatusEnum.InvalidResetPasswordCode);
-
         }
     }
 }

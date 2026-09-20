@@ -5,8 +5,8 @@ using EEaseWebAPI.Application.Exceptions.DeleteUser;
 using EEaseWebAPI.Application.MapEntities.StatusCheck;
 using EEaseWebAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Localization;
 using EEaseWebAPI.Application;
+using EEaseWebAPI.Application.Resources;
 
 namespace EEaseWebAPI.Persistence.Services.User
 {
@@ -20,22 +20,14 @@ namespace EEaseWebAPI.Persistence.Services.User
         private readonly IMailService _mailService;
         private readonly IVerificationCodeGenerator _codeGenerator;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
         public UserAccountService(
             UserManager<AppUser> userManager,
             IMailService mailService,
-            IVerificationCodeGenerator codeGenerator,
-
-            IStringLocalizer<AppMessages> messages)
-
+            IVerificationCodeGenerator codeGenerator)
         {
             _userManager = userManager;
             _mailService = mailService;
             _codeGenerator = codeGenerator;
-
-            _messages = messages;
         }
 
         public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, TimeSpan lifetime)
@@ -73,7 +65,7 @@ namespace EEaseWebAPI.Persistence.Services.User
 
             await _userManager.UpdateAsync(user);
 
-            _mailService.SendDeleteCodeEmail(user.Email, _messages["Mail_DeleteAccountSubject"], user.DeleteCode);
+            _mailService.SendDeleteCodeEmail(user.Email, AppMessages.Mail_DeleteAccountSubject, user.DeleteCode);
 
             return DeleteRequestOutcome.CodeSent;
         }
@@ -128,7 +120,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return new StatusCheckBody
             {
                 status = isActive,
-                message = isActive ? _messages["UserActive"] : _messages["UserPassive"]
+                message = isActive ? AppMessages.UserActive : AppMessages.UserPassive
             };
         }
 

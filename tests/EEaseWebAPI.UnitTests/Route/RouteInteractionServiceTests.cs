@@ -68,7 +68,7 @@ namespace EEaseWebAPI.UnitTests.Route
                 .Returns(new PreferenceFeedbackResult("accommodation", new Dictionary<string, int> { ["Luxury"] = 5 }));
 
             _service = new RouteInteractionService(
-                _userManager, _context, _accessPolicy, _feedback, Localizers.For<AppMessages>());
+                _userManager, _context, _accessPolicy, _feedback);
         }
 
         public void Dispose() => _context.Dispose();
@@ -178,7 +178,7 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             var message = await Culture.UseAsync("en", () => _service.DeleteAllRoutes("bob"));
 
-            message.Should().Be("route count is 0.");
+            message.Should().Be("You have no routes to delete.");
         }
 
         [Fact]
@@ -186,7 +186,7 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             var message = await Culture.UseAsync("en", () => _service.DeleteAllRoutes("alice"));
 
-            message.Should().Be("routes deleted successfully.");
+            message.Should().Be("Your routes have been deleted.");
 
             _context.StandardRoutes.Should().BeEmpty();
         }

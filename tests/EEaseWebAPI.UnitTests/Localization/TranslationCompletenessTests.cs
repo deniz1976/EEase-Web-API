@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using EEaseWebAPI.API;
-using EEaseWebAPI.Application;
+using EEaseWebAPI.Application.Resources;
 using FluentAssertions;
 using Xunit;
 

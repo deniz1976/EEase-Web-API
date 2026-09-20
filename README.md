@@ -194,11 +194,16 @@ The API answers in the language of the `Accept-Language` header, `en` by default
 `tr` supported. Three resource files hold the wording; adding a language means adding a
 `.<culture>.resx` next to each and listing the culture in `AddSupportedCultures`.
 
-| Resources | What it holds |
-|---|---|
-| `Presentation/EEaseWebAPI.API/Resources/ErrorMessages.*.resx` | Error messages, keyed by `StatusEnum` name |
-| `Core/EEaseWebAPI.Application/Resources/ValidationMessages.*.resx` | FluentValidation field messages |
-| `Core/EEaseWebAPI.Application/Resources/AppMessages.*.resx` | Everything a handler or service says back, plus the mail subjects and the wording inside the mail templates |
+| Resources | What it holds | Read as |
+|---|---|---|
+| `Core/EEaseWebAPI.Application/Resources/AppMessages.*.resx` | Everything a handler or service says back, plus the mail subjects and the wording inside the mail templates | `AppMessages.AccountCreated` |
+| `Core/EEaseWebAPI.Application/Resources/ValidationMessages.*.resx` | FluentValidation field messages | `ValidationMessages.Email_Invalid` |
+| `Presentation/EEaseWebAPI.API/Resources/ErrorMessages.*.resx` | Error messages, keyed by `StatusEnum` name | looked up by code |
+
+The first two generate a class with one property per message, so a mistyped key is a
+build error rather than an English sentence in a Turkish response. Error messages are
+the exception: their key is the status code the exception carries, which is only known
+at runtime, so they are looked up through `IStringLocalizer`.
 
 The mail templates are one set of markup per mail, not one per language: the words come
 out of the resources through `{{Placeholder}}` tokens.

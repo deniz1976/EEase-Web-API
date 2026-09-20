@@ -1,7 +1,7 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
 {
@@ -10,18 +10,10 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
         private readonly IRouteService _routeService;
         private readonly IHeaderService _headerService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public CheckRouteLikeStatusQueryHandler(IRouteService routeService, IHeaderService headerService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public CheckRouteLikeStatusQueryHandler(IRouteService routeService, IHeaderService headerService)
         {
             _routeService = routeService;
             _headerService = headerService;
-
-            _messages = messages;
         }
 
         public async Task<CheckRouteLikeStatusQueryResponse> Handle(CheckRouteLikeStatusQueryRequest request, CancellationToken cancellationToken)
@@ -35,10 +27,9 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
                     Body = new CheckRouteLikeStatusQueryResponseBody
                     {
                         IsLiked = isLiked,
-                        Message = isLiked ? _messages["RouteLiked"] : _messages["RouteNotLiked"]
+                        Message = isLiked ? AppMessages.RouteLiked : AppMessages.RouteNotLiked
                     }
                 };
-
         }
     }
 }

@@ -1,25 +1,25 @@
 using EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute;
+using EEaseWebAPI.Application.Resources;
 using FluentValidation;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Validators.Route
 {
     public class CreateCustomRouteCommandValidator : AbstractValidator<CreateCustomRouteCommandRequest>
     {
-        public CreateCustomRouteCommandValidator(IStringLocalizer<ValidationMessages> messages)
+        public CreateCustomRouteCommandValidator()
         {
-            RouteRequestRules.Destination(RuleFor(request => request.destination), messages);
-            RouteRequestRules.DateRange(this, request => request.StartDate, request => request.EndDate, messages);
+            RouteRequestRules.Destination(RuleFor(request => request.destination));
+            RouteRequestRules.DateRange(this, request => request.StartDate, request => request.EndDate);
 
             RuleFor(request => request.username)
-                .NotEmpty().WithMessage(messages["Route_UsernameRequired"]);
+                .NotEmpty().WithMessage(ValidationMessages.Route_UsernameRequired);
 
             RuleFor(request => request.usernames)
                 .Must(usernames => usernames == null || usernames.Count <= RouteRequestRules.MaximumCompanions)
-                .WithMessage(messages["Route_TooManyCompanions", RouteRequestRules.MaximumCompanions]);
+                .WithMessage(string.Format(ValidationMessages.Route_TooManyCompanions, RouteRequestRules.MaximumCompanions));
 
             RuleForEach(request => request.usernames)
-                .NotEmpty().WithMessage(messages["Route_CompanionUsernameEmpty"]);
+                .NotEmpty().WithMessage(ValidationMessages.Route_CompanionUsernameEmpty);
         }
     }
 }

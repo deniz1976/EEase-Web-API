@@ -1,13 +1,13 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.MapEntities.StatusCheck;
+using EEaseWebAPI.Application.Resources;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
 {
@@ -16,18 +16,10 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
         private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        private readonly IStringLocalizer<AppMessages> _messages;
-
-
-        public CheckFriendRequestQueryHandler(IFriendshipService friendshipService, IHeaderService headerService,
-
-            IStringLocalizer<AppMessages> messages)
-
+        public CheckFriendRequestQueryHandler(IFriendshipService friendshipService, IHeaderService headerService)
         {
             _friendshipService = friendshipService;
             _headerService = headerService;
-
-            _messages = messages;
         }
 
         public async Task<CheckFriendRequestQueryResponse> Handle(CheckFriendRequestQueryRequest request, CancellationToken cancellationToken)
@@ -50,12 +42,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
         {
             return status switch
             {
-                FriendRequestStatus.NoRequest => _messages["NoFriendRequest"],
-                FriendRequestStatus.Requester => _messages["FriendRequestPending"],
-                FriendRequestStatus.Addressee => _messages["FriendRequestWaitingForYou"],
-                FriendRequestStatus.AlreadyFriends => _messages["AlreadyFriends"],
-                FriendRequestStatus.Blocked => _messages["UserIsBlocked"],
-                _ => _messages["UnknownFriendRequestStatus"]
+                FriendRequestStatus.NoRequest => AppMessages.NoFriendRequest,
+                FriendRequestStatus.Requester => AppMessages.FriendRequestPending,
+                FriendRequestStatus.Addressee => AppMessages.FriendRequestWaitingForYou,
+                FriendRequestStatus.AlreadyFriends => AppMessages.AlreadyFriends,
+                FriendRequestStatus.Blocked => AppMessages.UserIsBlocked,
+                _ => AppMessages.UnknownFriendRequestStatus
             };
         }
     }
