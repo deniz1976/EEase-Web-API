@@ -7,17 +7,20 @@ using EEaseWebAPI.Application.Features.Commands.AppUser.RefreshTokenLoginUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPassword;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser;
 using EEaseWebAPI.Application.Features.Queries;
-using EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse;
 using EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeCheck;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    /// <summary>
+    /// Signing in and getting back in. These are the one place in the API where a path
+    /// names an act rather than a thing: there is no useful noun for "prove who you are".
+    /// </summary>
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ApiControllerBase
     {
@@ -28,77 +31,81 @@ namespace EEaseWebAPI.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("[Action]")]
+        [HttpPost("login")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(LoginUserCommandResponse),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(LoginUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> Login([FromBody] LoginUserCommandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Login(
+            [FromBody] LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            LoginUserCommandResponse loginUserCommandResponse = await _mediator.Send(request, cancellationToken);
-            return Ok(loginUserCommandResponse);
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
         }
 
-        [HttpPost("[Action]")]
+        [HttpPost("refresh")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(RefreshTokenLoginUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> RefreshTokenLogin([FromBody] RefreshTokenLoginUserCommandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> RefreshTokenLogin(
+            [FromBody] RefreshTokenLoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            RefreshTokenLoginUserCommandResponse response = await _mediator.Send(request, cancellationToken);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(ResetPasswordUserCommandResponse), StatusCodes.Status200OK)]
-        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordUserCommandRequest request, CancellationToken cancellationToken)
-        {
-            ResetPasswordUserCommandResponse response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-        }
-
-        [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(ResetPasswordCodeCheckQueryResponse), StatusCodes.Status200OK)]
-        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPasswordCodeCheck([FromBody] ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
-        {
-            ResetPasswordCodeCheckQueryResponse response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-        }
-
-        [HttpPut("[Action]")]
-        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(ResetPasswordCommandResponse),StatusCodes.Status200OK)]
-        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPasswordWithCode([FromBody] ResetPasswordCommandRequest request, CancellationToken cancellationToken)
-        {
-            ResetPasswordCommandResponse response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-        }
-
-        [HttpPut("[Action]")]
+        /// <summary>Changing a password you still know, which needs the old one.</summary>
+        [HttpPut("password")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ChangePasswordCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO, CancellationToken cancellationToken)
+        public async Task<IActionResult> ChangePassword(
+            [FromBody] ChangePasswordDTO changePasswordDTO, CancellationToken cancellationToken)
         {
-            ChangePasswordCommandRequest request = new ChangePasswordCommandRequest() { Username = CurrentUsername,OldPassword = changePasswordDTO.OldPassword, NewPassword = changePasswordDTO.NewPassword};
-            ChangePasswordCommandResponse response = await _mediator.Send(request, cancellationToken);
+            var request = new ChangePasswordCommandRequest
+            {
+                Username = CurrentUsername,
+                OldPassword = changePasswordDTO.OldPassword,
+                NewPassword = changePasswordDTO.NewPassword
+            };
+
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("[Action]")]
-        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(CheckEmailIsInUseQueryResponse), StatusCodes.Status200OK)]
+        /// <summary>Starts a reset for a password nobody remembers, by sending a code.</summary>
+        [HttpPost("password-resets")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ResetPasswordUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> CheckEmailIsInUse([FromQuery] CheckEmailIsInUseQueryRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> RequestPasswordReset(
+            [FromBody] ResetPasswordUserCommandRequest request, CancellationToken cancellationToken)
         {
-            CheckEmailIsInUseQueryResponse checkEmailIsInUseQueryResponse = await _mediator.Send(request, cancellationToken);
-            return Ok(checkEmailIsInUseQueryResponse);
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPost("password-resets/verify")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ResetPasswordCodeCheckQueryResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
+        public async Task<IActionResult> VerifyPasswordResetCode(
+            [FromBody] ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPost("password-resets/complete")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ResetPasswordCommandResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
+        public async Task<IActionResult> CompletePasswordReset(
+            [FromBody] ResetPasswordCommandRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
         }
     }
 }

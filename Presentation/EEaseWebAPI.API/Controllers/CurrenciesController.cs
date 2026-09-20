@@ -7,33 +7,36 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/currencies")]
     [ApiController]
-    public class CurrencyController : ApiControllerBase
+    public class CurrenciesController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
-        public CurrencyController(IMediator mediator)
+        public CurrenciesController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpGet("[Action]")]
+        [HttpGet]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetCurrenciesQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<IActionResult> GetCurrencies([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetCurrencies(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            CancellationToken cancellationToken = default)
         {
-            var userName = CurrentUsername;
-            GetCurrenciesQueryRequest request = new()
+            var request = new GetCurrenciesQueryRequest
             {
-                Username = userName,
+                Username = CurrentUsername,
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
-            GetCurrenciesQueryResponse response = await _mediator.Send(request, cancellationToken);
+
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
     }

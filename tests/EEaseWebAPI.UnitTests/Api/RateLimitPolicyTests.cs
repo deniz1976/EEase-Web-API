@@ -77,17 +77,17 @@ namespace EEaseWebAPI.UnitTests.Api
         {
             { "AuthController", "Login" },
             { "AuthController", "RefreshTokenLogin" },
-            { "AuthController", "ResetPassword" },
-            { "AuthController", "ResetPasswordCodeCheck" },
-            { "AuthController", "ResetPasswordWithCode" },
+            { "AuthController", "RequestPasswordReset" },
+            { "AuthController", "VerifyPasswordResetCode" },
+            { "AuthController", "CompletePasswordReset" },
             { "AuthController", "ChangePassword" },
-            { "AuthController", "CheckEmailIsInUse" },
+            { "UsersController", "CheckEmailIsInUse" },
             { "UsersController", "CreateUser" },
             { "UsersController", "SendVerificationCodeAgain" },
             { "UsersController", "CheckEmailConfirmed" },
-            { "UsersController", "EmailConfirm" },
-            { "UsersController", "DeleteAccount" },
-            { "UsersController", "DeleteAccountWithCode" }
+            { "UsersController", "ConfirmEmail" },
+            { "UsersController", "RequestAccountDeletion" },
+            { "UsersController", "DeleteAccount" }
         };
 
         [Theory]

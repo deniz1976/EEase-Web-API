@@ -8,44 +8,53 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cities")]
     [ApiController]
-    public class CityController : ApiControllerBase
+    public class CitiesController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
-        public CityController(IMediator mediator)
+        public CitiesController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpGet("[Action]")]
+        [HttpGet]
         [ProducesResponseType(typeof(GetCitiesBySearchQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesBySearch([FromQuery] string searchTerm, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetCities(
+            [FromQuery] string search,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int pageNumber = 1,
+            CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(new GetCitiesBySearchQueryRequest
             {
-                SearchTerm = searchTerm,
+                SearchTerm = search,
                 PageSize = pageSize,
-                PageNumber = pageNumber,
+                PageNumber = pageNumber
             }, cancellationToken);
 
             return Ok(response);
         }
 
-        [HttpGet("[Action]")]
+        /// <summary>The same search, ordered by what the caller has said they like.</summary>
+        [HttpGet("recommended")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(GetCitiesBySearchQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesBySearchWithPreferences([FromQuery] string searchTerm, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetRecommendedCities(
+            [FromQuery] string search,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int pageNumber = 1,
+            CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(new GetCitiesBySearchQueryRequest
             {
-                SearchTerm = searchTerm,
+                SearchTerm = search,
                 PageSize = pageSize,
                 PageNumber = pageNumber,
                 Username = CurrentUsername
@@ -53,14 +62,26 @@ namespace EEaseWebAPI.API.Controllers
 
             return Ok(response);
         }
+    }
 
-        [HttpGet("[Action]")]
+    [Route("api/countries")]
+    [ApiController]
+    public class CountriesController : ApiControllerBase
+    {
+        private readonly IMediator _mediator;
+
+        public CountriesController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        [HttpGet]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(GetAllCountriesQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllCountries(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCountries(CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new GetAllCountriesQueryRequest(), cancellationToken);
             return Ok(response);

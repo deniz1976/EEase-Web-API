@@ -9,29 +9,40 @@ using Xunit;
 namespace EEaseWebAPI.UnitTests.Api
 {
     /// <summary>
-    /// The controllers route by action name, so the name of a method is the URL a caller
-    /// types and the verb is the promise made about it. Both used to drift: a photo was
-    /// fetched with POST, an account was deleted with POST, two different endpoints were both
-    /// called GetAllRoutes, and one name carried an Async suffix into the URL.
+    /// The API used to route by action name, so a C# method name was the URL and every
+    /// endpoint read "api/Users/GetUserInfo": the verb said twice, the resource said twice,
+    /// and the casing whatever the method happened to use. Paths are written out now, and
+    /// these are the rules they are written to.
     /// </summary>
     public class EndpointConventionTests
     {
         /// <summary>
-        /// What a name starting with each of these promises. A name outside the table is
-        /// free to use whichever verb suits it, such as Login or RespondToFriendRequest.
+        /// A path names things, and the HTTP method says what is being done to them. These
+        /// are the segments that are not a thing, each one a decision somebody wrote down:
+        /// the four under auth, because there is no noun for proving who you are; the two
+        /// that describe which part of a collection is wanted; and the four that really
+        /// are nouns while reading like verbs. Adding one is meant to be a decision, which
+        /// is why they are written here rather than inferred.
         /// </summary>
-        private static readonly (string Prefix, Type Verb)[] Promises =
+        private static readonly HashSet<string> NotNouns = new()
         {
-            ("Get", typeof(HttpGetAttribute)),
-            ("Check", typeof(HttpGetAttribute)),
-            ("Search", typeof(HttpGetAttribute)),
-            ("Create", typeof(HttpPostAttribute)),
-            ("Update", typeof(HttpPutAttribute)),
-            ("Set", typeof(HttpPutAttribute)),
-            ("Delete", typeof(HttpDeleteAttribute)),
-            ("Remove", typeof(HttpDeleteAttribute)),
-            ("Cancel", typeof(HttpDeleteAttribute)),
-            ("Unblock", typeof(HttpDeleteAttribute))
+            "login",
+            "refresh",
+            "verify",
+            "complete",
+            "recommended",
+            "liked",
+            "likes",
+            "dislikes",
+            "blocked-users",
+            "deletion-request"
+        };
+
+        private static readonly string[] VerbPrefixes =
+        {
+            "get", "create", "update", "delete", "check", "set", "search", "send",
+            "remove", "cancel", "block", "unblock", "like", "dislike", "respond",
+            "reset", "confirm", "login", "logout", "refresh", "verify", "complete"
         };
 
         public static TheoryData<string, string> EveryAction()
@@ -48,33 +59,55 @@ namespace EEaseWebAPI.UnitTests.Api
 
         [Theory]
         [MemberData(nameof(EveryAction))]
-        public void An_action_name_does_not_carry_a_suffix_into_the_url(string controllerName, string actionName)
+        public void A_path_is_written_out_in_lower_case(string controllerName, string actionName)
         {
-            _ = controllerName;
+            foreach (var path in Paths(controllerName, actionName))
+            {
+                path.Should().NotContain("[", "a path is written out, not derived from a class or method name");
 
-            actionName.Should().NotEndWith(
-                "Async", "the action name is the URL, and no caller should have to type it");
+                // A placeholder is a C# parameter name and a route constraint; only the
+                // part a caller types has to be lower case.
+                var written = string.Join('/', path.Split('/')
+                    .Where(segment => !segment.StartsWith('{')));
+
+                written.Should().Be(written.ToLowerInvariant(),
+                    $"{controllerName}.{actionName} answers a URL a person has to type");
+            }
         }
 
         [Theory]
         [MemberData(nameof(EveryAction))]
-        public void An_action_uses_the_verb_its_name_promises(string controllerName, string actionName)
+        public void A_path_starts_at_the_api(string controllerName, string actionName)
         {
-            var action = Action(controllerName, actionName);
-
-            foreach (var (prefix, verb) in Promises)
+            foreach (var path in Paths(controllerName, actionName))
             {
-                if (!actionName.StartsWith(prefix, StringComparison.Ordinal))
+                path.Should().StartWith("api/", $"{controllerName}.{actionName}");
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(EveryAction))]
+        public void A_path_names_things_rather_than_what_is_done_to_them(
+            string controllerName, string actionName)
+        {
+            foreach (var path in Paths(controllerName, actionName))
+            {
+                var segments = path.Split('/')
+                    .Where(segment => segment.Length > 0 && !segment.StartsWith('{'))
+                    .Where(segment => segment != "api");
+
+                foreach (var segment in segments)
                 {
-                    continue;
+                    if (NotNouns.Contains(segment))
+                    {
+                        continue;
+                    }
+
+                    VerbPrefixes.Should().NotContain(
+                        prefix => segment.StartsWith(prefix, StringComparison.Ordinal),
+                        $"'{segment}' in {path} reads as something being done, and the " +
+                        "HTTP method already says that");
                 }
-
-                action.GetCustomAttributes()
-                    .Select(attribute => attribute.GetType())
-                    .Should().Contain(verb,
-                        $"{controllerName}.{actionName} starts with '{prefix}'");
-
-                return;
             }
         }
 
@@ -113,17 +146,52 @@ namespace EEaseWebAPI.UnitTests.Api
         }
 
         [Fact]
-        public void No_two_endpoints_on_a_controller_share_a_name()
+        public void No_two_endpoints_answer_the_same_verb_and_path()
         {
-            foreach (var controller in Actions().Select(entry => entry.Controller).Distinct())
-            {
-                var names = Actions()
-                    .Where(entry => entry.Controller == controller)
-                    .Select(entry => entry.Action.Name);
+            var endpoints = Actions()
+                .SelectMany(entry => Paths(entry.Controller.Name, entry.Action.Name)
+                    .SelectMany(path => Verbs(entry.Action).Select(verb => $"{verb} {path}")))
+                .ToList();
 
-                names.Should().OnlyHaveUniqueItems(
-                    $"{controller.Name} routes by action name, so a repeat is two URLs with one name");
+            endpoints.Should().OnlyHaveUniqueItems();
+        }
+
+        private static IEnumerable<string> Verbs(MethodInfo action) =>
+            action.GetCustomAttributes()
+                .OfType<HttpMethodAttribute>()
+                .SelectMany(attribute => attribute.HttpMethods);
+
+        /// <summary>
+        /// The full paths an action answers on: the controller's prefix and the action's
+        /// own template, unless the action's template starts with a slash and stands alone.
+        /// </summary>
+        private static IEnumerable<string> Paths(string controllerName, string actionName)
+        {
+            var entry = Actions()
+                .Single(candidate => candidate.Controller.Name == controllerName &&
+                                     candidate.Action.Name == actionName);
+
+            var prefix = entry.Controller.GetCustomAttributes()
+                .OfType<RouteAttribute>()
+                .Select(attribute => attribute.Template)
+                .FirstOrDefault() ?? string.Empty;
+
+            var templates = entry.Action.GetCustomAttributes()
+                .OfType<HttpMethodAttribute>()
+                .Select(attribute => attribute.Template)
+                .ToList();
+
+            if (templates.Count == 0 || templates.All(template => template is null))
+            {
+                return new[] { prefix };
             }
+
+            return templates
+                .Where(template => template is not null)
+                .Select(template => template!.StartsWith('/')
+                    ? template.TrimStart('/')
+                    : $"{prefix}/{template}")
+                .Distinct();
         }
 
         private static MethodInfo Action(string controllerName, string actionName) =>

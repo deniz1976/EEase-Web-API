@@ -13,7 +13,7 @@ using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency;
 using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferences;
 using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferencesWithTopics;
 using EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailConfirmed;
-using EEaseWebAPI.Application.Features.Queries.AppUser.GetAllTopics;
+using EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserCurrency;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfo;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById;
@@ -26,11 +26,16 @@ using EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+
 namespace EEaseWebAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    /// <summary>
+    /// Travellers. Everything the caller owns hangs off <c>me</c>: a literal segment beats
+    /// <c>{username}</c> in routing, so a traveller who registers as "me" cannot shadow it.
+    /// </summary>
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ApiControllerBase
     {
@@ -41,35 +46,103 @@ namespace EEaseWebAPI.API.Controllers
             _mediator = mediator;
         }
 
-        [ProducesResponseType(typeof(CreateUserCommandResponse),StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
-        [HttpPost("[Action]")]
+        [HttpPost]
+        [ProducesResponseType(typeof(CreateUserCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommandRequest createUserCommandRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateUser(
+            [FromBody] CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            CreateUserCommandResponse createUserCommandResponse = await _mediator.Send(createUserCommandRequest, cancellationToken);
-            return Ok(createUserCommandResponse);
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
         }
 
-        [HttpPost("[Action]")]
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(SearchUsersQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> SearchUsers(
+            [FromQuery] string search, CancellationToken cancellationToken)
+        {
+            var request = new SearchUsersQueryRequest { SearchTerm = search };
+
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        /// <summary>Whether an address can still be registered with.</summary>
+        [HttpGet("email-availability")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(CheckEmailIsInUseQueryResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
+        public async Task<IActionResult> CheckEmailIsInUse(
+            [FromQuery] CheckEmailIsInUseQueryRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        /// <summary>Sends another verification code to an address that has not confirmed yet.</summary>
+        [HttpPost("email-verifications")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SendVerificationCodeCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> SendVerificationCodeAgain([FromBody] SendVerificationCodeCommandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> SendVerificationCodeAgain(
+            [FromBody] SendVerificationCodeCommandRequest request, CancellationToken cancellationToken)
         {
-           SendVerificationCodeCommandResponse response = await _mediator.Send(request, cancellationToken);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
-
         }
 
-        [HttpPut("[Action]")]
+        [HttpGet("email-confirmation")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(CheckEmailConfirmedQueryResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
+        public async Task<IActionResult> CheckEmailConfirmed(
+            [FromQuery] CheckEmailConfirmedQueryRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPost("email-confirmation")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ConfirmEmailUserCommandResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
+        public async Task<IActionResult> ConfirmEmail(
+            [FromBody] ConfirmEmailUserCommandRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpGet("me")]
+        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(GetUserInfoQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetUserInfo(CancellationToken cancellationToken)
+        {
+            var request = new GetUserInfoQueryRequest { Username = CurrentUsername };
+
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Changes the fields that were sent and leaves the rest alone, which is what every
+        /// rule behind it already allowed for.
+        /// </summary>
+        [HttpPatch("me")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO updateUserDTO, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateUser(
+            [FromBody] UpdateUserDTO updateUserDTO, CancellationToken cancellationToken)
         {
-            UpdateUserCommandRequest updateUserCommandRequest = new UpdateUserCommandRequest()
+            var request = new UpdateUserCommandRequest
             {
                 Username = updateUserDTO.Username,
                 Name = updateUserDTO.Name,
@@ -80,140 +153,129 @@ namespace EEaseWebAPI.API.Controllers
                 User = CurrentUsername
             };
 
-            UpdateUserCommandResponse updateUserCommandResponse = await _mediator.Send(updateUserCommandRequest, cancellationToken);
-            return Ok(updateUserCommandResponse);
-        }
-
-        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(GetUserInfoQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [HttpGet("[Action]")]
-        public async Task<IActionResult> GetUserInfo(CancellationToken cancellationToken)
-        {
-            var userName = CurrentUsername;
-            GetUserInfoQueryRequest request = new() { Username = userName };
-            GetUserInfoQueryResponse response = await _mediator.Send(request, cancellationToken);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("[Action]")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(CheckEmailConfirmedQueryResponse),StatusCodes.Status200OK)]
-        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> CheckEmailConfirmed([FromQuery] CheckEmailConfirmedQueryRequest request, CancellationToken cancellationToken)
-        {
-            CheckEmailConfirmedQueryResponse response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-        }
-
-        [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(ConfirmEmailUserCommandResponse), StatusCodes.Status200OK)]
-        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> EmailConfirm([FromBody] ConfirmEmailUserCommandRequest request, CancellationToken cancellationToken)
-        {
-            ConfirmEmailUserCommandResponse response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-        }
-
-        [HttpDelete("[Action]")]
+        /// <summary>
+        /// Asks for the account to be closed, which sends a code rather than closing it.
+        /// Asking again while one is pending calls the deletion off.
+        /// </summary>
+        [HttpPost("me/deletion-request")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteUserCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> DeleteAccount(CancellationToken cancellationToken)
+        public async Task<IActionResult> RequestAccountDeletion(CancellationToken cancellationToken)
         {
+            var request = new DeleteUserCommandRequest { Username = CurrentUsername };
 
-            DeleteUserCommandRequest deleteUserCommandRequest = new DeleteUserCommandRequest()
-            { Username=  CurrentUsername };
-            DeleteUserCommandResponse response = await _mediator.Send(deleteUserCommandRequest, cancellationToken);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpDelete("[Action]")]
+        [HttpDelete("me")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteUserWithCodeCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> DeleteAccountWithCode([FromBody] DeleteAccountWithCode code, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteAccount(
+            [FromBody] DeleteAccountWithCode code, CancellationToken cancellationToken)
         {
-            DeleteUserWithCodeCommandRequest deleteUserWithCodeCommandRequest = new DeleteUserWithCodeCommandRequest() {Username = CurrentUsername,Code = code.Code };
-            DeleteUserWithCodeCommandResponse deleteUserWithCodeCommandResponse = await _mediator.Send(deleteUserWithCodeCommandRequest, cancellationToken);
-            return Ok(deleteUserWithCodeCommandResponse);
+            var request = new DeleteUserWithCodeCommandRequest
+            {
+                Username = CurrentUsername,
+                Code = code.Code
+            };
 
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
         }
 
-        [HttpGet("[Action]")]
+        [HttpGet("me/status")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(StatusCheckQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> StatusCheck(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAccountStatus(CancellationToken cancellationToken)
         {
-            StatusCheckQueryRequest statusCheckQueryRequest = new StatusCheckQueryRequest() { Username = CurrentUsername};
-            StatusCheckQueryResponse statusCheckQueryResponse = await _mediator.Send(statusCheckQueryRequest, cancellationToken);
+            var request = new StatusCheckQueryRequest { Username = CurrentUsername };
 
-            return Ok(statusCheckQueryResponse);
-        }
-
-        [HttpPut("[Action]")]
-        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(UpdateUserPreferencesCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUserPreferences([FromBody] PreferenceMessage message, CancellationToken cancellationToken)
-        {
-            UpdateUserPreferencesCommandRequest request = new()
-            {
-                Message = message.Message,
-                Username = CurrentUsername
-            };
-
-            UpdateUserPreferencesCommandResponse response = await _mediator.Send(request, cancellationToken);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpPut("[Action]")]
+        [HttpGet("me/photo")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(UpdateUserPreferencesWithTopicsCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetUserPhotoQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUserPreferencesWithTopics([FromBody] List<string> topics, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserPhoto(CancellationToken cancellationToken)
         {
-            var request = new UpdateUserPreferencesWithTopicsCommandRequest
+            var request = new GetUserPhotoQueryRequest { Username = CurrentUsername };
+
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPut("me/photo")]
+        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(SetUserPhotoCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> SetUserPhoto(
+            [FromBody] UserPhoto photo, CancellationToken cancellationToken)
+        {
+            var request = new SetUserPhotoCommandRequest
             {
                 Username = CurrentUsername,
-                Topics = topics
-            };
-            var result = await _mediator.Send(request, cancellationToken);
-            return Ok(result);
-        }
-
-        [HttpPost("[Action]")]
-        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(ResetUserPreferencesCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> ResetUserPreferences(CancellationToken cancellationToken)
-        {
-            ResetUserPreferencesCommandRequest request = new()
-            {
-                Username = CurrentUsername
+                PhotoUrl = photo.PhotoUrl
             };
 
-            ResetUserPreferencesCommandResponse response = await _mediator.Send(request, cancellationToken);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpPut("[Action]")]
+        [HttpGet("me/currency")]
+        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(GetUserCurrencyQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetUserCurrency(CancellationToken cancellationToken)
+        {
+            var request = new GetUserCurrencyQueryRequest { Username = CurrentUsername };
+
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPut("me/currency")]
+        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(UpdateUserCurrencyCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateUserCurrency(
+            [FromBody] UserCurrency currency, CancellationToken cancellationToken)
+        {
+            var request = new UpdateUserCurrencyCommandRequest
+            {
+                Username = CurrentUsername,
+                CurrencyCode = currency.CurrencyCode
+            };
+
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPut("me/country")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCountryCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateCountry([FromBody] UserCountry country, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateUserCountry(
+            [FromBody] UserCountry country, CancellationToken cancellationToken)
         {
             var request = new UpdateUserCountryCommandRequest
             {
@@ -225,15 +287,31 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("[Action]")]
+        [HttpGet("me/preferences")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPreferenceDescriptionsQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserPreferenceDescriptions(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserPreferences(CancellationToken cancellationToken)
         {
-            var request = new GetUserPreferenceDescriptionsQueryRequest
+            var request = new GetUserPreferenceDescriptionsQueryRequest { Username = CurrentUsername };
+
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        /// <summary>Sets the preferences from a sentence the traveller wrote about themselves.</summary>
+        [HttpPut("me/preferences")]
+        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(UpdateUserPreferencesCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateUserPreferences(
+            [FromBody] PreferenceMessage message, CancellationToken cancellationToken)
+        {
+            var request = new UpdateUserPreferencesCommandRequest
             {
+                Message = message.Message,
                 Username = CurrentUsername
             };
 
@@ -241,143 +319,91 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("[Action]")]
-        [ProducesResponseType(typeof(GetAllTopicsQueryResponse), StatusCodes.Status200OK)]
+        [HttpDelete("me/preferences")]
+        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTopics(CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ResetUserPreferencesCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ResetUserPreferences(CancellationToken cancellationToken)
         {
-            var request = new GetAllTopicsQueryRequest();
+            var request = new ResetUserPreferencesCommandRequest { Username = CurrentUsername };
+
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpPut("[Action]")]
+        /// <summary>Sets the same preferences by naming topics instead of writing a sentence.</summary>
+        [HttpPut("me/preferences/topics")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(UpdateUserCurrencyCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UpdateUserPreferencesWithTopicsCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUserCurrency([FromBody] UserCurrency currencyCode, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateUserPreferencesWithTopics(
+            [FromBody] List<string> topics, CancellationToken cancellationToken)
         {
-
-            var request = new UpdateUserCurrencyCommandRequest
+            var request = new UpdateUserPreferencesWithTopicsCommandRequest
             {
                 Username = CurrentUsername,
-                CurrencyCode = currencyCode.CurrencyCode
+                Topics = topics
             };
 
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("[Action]")]
-        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(GetUserCurrencyQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserCurrency(CancellationToken cancellationToken)
-        {
-            var request = new GetUserCurrencyQueryRequest
-            {
-                Username = CurrentUsername
-            };
-
-            var response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-        }
-
-        [HttpGet("[Action]")]
+        [HttpGet("{username}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserInfoByNameQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserInfoByName([FromQuery] string targetUsername, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserInfoByName(
+            [FromRoute] string username, CancellationToken cancellationToken)
         {
-            var request = new GetUserInfoByNameQueryRequest()
+            var request = new GetUserInfoByNameQueryRequest
             {
                 Username = CurrentUsername,
-                TargetUsername = targetUsername
+                TargetUsername = username
             };
 
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("[Action]")]
-        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(GetUserInfoByIdQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserInfoById([FromQuery] string userId, CancellationToken cancellationToken)
-        {
-            var request = new GetUserInfoByIdQueryRequest()
-            {
-                Username = CurrentUsername,
-                UserId = userId
-            };
-
-            var response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-        }
-
-        [HttpGet("[Action]")]
-        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(GetUserPhotoQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserPhoto(CancellationToken cancellationToken)
-        {
-            var request = new GetUserPhotoQueryRequest
-            {
-                Username = CurrentUsername
-            };
-
-            var response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-        }
-
-        [HttpGet("[Action]")]
+        [HttpGet("{username}/photo")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPhotoByNameQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserPhotoByName([FromQuery] string targetUsername, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserPhotoByName(
+            [FromRoute] string username, CancellationToken cancellationToken)
         {
-            var request = new GetUserPhotoByNameQueryRequest()
+            var request = new GetUserPhotoByNameQueryRequest
             {
                 Username = CurrentUsername,
-                TargetUsername = targetUsername
+                TargetUsername = username
             };
 
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpPut("[Action]")]
+        /// <summary>
+        /// The same traveller, found by the id the database gave them rather than the name
+        /// they chose. The extra segment keeps it out of the way of a username.
+        /// </summary>
+        [HttpGet("by-id/{userId}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(SetUserPhotoCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetUserInfoByIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> SetUserPhoto([FromBody] UserPhoto photo, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserInfoById(
+            [FromRoute] string userId, CancellationToken cancellationToken)
         {
-            var request = new SetUserPhotoCommandRequest
+            var request = new GetUserInfoByIdQueryRequest
             {
                 Username = CurrentUsername,
-                PhotoUrl = photo.PhotoUrl
+                UserId = userId
             };
-
-            var response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
-
-        }
-
-        [HttpGet("[Action]")]
-        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(SearchUsersQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> SearchUsers([FromQuery] string searchTerm, CancellationToken cancellationToken)
-        {
-            var request = new SearchUsersQueryRequest { SearchTerm = searchTerm };
 
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
