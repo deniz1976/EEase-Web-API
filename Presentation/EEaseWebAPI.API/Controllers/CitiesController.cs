@@ -1,6 +1,6 @@
 using EEaseWebAPI.API.Constants;
-using EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountries;
-using EEaseWebAPI.Application.Features.Queries.Cities.GetCitiesBySearch;
+using EEaseWebAPI.Application.Features.Queries.Countries.GetAllCountries;
+using EEaseWebAPI.Application.Features.Queries.Cities.SearchCities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +19,14 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(GetCitiesBySearchQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SearchCitiesQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCities(
             [FromQuery] string search,
             [FromQuery] int pageSize = 10,
             [FromQuery] int pageNumber = 1,
             CancellationToken cancellationToken = default)
         {
-            var response = await _mediator.Send(new GetCitiesBySearchQueryRequest
+            var response = await _mediator.Send(new SearchCitiesQueryRequest
             {
                 SearchTerm = search,
                 PageSize = pageSize,
@@ -39,14 +39,14 @@ namespace EEaseWebAPI.API.Controllers
         /// <summary>The same search, ordered by what the caller has said they like.</summary>
         [HttpGet("recommended")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GetCitiesBySearchQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SearchCitiesQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRecommendedCities(
             [FromQuery] string search,
             [FromQuery] int pageSize = 10,
             [FromQuery] int pageNumber = 1,
             CancellationToken cancellationToken = default)
         {
-            var response = await _mediator.Send(new GetCitiesBySearchQueryRequest
+            var response = await _mediator.Send(new SearchCitiesQueryRequest
             {
                 SearchTerm = search,
                 PageSize = pageSize,

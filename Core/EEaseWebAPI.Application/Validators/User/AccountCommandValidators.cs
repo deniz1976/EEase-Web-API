@@ -1,11 +1,11 @@
 using EEaseWebAPI.Application.Features.Commands.AppUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword;
-using EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmailUser;
+using EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmail;
 using EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode;
 using EEaseWebAPI.Application.Features.Commands.AppUser.RefreshTokenLoginUser;
-using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPassword;
-using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser;
-using EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCodeAgain;
+using EEaseWebAPI.Application.Features.Commands.AppUser.CompletePasswordReset;
+using EEaseWebAPI.Application.Features.Commands.AppUser.RequestPasswordReset;
+using EEaseWebAPI.Application.Features.Commands.AppUser.ResendVerificationCode;
 using EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto;
 using EEaseWebAPI.Application.Resources;
 using FluentValidation;
@@ -29,9 +29,9 @@ namespace EEaseWebAPI.Application.Validators.User
         }
     }
 
-    public class ConfirmEmailUserCommandValidator : AbstractValidator<ConfirmEmailUserCommandRequest>
+    public class ConfirmEmailCommandValidator : AbstractValidator<ConfirmEmailCommandRequest>
     {
-        public ConfirmEmailUserCommandValidator()
+        public ConfirmEmailCommandValidator()
         {
             RuleFor(request => request.Code)
                 .NotEmpty().WithMessage(ValidationMessages.Code_Required);
@@ -59,9 +59,9 @@ namespace EEaseWebAPI.Application.Validators.User
         }
     }
 
-    public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommandRequest>
+    public class CompletePasswordResetCommandValidator : AbstractValidator<CompletePasswordResetCommandRequest>
     {
-        public ResetPasswordCommandValidator()
+        public CompletePasswordResetCommandValidator()
         {
             RuleFor(request => request.UsernameOrEmail)
                 .NotEmpty().WithMessage(ValidationMessages.EmailOrUsername_Required);
@@ -74,18 +74,18 @@ namespace EEaseWebAPI.Application.Validators.User
         }
     }
 
-    public class ResetPasswordUserCommandValidator : AbstractValidator<ResetPasswordUserCommandRequest>
+    public class RequestPasswordResetCommandValidator : AbstractValidator<RequestPasswordResetCommandRequest>
     {
-        public ResetPasswordUserCommandValidator()
+        public RequestPasswordResetCommandValidator()
         {
             RuleFor(request => request.EmailOrUsername)
                 .NotEmpty().WithMessage(ValidationMessages.EmailOrUsername_Required);
         }
     }
 
-    public class SendVerificationCodeCommandValidator : AbstractValidator<SendVerificationCodeCommandRequest>
+    public class ResendVerificationCodeCommandValidator : AbstractValidator<ResendVerificationCodeCommandRequest>
     {
-        public SendVerificationCodeCommandValidator()
+        public ResendVerificationCodeCommandValidator()
         {
             RuleFor(request => request.Email)
                 .NotEmpty().WithMessage(ValidationMessages.Email_Required)

@@ -1,4 +1,4 @@
-using EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant;
+using EEaseWebAPI.Application.Features.Commands.Place.DislikePlace;
 using EEaseWebAPI.Domain.Entities.Route;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
@@ -9,8 +9,8 @@ namespace EEaseWebAPI.Application.Abstractions.Services
     /// </summary>
     public interface IRouteDislikeService
     {
-        Task<StandardRoute> DislikePlaceOrRestaurant(
-            DislikePlaceOrRestaurantCommandRequest request,
+        Task<StandardRoute> DislikePlaceAsync(
+            DislikePlaceCommandRequest request,
             CancellationToken cancellationToken = default);
     }
 }

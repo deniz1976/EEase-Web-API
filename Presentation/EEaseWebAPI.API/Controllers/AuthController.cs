@@ -4,10 +4,10 @@ using EEaseWebAPI.Application.Features.Commands.AppUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword;
 using EEaseWebAPI.Application.Features.Commands.AppUser.LoginUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.RefreshTokenLoginUser;
-using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPassword;
-using EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser;
+using EEaseWebAPI.Application.Features.Commands.AppUser.CompletePasswordReset;
+using EEaseWebAPI.Application.Features.Commands.AppUser.RequestPasswordReset;
 using EEaseWebAPI.Application.Features.Queries;
-using EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeCheck;
+using EEaseWebAPI.Application.Features.Queries.AppUser.VerifyPasswordResetCode;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -71,30 +71,30 @@ namespace EEaseWebAPI.API.Controllers
 
         /// <summary>Starts a reset for a password nobody remembers, by sending a code.</summary>
         [HttpPost("password-resets")]
-        [ProducesResponseType(typeof(ResetPasswordUserCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RequestPasswordResetCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> RequestPasswordReset(
-            [FromBody] ResetPasswordUserCommandRequest request, CancellationToken cancellationToken)
+            [FromBody] RequestPasswordResetCommandRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
         [HttpPost("password-resets/verify")]
-        [ProducesResponseType(typeof(ResetPasswordCodeCheckQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(VerifyPasswordResetCodeQueryResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> VerifyPasswordResetCode(
-            [FromBody] ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
+            [FromBody] VerifyPasswordResetCodeQueryRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
         [HttpPost("password-resets/complete")]
-        [ProducesResponseType(typeof(ResetPasswordCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CompletePasswordResetCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> CompletePasswordReset(
-            [FromBody] ResetPasswordCommandRequest request, CancellationToken cancellationToken)
+            [FromBody] CompletePasswordResetCommandRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);

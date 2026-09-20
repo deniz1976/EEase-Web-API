@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute;
 using EEaseWebAPI.Application.DTOs;
 using EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus;
-using EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant;
+using EEaseWebAPI.Application.Features.Commands.Place.LikePlace;
 using EEaseWebAPI.Domain.Entities.Identity;
-using EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant;
-using EEaseWebAPI.Application.DTOs.Route.DislikePlaceOrRestaurantDTO;
+using EEaseWebAPI.Application.Features.Commands.Place.DislikePlace;
+using EEaseWebAPI.Application.DTOs.Place;
 using EEaseWebAPI.Application.Enums;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
@@ -34,7 +34,7 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(
             Guid routeId, int status, string username, CancellationToken cancellationToken = default);
 
-        Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
+        Task<LikePlaceCommandResponseBody> LikePlaceAsync(
             string username,
             string googlePlaceId,
             string placeType,
@@ -44,8 +44,8 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task<string> DeleteAllRoutes(string username, CancellationToken cancellationToken = default);
 
-        Task<StandardRoute> DislikePlaceOrRestaurant(
-            DislikePlaceOrRestaurantCommandRequest dislikePlaceOrRestaurantDTO,
+        Task<StandardRoute> DislikePlaceAsync(
+            DislikePlaceCommandRequest dislikePlaceOrRestaurantDTO,
             CancellationToken cancellationToken = default);
     }
 }

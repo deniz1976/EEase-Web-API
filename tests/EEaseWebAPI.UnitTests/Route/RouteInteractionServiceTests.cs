@@ -204,7 +204,7 @@ namespace EEaseWebAPI.UnitTests.Route
             });
             await _context.SaveChangesAsync();
 
-            var response = await _service.LikePlaceOrRestaurantAsync("alice", "hotel-1", placeType);
+            var response = await _service.LikePlaceAsync("alice", "hotel-1", placeType);
 
             response.IsPreferenceUpdated.Should().BeTrue();
         }
@@ -212,14 +212,14 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_place_type_the_system_does_not_know_is_rejected()
         {
-            await _service.Invoking(service => service.LikePlaceOrRestaurantAsync("alice", "hotel-1", "brunch"))
+            await _service.Invoking(service => service.LikePlaceAsync("alice", "hotel-1", "brunch"))
                 .Should().ThrowAsync<InvalidPlaceTypeException>();
         }
 
         [Fact]
         public async Task Liking_a_place_that_was_never_stored_is_rejected()
         {
-            await _service.Invoking(service => service.LikePlaceOrRestaurantAsync("alice", "unknown", "accommodation"))
+            await _service.Invoking(service => service.LikePlaceAsync("alice", "unknown", "accommodation"))
                 .Should().ThrowAsync<InvalidPlaceTypeException>();
         }
     }

@@ -1,6 +1,6 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
-using EEaseWebAPI.Application.MapEntities.StatusCheck;
+using EEaseWebAPI.Application.MapEntities.GetAccountStatus;
 using EEaseWebAPI.Application.Resources;
 using MediatR;
 using System;

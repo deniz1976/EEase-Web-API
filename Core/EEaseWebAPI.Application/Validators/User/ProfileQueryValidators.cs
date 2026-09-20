@@ -3,7 +3,7 @@ using EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName;
-using EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeCheck;
+using EEaseWebAPI.Application.Features.Queries.AppUser.VerifyPasswordResetCode;
 using EEaseWebAPI.Application.Resources;
 using FluentValidation;
 
@@ -28,9 +28,9 @@ namespace EEaseWebAPI.Application.Validators.User
         }
     }
 
-    public class ResetPasswordCodeCheckQueryValidator : AbstractValidator<ResetPasswordCodeCheckQueryRequest>
+    public class VerifyPasswordResetCodeQueryValidator : AbstractValidator<VerifyPasswordResetCodeQueryRequest>
     {
-        public ResetPasswordCodeCheckQueryValidator()
+        public VerifyPasswordResetCodeQueryValidator()
         {
             RuleFor(request => request.UsernameOrEmail)
                 .NotEmpty().WithMessage(ValidationMessages.EmailOrUsername_Required);

@@ -2,7 +2,7 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions.Login;
 using EEaseWebAPI.Application.Exceptions.Route;
-using EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant;
+using EEaseWebAPI.Application.Features.Commands.Place.LikePlace;
 using EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus;
 using EEaseWebAPI.Domain.Entities.Common;
 using EEaseWebAPI.Domain.Entities.Identity;
@@ -133,7 +133,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return new UpdateRouteStatusCommandResponseBody { IsUpdated = true };
         }
 
-        public async Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
+        public async Task<LikePlaceCommandResponseBody> LikePlaceAsync(
             string username,
             string googlePlaceId,
             string placeType,
@@ -147,7 +147,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var feedback = await _preferenceFeedbackService.ApplyAsync(
                 user.Id, place, placeType, liked: true, cancellationToken);
 
-            return new LikePlaceOrRestaurantCommandResponseBody
+            return new LikePlaceCommandResponseBody
             {
                 IsPreferenceUpdated = feedback.HasChanges,
                 Message = AppMessages.PreferencesUpdatedFromFeedback

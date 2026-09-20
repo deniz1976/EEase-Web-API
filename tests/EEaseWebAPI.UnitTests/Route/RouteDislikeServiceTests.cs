@@ -2,7 +2,7 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.DTOs.Route;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Route;
-using EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant;
+using EEaseWebAPI.Application.Features.Commands.Place.DislikePlace;
 using EEaseWebAPI.Domain.Entities.Common;
 using EEaseWebAPI.Domain.Entities.Identity;
 using EEaseWebAPI.Domain.Entities.Route;
@@ -99,7 +99,7 @@ namespace EEaseWebAPI.UnitTests.Route
 
         public void Dispose() => _context.Dispose();
 
-        private DislikePlaceOrRestaurantCommandRequest Request(
+        private DislikePlaceCommandRequest Request(
             string username = "alice",
             string? routeId = null,
             string googlePlaceId = "dinner-1",
@@ -115,7 +115,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_dislike_pulls_the_matching_preferences_down()
         {
-            await _service.DislikePlaceOrRestaurant(Request());
+            await _service.DislikePlaceAsync(Request());
 
             await _feedback.Received(1).ApplyAsync(_alice.Id, Arg.Any<BaseEntity>(), "dinner", false);
         }
@@ -123,7 +123,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_disliked_place_is_remembered_so_it_is_never_suggested_again()
         {
-            await _service.DislikePlaceOrRestaurant(Request());
+            await _service.DislikePlaceAsync(Request());
 
             await _dislikedPlaces.Received(1).RecordAsync(_alice.Id, "dinner-1", "dinner", Arg.Any<CancellationToken>());
         }
@@ -131,7 +131,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task The_disliked_place_is_swapped_for_another_one()
         {
-            await _service.DislikePlaceOrRestaurant(Request());
+            await _service.DislikePlaceAsync(Request());
 
             await _replacement.Received(1).ReplaceAsync(
                 Arg.Any<StandardRoute>(), Arg.Any<PreferenceProfile>(), "dinner-1", "dinner",
@@ -141,7 +141,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task The_route_is_enriched_again_after_the_swap()
         {
-            await _service.DislikePlaceOrRestaurant(Request());
+            await _service.DislikePlaceAsync(Request());
 
             await _enrichment.Received(1).ApplyAsync(
                 Arg.Any<StandardRoute>(), Arg.Any<DateOnly?>(), Arg.Any<DateOnly?>());
@@ -153,7 +153,7 @@ namespace EEaseWebAPI.UnitTests.Route
             _dislikedPlaces.GetGoogleIdsAsync(_alice.Id, Arg.Any<CancellationToken>())
                 .Returns(new[] { "dinner-9", "dinner-8" });
 
-            await _service.DislikePlaceOrRestaurant(Request());
+            await _service.DislikePlaceAsync(Request());
 
             await _replacement.Received(1).ReplaceAsync(
                 Arg.Any<StandardRoute>(), Arg.Any<PreferenceProfile>(), "dinner-1", "dinner",
@@ -164,7 +164,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task The_returned_route_does_not_carry_its_owner_back_to_the_caller()
         {
-            var route = await _service.DislikePlaceOrRestaurant(Request());
+            var route = await _service.DislikePlaceAsync(Request());
 
             route.User.Should().BeNull();
         }
@@ -172,21 +172,21 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_place_type_that_was_not_given_is_rejected()
         {
-            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(placeType: "  ")))
+            await _service.Invoking(service => service.DislikePlaceAsync(Request(placeType: "  ")))
                 .Should().ThrowAsync<InvalidPlaceTypeException>();
         }
 
         [Fact]
         public async Task A_google_id_that_was_not_given_is_rejected()
         {
-            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(googlePlaceId: string.Empty)))
+            await _service.Invoking(service => service.DislikePlaceAsync(Request(googlePlaceId: string.Empty)))
                 .Should().ThrowAsync<InvalidPlaceTypeException>();
         }
 
         [Fact]
         public async Task A_route_id_that_is_not_a_guid_is_reported_as_a_missing_route()
         {
-            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(routeId: "not-a-guid")))
+            await _service.Invoking(service => service.DislikePlaceAsync(Request(routeId: "not-a-guid")))
                 .Should().ThrowAsync<RouteNotFoundException>();
         }
 
@@ -195,21 +195,21 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             _userManager.FindByNameAsync("nobody").Returns((AppUser?)null);
 
-            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(username: "nobody")))
+            await _service.Invoking(service => service.DislikePlaceAsync(Request(username: "nobody")))
                 .Should().ThrowAsync<UserNotFoundException>();
         }
 
         [Fact]
         public async Task Nobody_can_change_a_route_they_do_not_own()
         {
-            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(username: "bob")))
+            await _service.Invoking(service => service.DislikePlaceAsync(Request(username: "bob")))
                 .Should().ThrowAsync<ForbiddenException>();
         }
 
         [Fact]
         public async Task Disliking_a_place_that_is_not_part_of_the_route_is_rejected()
         {
-            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(googlePlaceId: "elsewhere-1")))
+            await _service.Invoking(service => service.DislikePlaceAsync(Request(googlePlaceId: "elsewhere-1")))
                 .Should().ThrowAsync<PlaceNotFoundInRouteException>();
         }
 
@@ -221,7 +221,7 @@ namespace EEaseWebAPI.UnitTests.Route
                     Arg.Any<string>(), Arg.Any<IReadOnlyCollection<string>>(), Arg.Any<CancellationToken>())
                 .Returns<TravelDay>(_ => throw new RouteGenerationException("nothing else nearby"));
 
-            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request()))
+            await _service.Invoking(service => service.DislikePlaceAsync(Request()))
                 .Should().ThrowAsync<RouteGenerationException>();
 
             await _enrichment.DidNotReceive().ApplyAsync(

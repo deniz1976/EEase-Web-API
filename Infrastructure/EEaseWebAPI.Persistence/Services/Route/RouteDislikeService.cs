@@ -3,7 +3,7 @@ using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Login;
 using EEaseWebAPI.Application.Exceptions.Route;
-using EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant;
+using EEaseWebAPI.Application.Features.Commands.Place.DislikePlace;
 using EEaseWebAPI.Domain.Entities.Common;
 using EEaseWebAPI.Domain.Entities.Route;
 using EEaseWebAPI.Domain.Entities.Identity;
@@ -47,8 +47,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
             _logger = logger;
         }
 
-        public async Task<StandardRoute> DislikePlaceOrRestaurant(
-            DislikePlaceOrRestaurantCommandRequest request,
+        public async Task<StandardRoute> DislikePlaceAsync(
+            DislikePlaceCommandRequest request,
             CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(request.PlaceType))

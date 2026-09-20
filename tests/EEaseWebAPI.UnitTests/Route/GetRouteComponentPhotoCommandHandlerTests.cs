@@ -1,6 +1,6 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Exceptions.GetRouteComponent;
-using EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto;
+using EEaseWebAPI.Application.Features.Queries.Place.GetPlacePhoto;
 using EEaseWebAPI.Application.MapEntities;
 using FluentAssertions;
 using NSubstitute;
@@ -8,21 +8,21 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Route
 {
-    public class GetRouteComponentPhotoCommandHandlerTests
+    public class GetPlacePhotoQueryHandlerTests
     {
         private const string PhotoName = "places/ChIJ-place/photos/AeJbb3e-photo";
 
         private readonly IGooglePlacesService _googlePlaces = Substitute.For<IGooglePlacesService>();
         private readonly IHeaderService _headers = Substitute.For<IHeaderService>();
-        private readonly GetRouteComponentPhotoCommandHandler _handler;
+        private readonly GetPlacePhotoQueryHandler _handler;
 
-        public GetRouteComponentPhotoCommandHandlerTests()
+        public GetPlacePhotoQueryHandlerTests()
         {
             _headers.HeaderCreate(Arg.Any<int>()).Returns(new Header());
-            _handler = new GetRouteComponentPhotoCommandHandler(_headers, _googlePlaces);
+            _handler = new GetPlacePhotoQueryHandler(_headers, _googlePlaces);
         }
 
-        private static GetRouteComponentPhotoCommandRequest Request(
+        private static GetPlacePhotoQueryRequest Request(
             string photoName = PhotoName, int width = 400, int height = 400) =>
             new() { PhotoName = photoName, MaxWidthPx = width, MaxHeightPx = height };
 
@@ -31,7 +31,7 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             _googlePlaces
                 .GetPlacePhotosAsync(PhotoName, 800, 600, Arg.Any<CancellationToken>())
-                .Returns(new GetRouteComponentPhotoCommandResponseBody { PhotoUri = "https://example.test/p.jpg" });
+                .Returns(new GetPlacePhotoQueryResponseBody { PhotoUri = "https://example.test/p.jpg" });
 
             var response = await _handler.Handle(Request(width: 800, height: 600), CancellationToken.None);
 

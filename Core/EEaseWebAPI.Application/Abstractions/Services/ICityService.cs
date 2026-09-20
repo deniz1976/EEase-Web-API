@@ -10,7 +10,7 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task<List<string>> GetAllCountries(CancellationToken cancellationToken = default);
 
-        Task<(List<CityDto> Cities, int TotalCount)> GetCitiesBySearchAsync(
+        Task<(List<CityDto> Cities, int TotalCount)> SearchCitiesAsync(
             string searchTerm,
             int pageSize,
             int pageNumber,

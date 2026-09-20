@@ -39,7 +39,7 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
                 async token => CitySearch.CountriesOf(await GetAllCitiesAsync(token)),
                 cancellationToken);
 
-        public async Task<(List<CityDto> Cities, int TotalCount)> GetCitiesBySearchAsync(
+        public async Task<(List<CityDto> Cities, int TotalCount)> SearchCitiesAsync(
             string searchTerm,
             int pageSize,
             int pageNumber,

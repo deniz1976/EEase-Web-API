@@ -1,9 +1,8 @@
 using EEaseWebAPI.API.Constants;
-using EEaseWebAPI.Application.DTOs.Route.DislikePlaceOrRestaurantDTO;
-using EEaseWebAPI.Application.DTOs.Route.LikePlaceOrRestaurantDTO;
-using EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant;
-using EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto;
-using EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant;
+using EEaseWebAPI.Application.DTOs.Place;
+using EEaseWebAPI.Application.Features.Commands.Place.DislikePlace;
+using EEaseWebAPI.Application.Features.Queries.Place.GetPlacePhoto;
+using EEaseWebAPI.Application.Features.Commands.Place.LikePlace;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,9 +27,9 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpGet("photos")]
-        [ProducesResponseType(typeof(GetRouteComponentPhotoCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetPlacePhotoQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPlacePhoto(
-            [FromQuery] GetRouteComponentPhotoCommandRequest request, CancellationToken cancellationToken)
+            [FromQuery] GetPlacePhotoQueryRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -42,11 +41,11 @@ namespace EEaseWebAPI.API.Controllers
         /// </summary>
         [HttpPost("likes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(LikePlaceCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> LikePlace(
-            [FromBody] LikePlaceOrRestaurantEndpointDTO request, CancellationToken cancellationToken)
+            [FromBody] LikePlaceRequest request, CancellationToken cancellationToken)
         {
-            var commandRequest = new LikePlaceOrRestaurantCommandRequest
+            var commandRequest = new LikePlaceCommandRequest
             {
                 GooglePlaceId = request.GooglePlaceId,
                 PlaceType = request.PlaceType,
@@ -63,13 +62,13 @@ namespace EEaseWebAPI.API.Controllers
         /// </summary>
         [HttpPost("dislikes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DislikePlaceCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> DislikePlace(
-            [FromBody] DislikePlaceOrRestaurantDTO request, CancellationToken cancellationToken)
+            [FromBody] DislikePlaceRequest request, CancellationToken cancellationToken)
         {
-            var commandRequest = new DislikePlaceOrRestaurantCommandRequest
+            var commandRequest = new DislikePlaceCommandRequest
             {
                 GooglePlaceId = request.GooglePlaceId,
                 PlaceType = request.PlaceType,

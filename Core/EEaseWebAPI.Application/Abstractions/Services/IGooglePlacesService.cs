@@ -1,5 +1,5 @@
 using EEaseWebAPI.Application.DTOs.GooglePlaces;
-using EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto;
+using EEaseWebAPI.Application.Features.Queries.Place.GetPlacePhoto;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
 {
@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task<string> GetPlaceDetailsAsync(string placeId, CancellationToken cancellationToken = default);
 
-        Task<GetRouteComponentPhotoCommandResponseBody> GetPlacePhotosAsync(
+        Task<GetPlacePhotoQueryResponseBody> GetPlacePhotosAsync(
             string photoName,
             int maxWidth = 400,
             int maxHeight = 400,

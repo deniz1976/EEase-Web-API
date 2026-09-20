@@ -1,11 +1,11 @@
 using EEaseWebAPI.API.Constants;
 using EEaseWebAPI.Application.DTOs.User;
-using EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmailUser;
+using EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmail;
 using EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode;
 using EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences;
-using EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCodeAgain;
+using EEaseWebAPI.Application.Features.Commands.AppUser.ResendVerificationCode;
 using EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto;
 using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry;
@@ -22,7 +22,7 @@ using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName;
 using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDescriptions;
 using EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers;
-using EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck;
+using EEaseWebAPI.Application.Features.Queries.AppUser.GetAccountStatus;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -80,10 +80,10 @@ namespace EEaseWebAPI.API.Controllers
 
         /// <summary>Sends another verification code to an address that has not confirmed yet.</summary>
         [HttpPost("email-verifications")]
-        [ProducesResponseType(typeof(SendVerificationCodeCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResendVerificationCodeCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> SendVerificationCodeAgain(
-            [FromBody] SendVerificationCodeCommandRequest request, CancellationToken cancellationToken)
+            [FromBody] ResendVerificationCodeCommandRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -100,10 +100,10 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("email-confirmation")]
-        [ProducesResponseType(typeof(ConfirmEmailUserCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ConfirmEmailCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> ConfirmEmail(
-            [FromBody] ConfirmEmailUserCommandRequest request, CancellationToken cancellationToken)
+            [FromBody] ConfirmEmailCommandRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -180,10 +180,10 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("me/status")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(StatusCheckQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetAccountStatusQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAccountStatus(CancellationToken cancellationToken)
         {
-            var request = new StatusCheckQueryRequest { Username = CurrentUsername };
+            var request = new GetAccountStatusQueryRequest { Username = CurrentUsername };
 
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);

@@ -1,5 +1,5 @@
 using EEaseWebAPI.API.Constants;
-using EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies;
+using EEaseWebAPI.Application.Features.Queries.Currencies.GetCurrencies;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-using EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant;
+using EEaseWebAPI.Application.Features.Commands.Place.LikePlace;
 using EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
@@ -17,7 +17,7 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username, CancellationToken cancellationToken = default);
 
-        Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
+        Task<LikePlaceCommandResponseBody> LikePlaceAsync(
             string username,
             string googlePlaceId,
             string placeType,

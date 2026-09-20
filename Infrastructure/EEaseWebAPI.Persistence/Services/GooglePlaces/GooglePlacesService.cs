@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.DTOs.GooglePlaces;
 using EEaseWebAPI.Application.Exceptions;
-using EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto;
+using EEaseWebAPI.Application.Features.Queries.Place.GetPlacePhoto;
 using EEaseWebAPI.Application.Options;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -70,7 +70,7 @@ namespace EEaseWebAPI.Persistence.Services.GooglePlaces
             return await SendAsync(request, cancellationToken);
         }
 
-        public async Task<GetRouteComponentPhotoCommandResponseBody> GetPlacePhotosAsync(
+        public async Task<GetPlacePhotoQueryResponseBody> GetPlacePhotosAsync(
             string photoName,
             int maxWidth = 400,
             int maxHeight = 400,
@@ -89,8 +89,8 @@ namespace EEaseWebAPI.Persistence.Services.GooglePlaces
 
             var body = await SendAsync(request, cancellationToken);
 
-            return JsonConvert.DeserializeObject<GetRouteComponentPhotoCommandResponseBody>(body, JsonOptions)
-                   ?? new GetRouteComponentPhotoCommandResponseBody();
+            return JsonConvert.DeserializeObject<GetPlacePhotoQueryResponseBody>(body, JsonOptions)
+                   ?? new GetPlacePhotoQueryResponseBody();
         }
 
         private HttpRequestMessage CreateRequest(HttpMethod method, string url)

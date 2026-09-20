@@ -1,6 +1,6 @@
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.MapEntities;
-using EEaseWebAPI.Application.MapEntities.StatusCheck;
+using EEaseWebAPI.Application.MapEntities.GetAccountStatus;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
 {

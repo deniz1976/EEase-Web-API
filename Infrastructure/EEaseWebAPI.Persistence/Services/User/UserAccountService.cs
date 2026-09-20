@@ -3,7 +3,7 @@ using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.DeleteUser;
-using EEaseWebAPI.Application.MapEntities.StatusCheck;
+using EEaseWebAPI.Application.MapEntities.GetAccountStatus;
 using EEaseWebAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using EEaseWebAPI.Application;
@@ -121,12 +121,12 @@ namespace EEaseWebAPI.Persistence.Services.User
             return $"Code is correct, account will be deleted in {DeletionGracePeriod.Days} days";
         }
 
-        public async Task<StatusCheckBody> StatusCheck(string username, CancellationToken cancellationToken = default)
+        public async Task<GetAccountStatusBody> GetAccountStatusAsync(string username, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(username);
             var isActive = user.Status != false;
 
-            return new StatusCheckBody
+            return new GetAccountStatusBody
             {
                 Status = isActive,
                 Message = isActive ? AppMessages.UserActive : AppMessages.UserPassive
