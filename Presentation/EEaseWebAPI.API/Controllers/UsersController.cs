@@ -45,9 +45,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [HttpPost("[Action]")]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> CreateUser(CreateUserCommandRequest createUserCommandRequest)
+        public async Task<IActionResult> CreateUser(CreateUserCommandRequest createUserCommandRequest, CancellationToken cancellationToken)
         {
-            CreateUserCommandResponse createUserCommandResponse = await _mediator.Send(createUserCommandRequest);
+            CreateUserCommandResponse createUserCommandResponse = await _mediator.Send(createUserCommandRequest, cancellationToken);
             return Ok(createUserCommandResponse);
         }
 
@@ -55,9 +55,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SendVerificationCodeCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> SendVerificationCodeAgain(SendVerificationCodeCommandRequest request)
+        public async Task<IActionResult> SendVerificationCodeAgain(SendVerificationCodeCommandRequest request, CancellationToken cancellationToken)
         {
-           SendVerificationCodeCommandResponse response = await _mediator.Send(request);
+           SendVerificationCodeCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
 
         }
@@ -67,7 +67,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO)
+        public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO, CancellationToken cancellationToken)
         {
             UpdateUserCommandRequest updateUserCommandRequest = new UpdateUserCommandRequest()
             {
@@ -80,7 +80,7 @@ namespace EEaseWebAPI.API.Controllers
                 User = CurrentUsername
             };
 
-            UpdateUserCommandResponse updateUserCommandResponse = await _mediator.Send(updateUserCommandRequest);
+            UpdateUserCommandResponse updateUserCommandResponse = await _mediator.Send(updateUserCommandRequest, cancellationToken);
             return Ok(updateUserCommandResponse);
         }
 
@@ -89,11 +89,11 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetUserInfoQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
-        public async Task<IActionResult> GetUserInfo()
+        public async Task<IActionResult> GetUserInfo(CancellationToken cancellationToken)
         {
             var userName = CurrentUsername;
             GetUserInfoQueryRequest request = new() { Username = userName };
-            GetUserInfoQueryResponse response = await _mediator.Send(request);
+            GetUserInfoQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -101,9 +101,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckEmailConfirmedQueryResponse),StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> CheckEmailConfirmed(CheckEmailConfirmedQueryRequest request)
+        public async Task<IActionResult> CheckEmailConfirmed(CheckEmailConfirmedQueryRequest request, CancellationToken cancellationToken)
         {
-            CheckEmailConfirmedQueryResponse response = await _mediator.Send(request);
+            CheckEmailConfirmedQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -111,9 +111,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ConfirmEmailUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> EmailConfirm(ConfirmEmailUserCommandRequest request)
+        public async Task<IActionResult> EmailConfirm(ConfirmEmailUserCommandRequest request, CancellationToken cancellationToken)
         {
-            ConfirmEmailUserCommandResponse response = await _mediator.Send(request);
+            ConfirmEmailUserCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -123,12 +123,12 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(DeleteUserCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> DeleteAccount()
+        public async Task<IActionResult> DeleteAccount(CancellationToken cancellationToken)
         {
 
             DeleteUserCommandRequest deleteUserCommandRequest = new DeleteUserCommandRequest()
             { Username=  CurrentUsername };
-            DeleteUserCommandResponse response = await _mediator.Send(deleteUserCommandRequest);
+            DeleteUserCommandResponse response = await _mediator.Send(deleteUserCommandRequest, cancellationToken);
             return Ok(response);
         }
 
@@ -138,10 +138,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(DeleteUserWithCodeCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> DeleteAccountWithCode([FromBody] DeleteAccountWithCode code)
+        public async Task<IActionResult> DeleteAccountWithCode([FromBody] DeleteAccountWithCode code, CancellationToken cancellationToken)
         {
             DeleteUserWithCodeCommandRequest deleteUserWithCodeCommandRequest = new DeleteUserWithCodeCommandRequest() {Username = CurrentUsername,Code = code.Code };
-            DeleteUserWithCodeCommandResponse deleteUserWithCodeCommandResponse = await _mediator.Send(deleteUserWithCodeCommandRequest);
+            DeleteUserWithCodeCommandResponse deleteUserWithCodeCommandResponse = await _mediator.Send(deleteUserWithCodeCommandRequest, cancellationToken);
             return Ok(deleteUserWithCodeCommandResponse);
 
         }
@@ -151,10 +151,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(StatusCheckQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> StatusCheck()
+        public async Task<IActionResult> StatusCheck(CancellationToken cancellationToken)
         {
             StatusCheckQueryRequest statusCheckQueryRequest = new StatusCheckQueryRequest() { Username = CurrentUsername};
-            StatusCheckQueryResponse statusCheckQueryResponse = await _mediator.Send(statusCheckQueryRequest);
+            StatusCheckQueryResponse statusCheckQueryResponse = await _mediator.Send(statusCheckQueryRequest, cancellationToken);
 
             return Ok(statusCheckQueryResponse);
         }
@@ -164,7 +164,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserPreferencesCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUserPreferences([FromBody] string message)
+        public async Task<IActionResult> UpdateUserPreferences([FromBody] string message, CancellationToken cancellationToken)
         {
             UpdateUserPreferencesCommandRequest request = new()
             {
@@ -172,7 +172,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            UpdateUserPreferencesCommandResponse response = await _mediator.Send(request);
+            UpdateUserPreferencesCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -181,14 +181,14 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserPreferencesWithTopicsCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUserPreferencesWithTopics([FromBody] List<string> topics)
+        public async Task<IActionResult> UpdateUserPreferencesWithTopics([FromBody] List<string> topics, CancellationToken cancellationToken)
         {
             var request = new UpdateUserPreferencesWithTopicsCommandRequest
             {
                 Username = CurrentUsername,
                 Topics = topics
             };
-            var result = await _mediator.Send(request);
+            var result = await _mediator.Send(request, cancellationToken);
             return Ok(result);
         }
 
@@ -197,14 +197,14 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetUserPreferencesCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> ResetUserPreferences()
+        public async Task<IActionResult> ResetUserPreferences(CancellationToken cancellationToken)
         {
             ResetUserPreferencesCommandRequest request = new()
             {
                 Username = CurrentUsername
             };
 
-            ResetUserPreferencesCommandResponse response = await _mediator.Send(request);
+            ResetUserPreferencesCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -213,7 +213,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCountryCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateCountry([FromBody] string country)
+        public async Task<IActionResult> UpdateCountry([FromBody] string country, CancellationToken cancellationToken)
         {
             var request = new UpdateUserCountryCommandRequest
             {
@@ -221,7 +221,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -230,24 +230,24 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPreferenceDescriptionsQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserPreferenceDescriptions()
+        public async Task<IActionResult> GetUserPreferenceDescriptions(CancellationToken cancellationToken)
         {
             var request = new GetUserPreferenceDescriptionsQueryRequest
             {
                 Username = CurrentUsername
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(GetAllTopicsQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTopics()
+        public async Task<IActionResult> GetAllTopics(CancellationToken cancellationToken)
         {
             var request = new GetAllTopicsQueryRequest();
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -256,7 +256,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCurrencyCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUserCurrency([FromBody] string currencyCode)
+        public async Task<IActionResult> UpdateUserCurrency([FromBody] string currencyCode, CancellationToken cancellationToken)
         {
 
             var request = new UpdateUserCurrencyCommandRequest
@@ -265,7 +265,7 @@ namespace EEaseWebAPI.API.Controllers
                 CurrencyCode = currencyCode
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -274,14 +274,14 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserCurrencyQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserCurrency()
+        public async Task<IActionResult> GetUserCurrency(CancellationToken cancellationToken)
         {
             var request = new GetUserCurrencyQueryRequest
             {
                 Username = CurrentUsername
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -290,7 +290,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserInfoByNameQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserInfoByName([FromQuery]string TargetUsername)
+        public async Task<IActionResult> GetUserInfoByName([FromQuery]string TargetUsername, CancellationToken cancellationToken)
         {
             var request = new GetUserInfoByNameQueryRequest()
             {
@@ -298,7 +298,7 @@ namespace EEaseWebAPI.API.Controllers
                 TargetUsername = TargetUsername
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -307,7 +307,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserInfoByIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserInfoById([FromQuery]string UserId)
+        public async Task<IActionResult> GetUserInfoById([FromQuery]string UserId, CancellationToken cancellationToken)
         {
             var request = new GetUserInfoByIdQueryRequest()
             {
@@ -315,7 +315,7 @@ namespace EEaseWebAPI.API.Controllers
                 UserId = UserId
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -324,14 +324,14 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPhotoQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserPhoto()
+        public async Task<IActionResult> GetUserPhoto(CancellationToken cancellationToken)
         {
             var request = new GetUserPhotoQueryRequest
             {
                 Username = CurrentUsername
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -340,7 +340,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPhotoByNameQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserPhotoByName([FromQuery]string TargetUsername)
+        public async Task<IActionResult> GetUserPhotoByName([FromQuery]string TargetUsername, CancellationToken cancellationToken)
         {
             var request = new GetUserPhotoByNameQueryRequest()
             {
@@ -348,7 +348,7 @@ namespace EEaseWebAPI.API.Controllers
                 TargetUsername = TargetUsername
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -357,7 +357,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SetUserPhotoCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> SetUserPhoto([FromQuery] string photoPath)
+        public async Task<IActionResult> SetUserPhoto([FromQuery] string photoPath, CancellationToken cancellationToken)
         {
             var request = new SetUserPhotoCommandRequest
             {
@@ -365,7 +365,7 @@ namespace EEaseWebAPI.API.Controllers
                 PhotoUrl = photoPath
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
 
         }
@@ -375,11 +375,11 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SearchUsersQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> SearchUsers([FromQuery] string searchTerm)
+        public async Task<IActionResult> SearchUsers([FromQuery] string searchTerm, CancellationToken cancellationToken)
         {
             var request = new SearchUsersQueryRequest { SearchTerm = searchTerm };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
     }

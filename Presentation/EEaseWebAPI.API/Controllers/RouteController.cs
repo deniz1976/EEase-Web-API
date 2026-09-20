@@ -39,18 +39,18 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CreateRouteWithoutLoginCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
-        public async Task<IActionResult> CreateRouteWithoutLogin([FromBody] CreateRouteWithoutLoginCommandRequest request)
+        public async Task<IActionResult> CreateRouteWithoutLogin([FromBody] CreateRouteWithoutLoginCommandRequest request, CancellationToken cancellationToken)
         {
-            CreateRouteWithoutLoginCommandResponse response = await _mediator.Send(request);
+            CreateRouteWithoutLoginCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRouteComponentPhotoCommandResponse),StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRouteComponentPhoto(GetRouteComponentPhotoCommandRequest request)
+        public async Task<IActionResult> GetRouteComponentPhoto(GetRouteComponentPhotoCommandRequest request, CancellationToken cancellationToken)
         {
-            GetRouteComponentPhotoCommandResponse response = await _mediator.Send(request);
+            GetRouteComponentPhotoCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -59,7 +59,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetAllRoutesQueryResponse),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        public async Task<IActionResult> GetAllRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetAllRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
             GetAllRoutesQueryRequest request = new GetAllRoutesQueryRequest()
             {
@@ -68,7 +68,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            GetAllRoutesQueryResponse response = await _mediator.Send(request);
+            GetAllRoutesQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
 
         }
@@ -78,7 +78,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetRoutesByUserIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        public async Task<IActionResult> GetAllRoutes([FromRoute] string userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetAllRoutes([FromRoute] string userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
             GetRoutesByUserIdQueryRequest request = new GetRoutesByUserIdQueryRequest()
             {
@@ -88,7 +88,7 @@ namespace EEaseWebAPI.API.Controllers
                 RequesterUsername = CurrentUsername
             };
 
-            GetRoutesByUserIdQueryResponse response = await _mediator.Send(request);
+            GetRoutesByUserIdQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -97,7 +97,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetLikedRoutesQueryResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetLikedRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetLikedRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
             GetLikedRoutesQueryRequest request = new GetLikedRoutesQueryRequest()
             {
@@ -106,7 +106,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            GetLikedRoutesQueryResponse response = await _mediator.Send(request);
+            GetLikedRoutesQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
 
         }
@@ -116,7 +116,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikeRouteCommandResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> LikeRoute([FromBody] Guid routeId)
+        public async Task<IActionResult> LikeRoute([FromBody] Guid routeId, CancellationToken cancellationToken)
         {
             LikeRouteCommandRequest request = new LikeRouteCommandRequest
             {
@@ -124,7 +124,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            LikeRouteCommandResponse response = await _mediator.Send(request);
+            LikeRouteCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -133,7 +133,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteRouteCommandResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteRoute([FromRoute] Guid routeId)
+        public async Task<IActionResult> DeleteRoute([FromRoute] Guid routeId, CancellationToken cancellationToken)
         {
             DeleteRouteCommandRequest request = new DeleteRouteCommandRequest
             {
@@ -141,7 +141,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            DeleteRouteCommandResponse response = await _mediator.Send(request);
+            DeleteRouteCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -151,7 +151,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CreateCustomRouteCommandResponse),StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
-        public async Task<IActionResult> CreateCustomRoute(CreateCustomRouteDTO createCustomRouteDTO)
+        public async Task<IActionResult> CreateCustomRoute(CreateCustomRouteDTO createCustomRouteDTO, CancellationToken cancellationToken)
         {
 #pragma warning disable CS8601
             CreateCustomRouteCommandRequest request = new CreateCustomRouteCommandRequest()
@@ -165,7 +165,7 @@ namespace EEaseWebAPI.API.Controllers
             };
 #pragma warning restore CS8601
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -175,7 +175,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRouteByIdQueryResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRouteById([FromRoute] Guid routeId)
+        public async Task<IActionResult> GetRouteById([FromRoute] Guid routeId, CancellationToken cancellationToken)
         {
             GetRouteByIdQueryRequest request = new GetRouteByIdQueryRequest
             {
@@ -183,7 +183,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            GetRouteByIdQueryResponse response = await _mediator.Send(request);
+            GetRouteByIdQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -192,7 +192,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateRouteStatusCommandResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateRouteStatus([FromRoute] Guid routeId, [FromBody] int status)
+        public async Task<IActionResult> UpdateRouteStatus([FromRoute] Guid routeId, [FromBody] int status, CancellationToken cancellationToken)
         {
             UpdateRouteStatusCommandRequest request = new UpdateRouteStatusCommandRequest
             {
@@ -201,7 +201,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            UpdateRouteStatusCommandResponse response = await _mediator.Send(request);
+            UpdateRouteStatusCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -210,7 +210,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> LikePlaceOrRestaurant([FromBody] LikePlaceOrRestaurantEndpointDTO request)
+        public async Task<IActionResult> LikePlaceOrRestaurant([FromBody] LikePlaceOrRestaurantEndpointDTO request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(request.PlaceType))
                 return BadRequest("PlaceType is required");
@@ -225,7 +225,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            var response = await _mediator.Send(commandRequest);
+            var response = await _mediator.Send(commandRequest, cancellationToken);
 
             return Ok(response);
         }
@@ -236,7 +236,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
-        public async Task<IActionResult> DislikePlaceOrRestaurant([FromBody] DislikePlaceOrRestaurantDTO request)
+        public async Task<IActionResult> DislikePlaceOrRestaurant([FromBody] DislikePlaceOrRestaurantDTO request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(request.PlaceType))
                 return BadRequest("PlaceType is required");
@@ -257,7 +257,7 @@ namespace EEaseWebAPI.API.Controllers
                 RouteId = request.RouteId
             };
 
-            var response = await _mediator.Send(commandRequest);
+            var response = await _mediator.Send(commandRequest, cancellationToken);
 
             return Ok(response);
         }
@@ -266,7 +266,7 @@ namespace EEaseWebAPI.API.Controllers
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckRouteLikeStatusQueryResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CheckRouteLikeStatus([FromRoute] Guid routeId)
+        public async Task<IActionResult> CheckRouteLikeStatus([FromRoute] Guid routeId, CancellationToken cancellationToken)
         {
             CheckRouteLikeStatusQueryRequest request = new()
             {
@@ -274,7 +274,7 @@ namespace EEaseWebAPI.API.Controllers
                 Username = CurrentUsername
             };
 
-            CheckRouteLikeStatusQueryResponse response = await _mediator.Send(request);
+            CheckRouteLikeStatusQueryResponse response = await _mediator.Send(request, cancellationToken);
 
             return Ok(response);
         }
@@ -284,14 +284,14 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteAllRoutesCommandResponse), StatusCodes.Status200OK)]
 
-        public async Task<IActionResult> DeleteAllRoutes()
+        public async Task<IActionResult> DeleteAllRoutes(CancellationToken cancellationToken)
         {
             DeleteAllRoutesCommandRequest request = new DeleteAllRoutesCommandRequest
             {
                 Username = CurrentUsername
             };
 
-            DeleteAllRoutesCommandResponse response = await _mediator.Send(request);
+            DeleteAllRoutesCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 

@@ -24,7 +24,8 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes
 
         public async Task<GetLikedRoutesQueryResponse> Handle(GetLikedRoutesQueryRequest request, CancellationToken cancellationToken)
         {
-            var (routes, totalCount) = await _routeService.GetLikedRoutes(request.Username, request.PageNumber, request.PageSize, default);
+            var (routes, totalCount) = await _routeService.GetLikedRoutes(
+                request.Username, request.PageNumber, request.PageSize, cancellationToken);
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
 

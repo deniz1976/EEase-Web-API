@@ -23,14 +23,14 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetCitiesBySearchQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesBySearch([FromQuery] string searchTerm, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1)
+        public async Task<IActionResult> GetCitiesBySearch([FromQuery] string searchTerm, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(new GetCitiesBySearchQueryRequest
             {
                 SearchTerm = searchTerm,
                 PageSize = pageSize,
                 PageNumber = pageNumber,
-            });
+            }, cancellationToken);
 
             return Ok(response);
         }
@@ -41,7 +41,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesBySearchWithPreferences([FromQuery] string searchTerm, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1)
+        public async Task<IActionResult> GetCitiesBySearchWithPreferences([FromQuery] string searchTerm, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(new GetCitiesBySearchQueryRequest
             {
@@ -49,7 +49,7 @@ namespace EEaseWebAPI.API.Controllers
                 PageSize = pageSize,
                 PageNumber = pageNumber,
                 Username = CurrentUsername
-            });
+            }, cancellationToken);
 
             return Ok(response);
         }
@@ -60,9 +60,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllCountries()
+        public async Task<IActionResult> GetAllCountries(CancellationToken cancellationToken)
         {
-            var response = await _mediator.Send(new GetAllCountriesQueryRequest());
+            var response = await _mediator.Send(new GetAllCountriesQueryRequest(), cancellationToken);
             return Ok(response);
         }
     }

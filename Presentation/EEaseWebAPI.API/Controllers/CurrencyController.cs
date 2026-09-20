@@ -24,7 +24,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetCurrenciesQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<IActionResult> GetCurrencies([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetCurrencies([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
             var userName = CurrentUsername;
             GetCurrenciesQueryRequest request = new()
@@ -33,7 +33,7 @@ namespace EEaseWebAPI.API.Controllers
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
-            GetCurrenciesQueryResponse response = await _mediator.Send(request);
+            GetCurrenciesQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
     }

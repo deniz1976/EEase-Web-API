@@ -35,7 +35,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("SendFriendRequest/{targetUsername}")]
-        public async Task<IActionResult> SendFriendRequest(string targetUsername)
+        public async Task<IActionResult> SendFriendRequest(string targetUsername, CancellationToken cancellationToken)
         {
             var request = new SendFriendRequestCommandRequest
             {
@@ -43,7 +43,7 @@ namespace EEaseWebAPI.API.Controllers
                 AddresseeUsername = targetUsername
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
 
             return Ok(response);
         }
@@ -52,10 +52,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
-        public async Task<IActionResult> GetPendingRequests()
+        public async Task<IActionResult> GetPendingRequests(CancellationToken cancellationToken)
         {
             var query = new GetPendingFriendRequestsQuery { Username = CurrentUsername };
-            var response = await _mediator.Send(query);
+            var response = await _mediator.Send(query, cancellationToken);
 
             return Ok(response);
         }
@@ -64,10 +64,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
-        public async Task<IActionResult> GetFriends()
+        public async Task<IActionResult> GetFriends(CancellationToken cancellationToken)
         {
             var query = new GetUserFriendsQuery { Username = CurrentUsername };
-            var response = await _mediator.Send(query);
+            var response = await _mediator.Send(query, cancellationToken);
 
             return Ok(response);
         }
@@ -77,7 +77,8 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("RespondToFriendRequest/{requesterUsername}")]
         public async Task<IActionResult> RespondToFriendRequest(
-            string requesterUsername, [FromBody] FriendshipStatus response)
+            string requesterUsername, [FromBody] FriendshipStatus response,
+            CancellationToken cancellationToken)
         {
             var request = new RespondToFriendRequestCommand
             {
@@ -86,7 +87,7 @@ namespace EEaseWebAPI.API.Controllers
                 Response = response
             };
 
-            var result = await _mediator.Send(request);
+            var result = await _mediator.Send(request, cancellationToken);
 
             return Ok(result);
         }
@@ -95,7 +96,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpDelete("RemoveFriend/{friendUsername}")]
-        public async Task<IActionResult> RemoveFriend(string friendUsername)
+        public async Task<IActionResult> RemoveFriend(string friendUsername, CancellationToken cancellationToken)
         {
             var command = new RemoveFriendCommand
             {
@@ -103,7 +104,7 @@ namespace EEaseWebAPI.API.Controllers
                 FriendUsername = friendUsername
             };
 
-            var response = await _mediator.Send(command);
+            var response = await _mediator.Send(command, cancellationToken);
 
             return Ok(response);
         }
@@ -112,7 +113,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("BlockUser/{targetUsername}")]
-        public async Task<IActionResult> BlockUser(string targetUsername)
+        public async Task<IActionResult> BlockUser(string targetUsername, CancellationToken cancellationToken)
         {
             var command = new BlockFriendCommand
             {
@@ -120,7 +121,7 @@ namespace EEaseWebAPI.API.Controllers
                 TargetUsername = targetUsername
             };
 
-            var response = await _mediator.Send(command);
+            var response = await _mediator.Send(command, cancellationToken);
 
             return Ok(response);
         }
@@ -129,7 +130,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("UnblockUser/{targetUsername}")]
-        public async Task<IActionResult> UnblockUser(string targetUsername)
+        public async Task<IActionResult> UnblockUser(string targetUsername, CancellationToken cancellationToken)
         {
             UnblockUserCommandRequest request = new UnblockUserCommandRequest()
             {
@@ -137,7 +138,7 @@ namespace EEaseWebAPI.API.Controllers
                 TargetUsername = targetUsername
             };
 
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -145,10 +146,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
-        public async Task<IActionResult> GetBlockedUsers()
+        public async Task<IActionResult> GetBlockedUsers(CancellationToken cancellationToken)
         {
             var query = new GetBlockedUsersQuery { Username = CurrentUsername };
-            var response = await _mediator.Send(query);
+            var response = await _mediator.Send(query, cancellationToken);
 
             return Ok(response);
         }
@@ -157,7 +158,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(CancelFriendRequestCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CancelFriendRequest(string targetUsername)
+        public async Task<IActionResult> CancelFriendRequest(string targetUsername, CancellationToken cancellationToken)
         {
             CancelFriendRequestCommandRequest request = new CancelFriendRequestCommandRequest
             {
@@ -165,7 +166,7 @@ namespace EEaseWebAPI.API.Controllers
                 TargetUsername = targetUsername
             };
 
-            CancelFriendRequestCommandResponse response = await _mediator.Send(request);
+            CancelFriendRequestCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -173,7 +174,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(CheckFriendRequestQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CheckFriendRequest(string targetUsername)
+        public async Task<IActionResult> CheckFriendRequest(string targetUsername, CancellationToken cancellationToken)
         {
             CheckFriendRequestQueryRequest request = new CheckFriendRequestQueryRequest()
             {
@@ -181,7 +182,7 @@ namespace EEaseWebAPI.API.Controllers
                 TargetUsername = targetUsername
             };
 
-            CheckFriendRequestQueryResponse response = await _mediator.Send(request);
+            CheckFriendRequestQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 

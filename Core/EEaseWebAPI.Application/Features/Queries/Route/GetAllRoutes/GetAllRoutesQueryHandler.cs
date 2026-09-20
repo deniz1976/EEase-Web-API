@@ -22,7 +22,8 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetAllRoutes
 
         public async Task<GetAllRoutesQueryResponse> Handle(GetAllRoutesQueryRequest request, CancellationToken cancellationToken)
         {
-            var (routes, totalCount) = await _routeService.GetAllRoutes(request.Username, request.PageNumber, request.PageSize, default);
+            var (routes, totalCount) = await _routeService.GetAllRoutes(
+                request.Username, request.PageNumber, request.PageSize, cancellationToken);
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
 

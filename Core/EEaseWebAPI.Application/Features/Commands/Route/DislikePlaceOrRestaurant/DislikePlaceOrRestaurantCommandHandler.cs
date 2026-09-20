@@ -35,7 +35,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaura
                         PlaceType = request.PlaceType,
                         UserFeedback = request.UserFeedback,
                         DislikeType = request.DislikeType
-                    })
+                    }, cancellationToken)
                 }
             };
         }

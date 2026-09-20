@@ -23,8 +23,8 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant
                 var result = await _routeService.LikePlaceOrRestaurantAsync(
                     request.Username,
                     request.GooglePlaceId,
-                    request.PlaceType
-                );
+                    request.PlaceType,
+                    cancellationToken);
 
                 return new LikePlaceOrRestaurantCommandResponse
                 {

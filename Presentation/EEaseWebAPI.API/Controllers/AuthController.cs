@@ -32,9 +32,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LoginUserCommandResponse),StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> Login(LoginUserCommandRequest request)
+        public async Task<IActionResult> Login(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            LoginUserCommandResponse loginUserCommandResponse = await _mediator.Send(request);
+            LoginUserCommandResponse loginUserCommandResponse = await _mediator.Send(request, cancellationToken);
             return Ok(loginUserCommandResponse);
         }
 
@@ -42,9 +42,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(RefreshTokenLoginUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> RefreshTokenLoginAsync(RefreshTokenLoginUserCommandRequest request)
+        public async Task<IActionResult> RefreshTokenLoginAsync(RefreshTokenLoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            RefreshTokenLoginUserCommandResponse response = await _mediator.Send(request);
+            RefreshTokenLoginUserCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -52,9 +52,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPassword(ResetPasswordUserCommandRequest request)
+        public async Task<IActionResult> ResetPassword(ResetPasswordUserCommandRequest request, CancellationToken cancellationToken)
         {
-            ResetPasswordUserCommandResponse response = await _mediator.Send(request);
+            ResetPasswordUserCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -62,9 +62,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCodeCheckQueryResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPasswordCodeCheck(ResetPasswordCodeCheckQueryRequest request)
+        public async Task<IActionResult> ResetPasswordCodeCheck(ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
         {
-            ResetPasswordCodeCheckQueryResponse response = await _mediator.Send(request);
+            ResetPasswordCodeCheckQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -72,9 +72,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCommandResponse),StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPasswordWithCode(ResetPasswordCommandRequest request)
+        public async Task<IActionResult> ResetPasswordWithCode(ResetPasswordCommandRequest request, CancellationToken cancellationToken)
         {
-            ResetPasswordCommandResponse response = await _mediator.Send(request);
+            ResetPasswordCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -84,10 +84,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ChangePasswordCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO, CancellationToken cancellationToken)
         {
             ChangePasswordCommandRequest request = new ChangePasswordCommandRequest() { Username = CurrentUsername,OldPassword = changePasswordDTO.OldPassword, NewPassword = changePasswordDTO.NewPassword};
-            ChangePasswordCommandResponse response = await _mediator.Send(request);
+            ChangePasswordCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
@@ -95,9 +95,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckEmailIsInUseQueryResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> CheckEmailIsInUse([FromQuery]CheckEmailIsInUseQueryRequest request)
+        public async Task<IActionResult> CheckEmailIsInUse([FromQuery]CheckEmailIsInUseQueryRequest request, CancellationToken cancellationToken)
         {
-            CheckEmailIsInUseQueryResponse checkEmailIsInUseQueryResponse = await _mediator.Send(request);
+            CheckEmailIsInUseQueryResponse checkEmailIsInUseQueryResponse = await _mediator.Send(request, cancellationToken);
             return Ok(checkEmailIsInUseQueryResponse);
         }
     }
