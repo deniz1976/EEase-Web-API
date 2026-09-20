@@ -37,7 +37,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser
                 Gender = request.Gender,
                 Username = request.Username,
                 BornDate = request.BornDate
-            });
+            }, cancellationToken);
 
             return new CreateUserCommandResponse
             {

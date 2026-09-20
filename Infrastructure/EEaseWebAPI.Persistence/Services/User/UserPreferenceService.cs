@@ -35,7 +35,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             _friendshipService = friendshipService;
         }
 
-        public async Task<AppUser> GetUserWithPreferencesAsync(string username)
+        public async Task<AppUser> GetUserWithPreferencesAsync(string username, CancellationToken cancellationToken = default)
         {
             // Identity looks users up by the normalised name, so comparing the raw one here
             // would miss a caller that spelled it with different capitals.
@@ -45,7 +45,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                 .Include(appUser => appUser.UserPersonalization)
                 .Include(appUser => appUser.FoodPreferences)
                 .Include(appUser => appUser.AccommodationPreferences)
-                .FirstOrDefaultAsync(appUser => appUser.NormalizedUserName == normalizedUserName);
+                .FirstOrDefaultAsync(appUser => appUser.NormalizedUserName == normalizedUserName, cancellationToken);
 
             return user ?? throw new Application.Exceptions.Login.UserNotFoundException("User not found", (int)StatusEnum.UserNotFound);
         }
@@ -67,10 +67,10 @@ namespace EEaseWebAPI.Persistence.Services.User
                     (int)StatusEnum.PreferencesUpdateFailed);
             }
 
-            await SaveNewPreferencesAsync(user.Id, accommodation, food, personalization);
+            await SaveNewPreferencesAsync(user.Id, accommodation, food, personalization, cancellationToken);
         }
 
-        public async Task SetFromTopicsAsync(string username, IReadOnlyList<string> topics)
+        public async Task SetFromTopicsAsync(string username, IReadOnlyList<string> topics, CancellationToken cancellationToken = default)
         {
             var user = await GetUserWithPreferencesAsync(username);
 
@@ -94,10 +94,10 @@ namespace EEaseWebAPI.Persistence.Services.User
                 Score(preferenceNames, accommodation, food, personalization);
             }
 
-            await SaveNewPreferencesAsync(user.Id, accommodation, food, personalization);
+            await SaveNewPreferencesAsync(user.Id, accommodation, food, personalization, cancellationToken);
         }
 
-        public async Task ResetAsync(string username)
+        public async Task ResetAsync(string username, CancellationToken cancellationToken = default)
         {
             var user = await GetUserWithPreferencesAsync(username);
 
@@ -117,10 +117,10 @@ namespace EEaseWebAPI.Persistence.Services.User
             if (user.UserPersonalization != null)
                 _context.Remove(user.UserPersonalization);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<GetUserPreferenceDescriptionsBody> GetDescriptionsAsync(string username)
+        public async Task<GetUserPreferenceDescriptionsBody> GetDescriptionsAsync(string username, CancellationToken cancellationToken = default)
         {
             var user = await GetUserWithPreferencesAsync(username);
 
@@ -143,10 +143,11 @@ namespace EEaseWebAPI.Persistence.Services.User
         }
 
         public async Task<GetUserPreferenceDescriptionsBody?> GetDescriptionsForViewerAsync(
-            string viewerUsername, string targetUsername)
+            string viewerUsername, string targetUsername,
+            CancellationToken cancellationToken = default)
         {
             if (viewerUsername != targetUsername &&
-                !await _friendshipService.AreFriendsAsync(viewerUsername, targetUsername))
+                !await _friendshipService.AreFriendsAsync(viewerUsername, targetUsername, cancellationToken))
             {
                 return null;
             }
@@ -173,14 +174,18 @@ namespace EEaseWebAPI.Persistence.Services.User
             string userId,
             UserAccommodationPreferences accommodation,
             UserFoodPreferences food,
-            UserPersonalization personalization)
+            UserPersonalization personalization,
+            CancellationToken cancellationToken)
         {
             accommodation.UserId = userId;
             food.UserId = userId;
             personalization.UserId = userId;
 
-            await _context.AddRangeAsync(accommodation, food, personalization);
-            await _context.SaveChangesAsync();
+            // The params overload would take the token for an entity, so the rows go in as
+            // an array.
+            await _context.AddRangeAsync(
+                new object[] { accommodation, food, personalization }, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         private static void EnsureNoPreferences(AppUser user)

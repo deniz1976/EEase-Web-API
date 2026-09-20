@@ -22,18 +22,18 @@ namespace EEaseWebAPI.Persistence.Services.Social
             _context = context;
         }
 
-        public async Task<UserFriendship?> GetFriendshipAsync(string username, string targetUsername)
+        public async Task<UserFriendship?> GetFriendshipAsync(string username, string targetUsername, CancellationToken cancellationToken = default)
         {
             var (user, target) = await ResolveAsync(username, targetUsername, allowSelf: true);
 
-            return await FindFriendshipAsync(user.Id, target.Id);
+            return await FindFriendshipAsync(user.Id, target.Id, cancellationToken);
         }
 
-        public async Task SendRequestAsync(string requesterUsername, string addresseeUsername)
+        public async Task SendRequestAsync(string requesterUsername, string addresseeUsername, CancellationToken cancellationToken = default)
         {
             var (requester, addressee) = await ResolveAsync(requesterUsername, addresseeUsername);
 
-            var blocks = await FindBlocksAsync(requester.Id, addressee.Id);
+            var blocks = await FindBlocksAsync(requester.Id, addressee.Id, cancellationToken);
 
             if (blocks.Any(block => block.BlockerId == requester.Id))
                 throw new UserBlockedException("Unblock this user before sending a friend request.");
@@ -41,14 +41,14 @@ namespace EEaseWebAPI.Persistence.Services.Social
             if (blocks.Count > 0)
                 throw new UserBlockedException("You cannot send a friend request to this user.");
 
-            var friendship = await FindFriendshipAsync(requester.Id, addressee.Id);
+            var friendship = await FindFriendshipAsync(requester.Id, addressee.Id, cancellationToken);
 
             if (friendship == null)
             {
                 await _context.UserFriendships.AddAsync(
-                    UserFriendship.Create(requester.Id, addressee.Id, FriendshipStatus.Pending));
+                    UserFriendship.Create(requester.Id, addressee.Id, FriendshipStatus.Pending), cancellationToken);
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return;
             }
 
@@ -63,17 +63,17 @@ namespace EEaseWebAPI.Persistence.Services.Social
             friendship.RequestDate = DateTime.UtcNow;
             friendship.ResponseDate = null;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task RespondToRequestAsync(string requesterUsername, string addresseeUsername, FriendshipStatus response)
+        public async Task RespondToRequestAsync(string requesterUsername, string addresseeUsername, FriendshipStatus response, CancellationToken cancellationToken = default)
         {
             if (response != FriendshipStatus.Accepted && response != FriendshipStatus.Rejected)
                 throw new InvalidFriendshipStatusException("A friend request can only be accepted or rejected.");
 
             var (requester, addressee) = await ResolveAsync(requesterUsername, addresseeUsername);
 
-            var friendship = await FindFriendshipAsync(requester.Id, addressee.Id)
+            var friendship = await FindFriendshipAsync(requester.Id, addressee.Id, cancellationToken)
                 ?? throw new FriendshipNotFoundException();
 
             if (friendship.AddresseeId != addressee.Id)
@@ -89,14 +89,14 @@ namespace EEaseWebAPI.Persistence.Services.Social
             friendship.Status = response;
             friendship.ResponseDate = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task CancelRequestAsync(string username, string targetUsername)
+        public async Task CancelRequestAsync(string username, string targetUsername, CancellationToken cancellationToken = default)
         {
             var (user, target) = await ResolveAsync(username, targetUsername);
 
-            var friendship = await FindFriendshipAsync(user.Id, target.Id);
+            var friendship = await FindFriendshipAsync(user.Id, target.Id, cancellationToken);
 
             if (friendship == null ||
                 friendship.Status != FriendshipStatus.Pending ||
@@ -106,23 +106,23 @@ namespace EEaseWebAPI.Persistence.Services.Social
             }
 
             _context.UserFriendships.Remove(friendship);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task RemoveFriendAsync(string username, string friendUsername)
+        public async Task RemoveFriendAsync(string username, string friendUsername, CancellationToken cancellationToken = default)
         {
             var (user, friend) = await ResolveAsync(username, friendUsername);
 
-            var friendship = await FindFriendshipAsync(user.Id, friend.Id);
+            var friendship = await FindFriendshipAsync(user.Id, friend.Id, cancellationToken);
 
             if (friendship == null || friendship.Status != FriendshipStatus.Accepted)
                 throw new FriendshipNotFoundException();
 
             _context.UserFriendships.Remove(friendship);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IReadOnlyList<UserFriendship>> GetFriendsAsync(string username)
+        public async Task<IReadOnlyList<UserFriendship>> GetFriendsAsync(string username, CancellationToken cancellationToken = default)
         {
             var user = await FindUserAsync(username);
 
@@ -132,10 +132,10 @@ namespace EEaseWebAPI.Persistence.Services.Social
                     friendship.Status == FriendshipStatus.Accepted)
                 .Include(friendship => friendship.Requester)
                 .Include(friendship => friendship.Addressee)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<IReadOnlyList<UserFriendship>> GetPendingRequestsAsync(string username)
+        public async Task<IReadOnlyList<UserFriendship>> GetPendingRequestsAsync(string username, CancellationToken cancellationToken = default)
         {
             var user = await FindUserAsync(username);
 
@@ -145,10 +145,10 @@ namespace EEaseWebAPI.Persistence.Services.Social
                     friendship.Status == FriendshipStatus.Pending)
                 .Include(friendship => friendship.Requester)
                 .OrderByDescending(friendship => friendship.RequestDate)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<bool> AreFriendsAsync(string username, string targetUsername)
+        public async Task<bool> AreFriendsAsync(string username, string targetUsername, CancellationToken cancellationToken = default)
         {
             var user = await _userManager.FindByNameAsync(username);
             var target = await _userManager.FindByNameAsync(targetUsername);
@@ -161,20 +161,20 @@ namespace EEaseWebAPI.Persistence.Services.Social
             return await _context.UserFriendships.AnyAsync(friendship =>
                 friendship.UserAId == pair.UserAId &&
                 friendship.UserBId == pair.UserBId &&
-                friendship.Status == FriendshipStatus.Accepted);
+                friendship.Status == FriendshipStatus.Accepted, cancellationToken);
         }
 
-        public async Task BlockAsync(string username, string targetUsername)
+        public async Task BlockAsync(string username, string targetUsername, CancellationToken cancellationToken = default)
         {
             var (user, target) = await ResolveAsync(username, targetUsername);
 
             var alreadyBlocked = await _context.UserBlocks
-                .AnyAsync(block => block.BlockerId == user.Id && block.BlockedId == target.Id);
+                .AnyAsync(block => block.BlockerId == user.Id && block.BlockedId == target.Id, cancellationToken);
 
             if (alreadyBlocked)
                 throw new UserAlreadyBlockedException();
 
-            var friendship = await FindFriendshipAsync(user.Id, target.Id);
+            var friendship = await FindFriendshipAsync(user.Id, target.Id, cancellationToken);
 
             if (friendship != null)
                 _context.UserFriendships.Remove(friendship);
@@ -184,24 +184,24 @@ namespace EEaseWebAPI.Persistence.Services.Social
                 BlockerId = user.Id,
                 BlockedId = target.Id,
                 BlockedDate = DateTime.UtcNow
-            });
+            }, cancellationToken);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UnblockAsync(string username, string targetUsername)
+        public async Task UnblockAsync(string username, string targetUsername, CancellationToken cancellationToken = default)
         {
             var (user, target) = await ResolveAsync(username, targetUsername);
 
             var block = await _context.UserBlocks
-                .FirstOrDefaultAsync(block => block.BlockerId == user.Id && block.BlockedId == target.Id)
+                .FirstOrDefaultAsync(block => block.BlockerId == user.Id && block.BlockedId == target.Id, cancellationToken)
                 ?? throw new FriendshipNotFoundException();
 
             _context.UserBlocks.Remove(block);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IReadOnlyList<UserBlock>> GetBlockedUsersAsync(string username)
+        public async Task<IReadOnlyList<UserBlock>> GetBlockedUsersAsync(string username, CancellationToken cancellationToken = default)
         {
             var user = await FindUserAsync(username);
 
@@ -209,34 +209,35 @@ namespace EEaseWebAPI.Persistence.Services.Social
                 .Where(block => block.BlockerId == user.Id)
                 .Include(block => block.Blocked)
                 .OrderByDescending(block => block.BlockedDate)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<FriendRequestStatus> GetRequestStatusAsync(string username, string targetUsername)
+        public async Task<FriendRequestStatus> GetRequestStatusAsync(string username, string targetUsername, CancellationToken cancellationToken = default)
         {
             // Asking about yourself is a question, not an action: it answers Self rather
             // than refusing the way sending yourself a friend request does.
             var (user, target) = await ResolveAsync(username, targetUsername, allowSelf: true);
 
-            return (await GetRelationshipAsync(user, target)).RequestStatus;
+            return (await GetRelationshipAsync(user, target, cancellationToken)).RequestStatus;
         }
 
-        public async Task<ProfileVisibilityStatus> GetVisibilityAsync(string username, string targetUsername) =>
-            (await GetRelationshipAsync(username, targetUsername)).Visibility;
+        public async Task<ProfileVisibilityStatus> GetVisibilityAsync(string username, string targetUsername, CancellationToken cancellationToken = default) =>
+            (await GetRelationshipAsync(username, targetUsername, cancellationToken)).Visibility;
 
-        public async Task<UserRelationship> GetRelationshipAsync(string username, string targetUsername)
+        public async Task<UserRelationship> GetRelationshipAsync(string username, string targetUsername, CancellationToken cancellationToken = default)
         {
             var (user, target) = await ResolveAsync(username, targetUsername, allowSelf: true);
 
-            return await GetRelationshipAsync(user, target);
+            return await GetRelationshipAsync(user, target, cancellationToken);
         }
 
-        private async Task<UserRelationship> GetRelationshipAsync(AppUser user, AppUser target)
+        private async Task<UserRelationship> GetRelationshipAsync(
+            AppUser user, AppUser target, CancellationToken cancellationToken)
         {
             if (user.Id == target.Id)
                 return UserRelationship.Self;
 
-            var blocks = await FindBlocksAsync(user.Id, target.Id);
+            var blocks = await FindBlocksAsync(user.Id, target.Id, cancellationToken);
 
             if (blocks.Any(block => block.BlockerId == target.Id))
                 return new UserRelationship(ProfileVisibilityStatus.BlockedByTarget, FriendRequestStatus.Blocked);
@@ -244,7 +245,7 @@ namespace EEaseWebAPI.Persistence.Services.Social
             if (blocks.Count > 0)
                 return new UserRelationship(ProfileVisibilityStatus.BlockedTarget, FriendRequestStatus.Blocked);
 
-            var friendship = await FindFriendshipAsync(user.Id, target.Id);
+            var friendship = await FindFriendshipAsync(user.Id, target.Id, cancellationToken);
 
             if (friendship == null)
                 return new UserRelationship(ProfileVisibilityStatus.LimitedAccess, FriendRequestStatus.NoRequest);
@@ -283,21 +284,23 @@ namespace EEaseWebAPI.Persistence.Services.Social
             await _userManager.FindByNameAsync(username)
             ?? throw new UserNotFoundException("User Not Found", (int)StatusEnum.UserNotFound);
 
-        private Task<UserFriendship?> FindFriendshipAsync(string userId, string otherUserId)
+        private Task<UserFriendship?> FindFriendshipAsync(
+            string userId, string otherUserId, CancellationToken cancellationToken)
         {
             var pair = UserFriendship.NormalizePair(userId, otherUserId);
 
             return _context.UserFriendships
                 .FirstOrDefaultAsync(friendship =>
                     friendship.UserAId == pair.UserAId &&
-                    friendship.UserBId == pair.UserBId);
+                    friendship.UserBId == pair.UserBId, cancellationToken);
         }
 
-        private Task<List<UserBlock>> FindBlocksAsync(string userId, string otherUserId) =>
+        private Task<List<UserBlock>> FindBlocksAsync(
+            string userId, string otherUserId, CancellationToken cancellationToken) =>
             _context.UserBlocks
                 .Where(block =>
                     (block.BlockerId == userId && block.BlockedId == otherUserId) ||
                     (block.BlockerId == otherUserId && block.BlockedId == userId))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
     }
 }

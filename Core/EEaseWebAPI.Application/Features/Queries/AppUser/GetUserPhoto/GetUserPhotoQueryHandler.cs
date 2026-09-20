@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
             return new GetUserPhotoQueryResponse()
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoReceivedSuccessfully),
-                Body = new() { Path= await _profileService.GetUserPhotoAsync(request.Username) }
+                Body = new() { Path= await _profileService.GetUserPhotoAsync(request.Username, cancellationToken) }
             };
         }
     }

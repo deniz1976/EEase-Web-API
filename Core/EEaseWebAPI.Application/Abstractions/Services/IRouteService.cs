@@ -25,13 +25,14 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task<(List<StandardRouteDTO> Routes, int TotalCount)> GetLikedRoutes(string username, int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default);
 
-        Task<bool> LikeRoute(string username, Guid routeId);
+        Task<bool> LikeRoute(string username, Guid routeId, CancellationToken cancellationToken = default);
 
-        Task<bool> DeleteRoute(string username, Guid? routeId);
+        Task<bool> DeleteRoute(string username, Guid? routeId, CancellationToken cancellationToken = default);
 
-        Task<StandardRouteDTO> GetRouteById(string username, Guid? routeId);
+        Task<StandardRouteDTO> GetRouteById(string username, Guid? routeId, CancellationToken cancellationToken = default);
 
-        Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username);
+        Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(
+            Guid routeId, int status, string username, CancellationToken cancellationToken = default);
 
         Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
             string username,
@@ -39,9 +40,9 @@ namespace EEaseWebAPI.Application.Abstractions.Services
             string placeType,
             CancellationToken cancellationToken = default);
 
-        Task<bool> CheckRouteLikeStatus(string username, Guid routeId);
+        Task<bool> CheckRouteLikeStatus(string username, Guid routeId, CancellationToken cancellationToken = default);
 
-        Task<string> DeleteAllRoutes(string username);
+        Task<string> DeleteAllRoutes(string username, CancellationToken cancellationToken = default);
 
         Task<StandardRoute> DislikePlaceOrRestaurant(
             DislikePlaceOrRestaurantCommandRequest dislikePlaceOrRestaurantDTO,

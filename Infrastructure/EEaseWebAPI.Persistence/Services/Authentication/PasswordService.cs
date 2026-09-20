@@ -30,7 +30,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             _codeGenerator = codeGenerator;
         }
 
-        public async Task<bool> SendResetCodeAsync(string usernameOrEmail)
+        public async Task<bool> SendResetCodeAsync(string usernameOrEmail, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(usernameOrEmail);
 
@@ -55,7 +55,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             return true;
         }
 
-        public async Task<bool> VerifyResetCodeAsync(string usernameOrEmail, string code)
+        public async Task<bool> VerifyResetCodeAsync(string usernameOrEmail, string code, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(usernameOrEmail);
 
@@ -64,7 +64,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             return true;
         }
 
-        public async Task ResetPasswordAsync(string usernameOrEmail, string code, string newPassword)
+        public async Task ResetPasswordAsync(string usernameOrEmail, string code, string newPassword, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(usernameOrEmail);
 
@@ -93,7 +93,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             await UpdateAsync(user, "Failed to clear the reset password code.");
         }
 
-        public async Task<string> ChangePasswordAsync(string username, string oldPassword, string newPassword)
+        public async Task<string> ChangePasswordAsync(string username, string oldPassword, string newPassword, CancellationToken cancellationToken = default)
         {
             if (oldPassword == newPassword)
             {

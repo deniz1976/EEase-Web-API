@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
                 throw new InvalidRouteStatusException();
             }
 
-            var result = await _routeService.UpdateRouteStatusAsync(request.RouteId, request.Status, request.Username);
+            var result = await _routeService.UpdateRouteStatusAsync(request.RouteId, request.Status, request.Username, cancellationToken);
 
             return new UpdateRouteStatusCommandResponse
             {

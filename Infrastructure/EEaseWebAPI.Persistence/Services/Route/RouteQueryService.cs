@@ -71,7 +71,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             var (routes, totalCount) = await PageAsync(query, pageNumber, pageSize, cancellationToken);
 
-            return (await ToDtosAsync(routes, username, user.Id), totalCount);
+            return (await ToDtosAsync(routes, username, user.Id, cancellationToken), totalCount);
         }
 
         public async Task<(List<StandardRouteDTO> Routes, int TotalCount)> GetRoutesByUserId(
@@ -86,7 +86,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var isOwnProfile = targetUser.Id == requester.Id;
 
             var areFriends = !isOwnProfile
-                && await _friendshipService.AreFriendsAsync(targetUser.UserName!, requesterUsername);
+                && await _friendshipService.AreFriendsAsync(targetUser.UserName!, requesterUsername, cancellationToken);
 
             var query = _context.StandardRoutes
                 .AsNoTracking()
@@ -103,10 +103,11 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var (routes, totalCount) = await PageAsync(
                 query.OrderByDescending(route => route.CreatedDate), pageNumber, pageSize, cancellationToken);
 
-            return (await ToDtosAsync(routes, requesterUsername, requester.Id), totalCount);
+            return (await ToDtosAsync(routes, requesterUsername, requester.Id, cancellationToken), totalCount);
         }
 
-        public async Task<StandardRouteDTO> GetRouteById(string username, Guid? routeId)
+        public async Task<StandardRouteDTO> GetRouteById(
+            string username, Guid? routeId, CancellationToken cancellationToken = default)
         {
             var user = await RequireUserAsync(username);
 
@@ -116,10 +117,11 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 .FirstOrDefaultAsync(candidate => candidate.Id == routeId)
                 ?? throw new RouteNotFoundException("Route not found", (int)StatusEnum.RouteNotFound);
 
-            return await _routeAccessPolicy.ToDtoAsync(route, username, user.Id);
+            return await _routeAccessPolicy.ToDtoAsync(route, username, user.Id, cancellationToken);
         }
 
-        public async Task<bool> CheckRouteLikeStatus(string username, Guid routeId)
+        public async Task<bool> CheckRouteLikeStatus(
+            string username, Guid routeId, CancellationToken cancellationToken = default)
         {
             var user = await RequireUserAsync(username);
 
@@ -129,7 +131,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 .FirstOrDefaultAsync(candidate => candidate.Id == routeId)
                 ?? throw new RouteNotFoundException("Route not found", (int)StatusEnum.RouteNotFound);
 
-            var access = await _routeAccessPolicy.EvaluateAsync(route, username, user.Id);
+            var access = await _routeAccessPolicy.EvaluateAsync(route, username, user.Id, cancellationToken);
 
             if (!access.IsAccessible)
                 throw new ForbiddenException(access.Message!, StatusEnum.UnauthorizedToViewRoute);
@@ -155,13 +157,16 @@ namespace EEaseWebAPI.Persistence.Services.Route
         }
 
         private async Task<List<StandardRouteDTO>> ToDtosAsync(
-            IReadOnlyList<StandardRoute> routes, string username, string userId)
+            IReadOnlyList<StandardRoute> routes,
+            string username,
+            string userId,
+            CancellationToken cancellationToken)
         {
             var dtos = new List<StandardRouteDTO>(routes.Count);
 
             foreach (var route in routes)
             {
-                dtos.Add(await _routeAccessPolicy.ToDtoAsync(route, username, userId));
+                dtos.Add(await _routeAccessPolicy.ToDtoAsync(route, username, userId, cancellationToken));
             }
 
             return dtos;

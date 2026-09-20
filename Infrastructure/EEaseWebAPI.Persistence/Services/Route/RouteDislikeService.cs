@@ -81,12 +81,14 @@ namespace EEaseWebAPI.Persistence.Services.Route
                     user.Id, LocatePlace(route, request.GooglePlaceId, request.PlaceType),
                     request.PlaceType, liked: false, cancellationToken);
 
-                await _dislikedPlaceService.RecordAsync(user.Id, request.GooglePlaceId, request.PlaceType);
+                await _dislikedPlaceService.RecordAsync(
+                    user.Id, request.GooglePlaceId, request.PlaceType, cancellationToken);
 
-                await ReplacePlaceAsync(route, user.Id, request.GooglePlaceId, request.PlaceType);
+                await ReplacePlaceAsync(
+                    route, user.Id, request.GooglePlaceId, request.PlaceType, cancellationToken);
 
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _context.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
 
                 _logger.LogInformation(
                     "Replaced a disliked {PlaceType} in route {Route}; preferences changed: {Changes}.",
@@ -103,7 +105,12 @@ namespace EEaseWebAPI.Persistence.Services.Route
             }
         }
 
-        private async Task ReplacePlaceAsync(StandardRoute route, string userId, string googlePlaceId, string placeType)
+        private async Task ReplacePlaceAsync(
+            StandardRoute route,
+            string userId,
+            string googlePlaceId,
+            string placeType,
+            CancellationToken cancellationToken)
         {
             var accommodationPreferences = await _context.UserAccommodationPreferences
                 .FirstOrDefaultAsync(preference => preference.UserId == userId);

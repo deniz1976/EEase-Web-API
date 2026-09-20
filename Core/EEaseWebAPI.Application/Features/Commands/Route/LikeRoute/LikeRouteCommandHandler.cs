@@ -17,7 +17,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikeRoute
 
         public async Task<LikeRouteCommandResponse> Handle(LikeRouteCommandRequest request, CancellationToken cancellationToken)
         {
-            var isLiked = await _routeService.LikeRoute(request.Username, request.RouteId);
+            var isLiked = await _routeService.LikeRoute(request.Username, request.RouteId, cancellationToken);
 
             return new LikeRouteCommandResponse
             {

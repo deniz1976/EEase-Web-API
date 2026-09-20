@@ -18,7 +18,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
 
         public async Task<GetRouteByIdQueryResponse> Handle(GetRouteByIdQueryRequest request, CancellationToken cancellationToken)
         {
-            var route = await _routeService.GetRouteById(request.Username, request.RouteId);
+            var route = await _routeService.GetRouteById(request.Username, request.RouteId, cancellationToken);
 
             return new GetRouteByIdQueryResponse
             {

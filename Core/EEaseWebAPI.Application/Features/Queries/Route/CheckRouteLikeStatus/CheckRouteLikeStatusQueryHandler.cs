@@ -19,7 +19,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
         public async Task<CheckRouteLikeStatusQueryResponse> Handle(CheckRouteLikeStatusQueryRequest request, CancellationToken cancellationToken)
         {
 
-                var isLiked = await _routeService.CheckRouteLikeStatus(request.Username, request.RouteId);
+                var isLiked = await _routeService.CheckRouteLikeStatus(request.Username, request.RouteId, cancellationToken);
 
                 return new CheckRouteLikeStatusQueryResponse
                 {

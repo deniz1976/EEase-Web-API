@@ -18,8 +18,10 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         Task<(List<StandardRouteDTO> Routes, int TotalCount)> GetLikedRoutes(
             string username, int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default);
 
-        Task<StandardRouteDTO> GetRouteById(string username, Guid? routeId);
+        Task<StandardRouteDTO> GetRouteById(
+            string username, Guid? routeId, CancellationToken cancellationToken = default);
 
-        Task<bool> CheckRouteLikeStatus(string username, Guid routeId);
+        Task<bool> CheckRouteLikeStatus(
+            string username, Guid routeId, CancellationToken cancellationToken = default);
     }
 }

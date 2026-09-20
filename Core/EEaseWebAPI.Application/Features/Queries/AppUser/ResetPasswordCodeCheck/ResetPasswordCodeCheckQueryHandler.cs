@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeChec
 
         public async Task<ResetPasswordCodeCheckQueryResponse> Handle(ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
         {
-            var control = await _passwordService.VerifyResetCodeAsync(request.UsernameOrEmail, request.Code);
+            var control = await _passwordService.VerifyResetCodeAsync(request.UsernameOrEmail, request.Code, cancellationToken);
 
             if (control)
             {

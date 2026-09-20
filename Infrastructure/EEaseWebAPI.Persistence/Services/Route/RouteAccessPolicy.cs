@@ -17,7 +17,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
         public async Task<RouteAccessResult> EvaluateAsync(
             StandardRoute route,
             string requesterUsername,
-            string requesterUserId)
+            string requesterUserId,
+            CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(route);
 
@@ -32,7 +33,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                     RouteAccessResult.Denied("This route is private and only accessible to its owner"),
 
                 RouteVisibility.FriendsOnly =>
-                    await IsFriendOfOwnerAsync(route, requesterUsername)
+                    await IsFriendOfOwnerAsync(route, requesterUsername, cancellationToken)
                         ? RouteAccessResult.Allowed
                         : RouteAccessResult.Denied("This route is only accessible to friends"),
 
@@ -45,7 +46,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
         public async Task<StandardRouteDTO> ToDtoAsync(
             StandardRoute route,
             string requesterUsername,
-            string requesterUserId)
+            string requesterUserId,
+            CancellationToken cancellationToken = default)
         {
             var access = await EvaluateAsync(route, requesterUsername, requesterUserId);
 
@@ -71,7 +73,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return dto;
         }
 
-        private async Task<bool> IsFriendOfOwnerAsync(StandardRoute route, string requesterUsername)
+        private async Task<bool> IsFriendOfOwnerAsync(
+            StandardRoute route, string requesterUsername, CancellationToken cancellationToken)
         {
             var ownerUsername = route.User?.UserName;
 
@@ -80,7 +83,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 return false;
             }
 
-            return await _friendshipService.AreFriendsAsync(ownerUsername, requesterUsername);
+            return await _friendshipService.AreFriendsAsync(ownerUsername, requesterUsername, cancellationToken);
         }
     }
 }

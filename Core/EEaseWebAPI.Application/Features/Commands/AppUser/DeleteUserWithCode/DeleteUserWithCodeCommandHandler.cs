@@ -26,7 +26,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode
             // The service reports a refusal by throwing, with a reason the caller can read;
             // the bare Exception that stood in for "it came back empty" could only ever have
             // reached the caller as a 500 with nothing in it.
-            var message = await _accountService.ConfirmDeletionAsync(request.Username, request.Code);
+            var message = await _accountService.ConfirmDeletionAsync(request.Username, request.Code, cancellationToken);
 
             return new DeleteUserWithCodeCommandResponse
             {

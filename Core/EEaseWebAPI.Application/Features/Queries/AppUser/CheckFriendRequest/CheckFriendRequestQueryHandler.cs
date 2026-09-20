@@ -24,7 +24,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
 
         public async Task<CheckFriendRequestQueryResponse> Handle(CheckFriendRequestQueryRequest request, CancellationToken cancellationToken)
         {
-            var status = await _friendshipService.GetRequestStatusAsync(request.Username, request.TargetUsername);
+            var status = await _friendshipService.GetRequestStatusAsync(request.Username, request.TargetUsername, cancellationToken);
             string message = GetMessageForStatus(status);
 
             return new CheckFriendRequestQueryResponse

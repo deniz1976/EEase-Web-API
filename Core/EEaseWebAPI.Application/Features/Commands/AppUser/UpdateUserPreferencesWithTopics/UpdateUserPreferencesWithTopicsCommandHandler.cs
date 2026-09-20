@@ -20,7 +20,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
 
         public async Task<UpdateUserPreferencesWithTopicsCommandResponse> Handle(UpdateUserPreferencesWithTopicsCommandRequest request, CancellationToken cancellationToken)
         {
-            await _preferenceService.SetFromTopicsAsync(request.Username, request.Topics);
+            await _preferenceService.SetFromTopicsAsync(request.Username, request.Topics, cancellationToken);
 
             return new UpdateUserPreferencesWithTopicsCommandResponse
             {

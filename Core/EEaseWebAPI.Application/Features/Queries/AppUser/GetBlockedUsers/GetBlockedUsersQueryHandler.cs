@@ -18,7 +18,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers
 
         public async Task<GetBlockedUsersQueryResponse> Handle(GetBlockedUsersQuery request, CancellationToken cancellationToken)
         {
-            var blockedUsers = await _friendshipService.GetBlockedUsersAsync(request.Username);
+            var blockedUsers = await _friendshipService.GetBlockedUsersAsync(request.Username, cancellationToken);
 
             var blockedUserDtos = blockedUsers.Select(block => new BlockedUserDto
             {

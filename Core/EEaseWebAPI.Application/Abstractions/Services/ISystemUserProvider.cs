@@ -4,6 +4,6 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface ISystemUserProvider
     {
-        Task<AppUser> GetOrCreateAsync();
+        Task<AppUser> GetOrCreateAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -30,7 +30,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.LoginUser
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            var body = await _authenticationService.LoginAsync(request.UsernameOrEmail,request.Password,3600);
+            var body = await _authenticationService.LoginAsync(request.UsernameOrEmail,request.Password,3600, cancellationToken);
 
             var response = new LoginUserCommandResponse
             {

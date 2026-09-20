@@ -6,12 +6,12 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface IUserAccountService
     {
-        Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, TimeSpan lifetime);
+        Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, TimeSpan lifetime, CancellationToken cancellationToken = default);
 
-        Task<DeleteRequestOutcome> RequestDeletionAsync(string username);
+        Task<DeleteRequestOutcome> RequestDeletionAsync(string username, CancellationToken cancellationToken = default);
 
-        Task<string> ConfirmDeletionAsync(string username, string code);
+        Task<string> ConfirmDeletionAsync(string username, string code, CancellationToken cancellationToken = default);
 
-        Task<StatusCheckBody> StatusCheck(string username);
+        Task<StatusCheckBody> StatusCheck(string username, CancellationToken cancellationToken = default);
     }
 }

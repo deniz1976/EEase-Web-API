@@ -72,7 +72,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 changes[preferenceName] = updated - (current ?? PreferenceScoring.MinScore);
             }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return new PreferenceFeedbackResult(category, changes);
         }

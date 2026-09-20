@@ -18,7 +18,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
 
         public async Task<GetPendingFriendRequestsQueryResponse> Handle(GetPendingFriendRequestsQuery request, CancellationToken cancellationToken)
         {
-            var pendingRequests = await _friendshipService.GetPendingRequestsAsync(request.Username);
+            var pendingRequests = await _friendshipService.GetPendingRequestsAsync(request.Username, cancellationToken);
             var pendingRequestDtos = pendingRequests.Select(fr => new PendingFriendRequestDto
             {
                 RequesterUsername = fr.Requester.UserName,

@@ -40,23 +40,24 @@ namespace EEaseWebAPI.Persistence.Services.Route
             string username, int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default) =>
             _routeQueryService.GetLikedRoutes(username, pageNumber, pageSize, cancellationToken);
 
-        public Task<StandardRouteDTO> GetRouteById(string username, Guid? routeId) =>
-            _routeQueryService.GetRouteById(username, routeId);
+        public Task<StandardRouteDTO> GetRouteById(string username, Guid? routeId, CancellationToken cancellationToken = default) =>
+            _routeQueryService.GetRouteById(username, routeId, cancellationToken);
 
-        public Task<bool> CheckRouteLikeStatus(string username, Guid routeId) =>
-            _routeQueryService.CheckRouteLikeStatus(username, routeId);
+        public Task<bool> CheckRouteLikeStatus(string username, Guid routeId, CancellationToken cancellationToken = default) =>
+            _routeQueryService.CheckRouteLikeStatus(username, routeId, cancellationToken);
 
-        public Task<bool> LikeRoute(string username, Guid routeId) =>
-            _routeInteractionService.LikeRoute(username, routeId);
+        public Task<bool> LikeRoute(string username, Guid routeId, CancellationToken cancellationToken = default) =>
+            _routeInteractionService.LikeRoute(username, routeId, cancellationToken);
 
-        public Task<bool> DeleteRoute(string username, Guid? routeId) =>
-            _routeInteractionService.DeleteRoute(username, routeId);
+        public Task<bool> DeleteRoute(string username, Guid? routeId, CancellationToken cancellationToken = default) =>
+            _routeInteractionService.DeleteRoute(username, routeId, cancellationToken);
 
-        public Task<string> DeleteAllRoutes(string username) =>
-            _routeInteractionService.DeleteAllRoutes(username);
+        public Task<string> DeleteAllRoutes(string username, CancellationToken cancellationToken = default) =>
+            _routeInteractionService.DeleteAllRoutes(username, cancellationToken);
 
-        public Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username) =>
-            _routeInteractionService.UpdateRouteStatusAsync(routeId, status, username);
+        public Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(
+            Guid routeId, int status, string username, CancellationToken cancellationToken = default) =>
+            _routeInteractionService.UpdateRouteStatusAsync(routeId, status, username, cancellationToken);
 
         public Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
             string username,

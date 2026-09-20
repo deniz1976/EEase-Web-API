@@ -21,7 +21,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendReque
         public async Task<RespondToFriendRequestCommandResponse> Handle(RespondToFriendRequestCommand request, CancellationToken cancellationToken)
         {
             await _friendshipService.RespondToRequestAsync(
-                request.RequesterUsername, request.AddresseeUsername, request.Response);
+                request.RequesterUsername, request.AddresseeUsername, request.Response, cancellationToken);
 
             var statusCode = request.Response == Domain.Enums.FriendshipStatus.Accepted
                 ? StatusEnum.FriendRequestAcceptedSuccessfully

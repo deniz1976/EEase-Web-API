@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
         public async Task<IReadOnlyList<(UserAccommodationPreferences? Accommodation, UserFoodPreferences? Food, UserPersonalization? Personalization)>>
             CollectAsync(AppUser user, IReadOnlyList<string>? friendUsernames, CancellationToken cancellationToken = default)
         {
-            var travellerIds = await ResolveTravellerIdsAsync(user, friendUsernames);
+            var travellerIds = await ResolveTravellerIdsAsync(user, friendUsernames, cancellationToken);
 
             var accommodation = await _context.Set<UserAccommodationPreferences>()
                 .Where(preference => preference.UserId != null && travellerIds.Contains(preference.UserId))
@@ -60,7 +60,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return collected;
         }
 
-        private async Task<List<string>> ResolveTravellerIdsAsync(AppUser user, IReadOnlyList<string>? friendUsernames)
+        private async Task<List<string>> ResolveTravellerIdsAsync(
+            AppUser user, IReadOnlyList<string>? friendUsernames, CancellationToken cancellationToken)
         {
             var travellers = new List<AppUser> { user };
 
@@ -74,7 +75,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
                 var friend = await _userManager.FindByNameAsync(friendUsername);
 
-                if (friend is not null && await _friendshipService.AreFriendsAsync(user.UserName!, friendUsername))
+                if (friend is not null && await _friendshipService.AreFriendsAsync(user.UserName!, friendUsername, cancellationToken))
                 {
                     travellers.Add(friend);
                 }

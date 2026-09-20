@@ -17,7 +17,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DeleteRoute
 
         public async Task<DeleteRouteCommandResponse> Handle(DeleteRouteCommandRequest request, CancellationToken cancellationToken)
         {
-            var isDeleted = await _routeService.DeleteRoute(request.Username, request.RouteId);
+            var isDeleted = await _routeService.DeleteRoute(request.Username, request.RouteId, cancellationToken);
 
             return new DeleteRouteCommandResponse
             {

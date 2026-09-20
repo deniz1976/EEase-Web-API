@@ -22,7 +22,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
 
         public async Task<UpdateUserCountryCommandResponse> Handle(UpdateUserCountryCommandRequest request, CancellationToken cancellationToken)
         {
-            bool result = await _profileService.UpdateUserCountry(request.Username, request.Country);
+            bool result = await _profileService.UpdateUserCountry(request.Username, request.Country, cancellationToken);
 
             return new UpdateUserCountryCommandResponse
             {

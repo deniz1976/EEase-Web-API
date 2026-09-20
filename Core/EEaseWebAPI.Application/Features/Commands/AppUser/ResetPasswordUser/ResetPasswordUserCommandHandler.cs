@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
         {
             // A code that could not be sent is reported by the service; reaching here means
             // it went out.
-            await _passwordService.SendResetCodeAsync(request.EmailOrUsername);
+            await _passwordService.SendResetCodeAsync(request.EmailOrUsername, cancellationToken);
 
             return new ResetPasswordUserCommandResponse
             {

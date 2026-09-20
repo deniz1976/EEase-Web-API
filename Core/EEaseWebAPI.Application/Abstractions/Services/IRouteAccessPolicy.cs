@@ -8,11 +8,13 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         Task<RouteAccessResult> EvaluateAsync(
             StandardRoute route,
             string requesterUsername,
-            string requesterUserId);
+            string requesterUserId,
+            CancellationToken cancellationToken = default);
 
         Task<StandardRouteDTO> ToDtoAsync(
             StandardRoute route,
             string requesterUsername,
-            string requesterUserId);
+            string requesterUserId,
+            CancellationToken cancellationToken = default);
     }
 }

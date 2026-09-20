@@ -23,7 +23,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
 
         public async Task<DeleteUserCommandResponse> Handle(DeleteUserCommandRequest request, CancellationToken cancellationToken)
         {
-            var outcome = await _accountService.RequestDeletionAsync(request.Username);
+            var outcome = await _accountService.RequestDeletionAsync(request.Username, cancellationToken);
 
             // Asking to delete an account that is already on its way out cancels the
             // deletion. That is an outcome of its own, not the failure it used to be

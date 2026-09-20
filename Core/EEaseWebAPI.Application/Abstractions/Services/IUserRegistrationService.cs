@@ -6,12 +6,12 @@ namespace EEaseWebAPI.Application.Abstractions.Services
     public interface IUserRegistrationService
     {
         /// <summary>Returns the message the caller is shown once the account exists.</summary>
-        Task<string> CreateAsync(CreateUser model);
+        Task<string> CreateAsync(CreateUser model, CancellationToken cancellationToken = default);
 
-        Task<bool> SendVerificationEmailAgain(string email);
+        Task<bool> SendVerificationEmailAgain(string email, CancellationToken cancellationToken = default);
 
-        Task<bool> EmailConfirm(string code, string usernameOrEmail);
+        Task<bool> EmailConfirm(string code, string usernameOrEmail, CancellationToken cancellationToken = default);
 
-        Task<bool> CheckEmailConfirmed(string emailOrUsername);
+        Task<bool> CheckEmailConfirmed(string emailOrUsername, CancellationToken cancellationToken = default);
     }
 }

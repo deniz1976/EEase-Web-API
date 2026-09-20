@@ -21,7 +21,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
 
         public async Task<BlockFriendCommandResponse> Handle(BlockFriendCommand request, CancellationToken cancellationToken)
         {
-            await _friendshipService.BlockAsync(request.Username, request.TargetUsername);
+            await _friendshipService.BlockAsync(request.Username, request.TargetUsername, cancellationToken);
 
             return new BlockFriendCommandResponse
             {

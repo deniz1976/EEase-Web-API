@@ -17,7 +17,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserCurrency
 
         public async Task<GetUserCurrencyQueryResponse> Handle(GetUserCurrencyQueryRequest request, CancellationToken cancellationToken)
         {
-            string currency = await _profileService.GetUserCurrencyAsync(request.Username);
+            string currency = await _profileService.GetUserCurrencyAsync(request.Username, cancellationToken);
 
             return new GetUserCurrencyQueryResponse
             {

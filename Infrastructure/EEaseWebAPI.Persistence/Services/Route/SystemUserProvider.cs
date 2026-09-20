@@ -21,7 +21,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             _logger = logger;
         }
 
-        public async Task<AppUser> GetOrCreateAsync()
+        public async Task<AppUser> GetOrCreateAsync(CancellationToken cancellationToken = default)
         {
             var existing = await _userManager.FindByNameAsync(SystemUserName);
 

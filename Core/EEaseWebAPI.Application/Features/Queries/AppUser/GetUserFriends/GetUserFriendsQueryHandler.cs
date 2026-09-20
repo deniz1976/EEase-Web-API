@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
                 throw new UserNotFoundException();
-            var friends = await _friendshipService.GetFriendsAsync(request.Username);
+            var friends = await _friendshipService.GetFriendsAsync(request.Username, cancellationToken);
             var friendDtos = friends.Select(f =>
             {
                 var friend = f.RequesterId == user.Id ? f.Addressee : f.Requester;

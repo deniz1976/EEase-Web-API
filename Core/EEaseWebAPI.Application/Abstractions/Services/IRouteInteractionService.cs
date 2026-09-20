@@ -9,13 +9,13 @@ namespace EEaseWebAPI.Application.Abstractions.Services
     /// </summary>
     public interface IRouteInteractionService
     {
-        Task<bool> LikeRoute(string username, Guid routeId);
+        Task<bool> LikeRoute(string username, Guid routeId, CancellationToken cancellationToken = default);
 
-        Task<bool> DeleteRoute(string username, Guid? routeId);
+        Task<bool> DeleteRoute(string username, Guid? routeId, CancellationToken cancellationToken = default);
 
-        Task<string> DeleteAllRoutes(string username);
+        Task<string> DeleteAllRoutes(string username, CancellationToken cancellationToken = default);
 
-        Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username);
+        Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username, CancellationToken cancellationToken = default);
 
         Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
             string username,

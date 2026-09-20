@@ -35,7 +35,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
 
             // An update that did not happen leaves the service by throwing, so there is no
             // third outcome to answer with an empty 500.
-            await _profileService.UpdateUser(request);
+            await _profileService.UpdateUser(request, cancellationToken);
 
             // A new username means the old token names somebody who no longer exists.
             var body = request.Username == null
@@ -43,7 +43,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
                 : new MapEntities.UpdateUser.UpdateUserBody
                 {
                     Message = AppMessages.UserUpdatedWithNewToken,
-                    NewToken = await _authService.UpdateUserGetNewToken(request.Username)
+                    NewToken = await _authService.UpdateUserGetNewToken(request.Username, cancellationToken)
                 };
 
             return new UpdateUserCommandResponse

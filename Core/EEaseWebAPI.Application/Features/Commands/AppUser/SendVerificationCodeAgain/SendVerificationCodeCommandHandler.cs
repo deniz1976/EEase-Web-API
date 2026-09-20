@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCode
         {
             if (request.Email == null) { throw new UserNotFoundException("User Not Found",7); }
 
-            var result = await _registrationService.SendVerificationEmailAgain(request.Email);
+            var result = await _registrationService.SendVerificationEmailAgain(request.Email, cancellationToken);
             if (result)
             {
                 return new SendVerificationCodeCommandResponse()

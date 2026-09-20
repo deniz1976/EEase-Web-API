@@ -31,7 +31,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             _codeGenerator = codeGenerator;
         }
 
-        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, TimeSpan lifetime)
+        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, TimeSpan lifetime, CancellationToken cancellationToken = default)
         {
             if (user == null)
             {
@@ -45,7 +45,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             await _userManager.UpdateAsync(user);
         }
 
-        public async Task<DeleteRequestOutcome> RequestDeletionAsync(string username)
+        public async Task<DeleteRequestOutcome> RequestDeletionAsync(string username, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(username);
 
@@ -79,7 +79,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return DeleteRequestOutcome.CodeSent;
         }
 
-        public async Task<string> ConfirmDeletionAsync(string username, string code)
+        public async Task<string> ConfirmDeletionAsync(string username, string code, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(username);
 
@@ -121,7 +121,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return $"Code is correct, account will be deleted in {DeletionGracePeriod.Days} days";
         }
 
-        public async Task<StatusCheckBody> StatusCheck(string username)
+        public async Task<StatusCheckBody> StatusCheck(string username, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(username);
             var isActive = user.Status != false;

@@ -20,7 +20,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
 
         public async Task<RemoveFriendCommandResponse> Handle(RemoveFriendCommand request, CancellationToken cancellationToken)
         {
-            await _friendshipService.RemoveFriendAsync(request.Username, request.FriendUsername);
+            await _friendshipService.RemoveFriendAsync(request.Username, request.FriendUsername, cancellationToken);
 
             return new RemoveFriendCommandResponse
             {

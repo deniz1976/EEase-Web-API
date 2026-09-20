@@ -23,7 +23,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency
 
         public async Task<UpdateUserCurrencyCommandResponse> Handle(UpdateUserCurrencyCommandRequest request, CancellationToken cancellationToken)
         {
-            await _profileService.UpdateUserCurrency(request.Username, request.CurrencyCode);
+            await _profileService.UpdateUserCurrency(request.Username, request.CurrencyCode, cancellationToken);
 
             return new UpdateUserCurrencyCommandResponse
             {

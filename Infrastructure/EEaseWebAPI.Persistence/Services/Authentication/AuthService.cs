@@ -46,7 +46,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             _codeGenerator = codeGenerator;
         }
 
-        public async Task<LoginBody> LoginAsync(string usernameOrEmail, string password, int accessTokenLifetime)
+        public async Task<LoginBody> LoginAsync(string usernameOrEmail, string password, int accessTokenLifetime, CancellationToken cancellationToken = default)
         {
             var user = await _userManager.FindByNameAsync(usernameOrEmail)
                        ?? await _userManager.FindByEmailAsync(usernameOrEmail)
@@ -68,7 +68,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
                     "Email confirmation required, new code sent to email.", (int)StatusEnum.EmailNotConfirmed);
             }
 
-            var status = await _deletionPolicy.EnforceAsync(user);
+            var status = await _deletionPolicy.EnforceAsync(user, cancellationToken);
 
             if (status.IsDeleted)
             {
@@ -78,7 +78,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             var previousLastSeen = user.LastSeen;
 
             var token = _tokenHandler.CreateAccessToken(accessTokenLifetime, user);
-            await _accountService.UpdateRefreshTokenAsync(token.RefreshToken, user, RefreshTokenLifetime);
+            await _accountService.UpdateRefreshTokenAsync(token.RefreshToken, user, RefreshTokenLifetime, cancellationToken);
 
             user.LastSeen = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
@@ -107,9 +107,9 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             };
         }
 
-        public async Task<RefreshTokenLoginBody> RefreshTokenLoginAsync(string refreshToken)
+        public async Task<RefreshTokenLoginBody> RefreshTokenLoginAsync(string refreshToken, CancellationToken cancellationToken = default)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(candidate => candidate.RefreshToken == refreshToken)
+            var user = await _userManager.Users.FirstOrDefaultAsync(candidate => candidate.RefreshToken == refreshToken, cancellationToken)
                        ?? throw new Application.Exceptions.Login.UserNotFoundException("User Not Found.", (int)StatusEnum.UserNotFound);
 
             if (user.RefreshTokenEndDate <= DateTime.UtcNow)
@@ -118,7 +118,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
                     "Refresh token has expired or is invalid.", (int)StatusEnum.RefreshTokenExpired);
             }
 
-            var status = await _deletionPolicy.EnforceAsync(user);
+            var status = await _deletionPolicy.EnforceAsync(user, cancellationToken);
 
             if (status.IsDeleted)
             {
@@ -126,7 +126,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             }
 
             var token = _tokenHandler.CreateAccessToken(RefreshedAccessTokenLifetime, user);
-            await _accountService.UpdateRefreshTokenAsync(token.RefreshToken, user, RefreshTokenLifetime);
+            await _accountService.UpdateRefreshTokenAsync(token.RefreshToken, user, RefreshTokenLifetime, cancellationToken);
 
             user.LastSeen = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
@@ -134,7 +134,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             return new RefreshTokenLoginBody { Token = token, Warning = status.Message };
         }
 
-        public async Task<Token> UpdateUserGetNewToken(string newUsername)
+        public async Task<Token> UpdateUserGetNewToken(string newUsername, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(newUsername) ||
                 await _userManager.FindByNameAsync(newUsername) is not AppUser user)
@@ -143,12 +143,12 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             }
 
             var token = _tokenHandler.CreateAccessToken(UsernameChangeTokenLifetime, user);
-            await _accountService.UpdateRefreshTokenAsync(token.RefreshToken, user, RefreshTokenLifetime);
+            await _accountService.UpdateRefreshTokenAsync(token.RefreshToken, user, RefreshTokenLifetime, cancellationToken);
 
             return token;
         }
 
-        public async Task<bool> IsEmailInUse(string email) =>
+        public async Task<bool> IsEmailInUse(string email, CancellationToken cancellationToken = default) =>
             await _userManager.FindByEmailAsync(email) != null;
 
         private async Task SendVerificationEmailAsync(AppUser user)

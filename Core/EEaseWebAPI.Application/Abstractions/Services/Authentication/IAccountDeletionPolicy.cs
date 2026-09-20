@@ -5,6 +5,6 @@ namespace EEaseWebAPI.Application.Abstractions.Services.Authentication
 {
     public interface IAccountDeletionPolicy
     {
-        Task<AccountStatus> EnforceAsync(AppUser user);
+        Task<AccountStatus> EnforceAsync(AppUser user, CancellationToken cancellationToken = default);
     }
 }

@@ -17,7 +17,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             _userCacheService = userCacheService;
         }
 
-        public async Task<AccountStatus> EnforceAsync(AppUser user)
+        public async Task<AccountStatus> EnforceAsync(AppUser user, CancellationToken cancellationToken = default)
         {
             if (user.Status != false || !user.DeleteDate.HasValue)
             {

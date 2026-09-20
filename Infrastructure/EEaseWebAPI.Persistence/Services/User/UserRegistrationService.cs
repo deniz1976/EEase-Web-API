@@ -40,7 +40,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             _codeGenerator = codeGenerator;
         }
 
-        public async Task<string> CreateAsync(CreateUser model)
+        public async Task<string> CreateAsync(CreateUser model, CancellationToken cancellationToken = default)
         {
             if (await _userManager.FindByEmailAsync(model.Email) != null)
             {
@@ -88,7 +88,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return AppMessages.AccountCreated;
         }
 
-        public async Task<bool> SendVerificationEmailAgain(string email)
+        public async Task<bool> SendVerificationEmailAgain(string email, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(email);
 
@@ -120,7 +120,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return true;
         }
 
-        public async Task<bool> EmailConfirm(string code, string usernameOrEmail)
+        public async Task<bool> EmailConfirm(string code, string usernameOrEmail, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(usernameOrEmail);
 
@@ -145,7 +145,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return true;
         }
 
-        public async Task<bool> CheckEmailConfirmed(string emailOrUsername) =>
+        public async Task<bool> CheckEmailConfirmed(string emailOrUsername, CancellationToken cancellationToken = default) =>
             (await FindAsync(emailOrUsername)).EmailConfirmed;
 
         private async Task<AppUser> FindAsync(string emailOrUsername)

@@ -21,7 +21,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
 
         public async Task<ResetUserPreferencesCommandResponse> Handle(ResetUserPreferencesCommandRequest request, CancellationToken cancellationToken)
         {
-            await _preferenceService.ResetAsync(request.Username);
+            await _preferenceService.ResetAsync(request.Username, cancellationToken);
 
             return new ResetUserPreferencesCommandResponse
             {

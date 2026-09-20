@@ -28,7 +28,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
 
         public async Task<GetUserInfoByNameQueryResponse> Handle(GetUserInfoByNameQueryRequest request, CancellationToken cancellationToken)
         {
-            var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(request.Username, request.TargetUsername);
+            var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(request.Username, request.TargetUsername, cancellationToken);
 
             var response = new GetUserInfoByNameQueryResponse
             {
@@ -68,7 +68,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
 
             if (visibilityStatus == ProfileVisibilityStatus.FullAccess)
             {
-                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.Username, request.TargetUsername);
+                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.Username, request.TargetUsername, cancellationToken);
                 if (preferences != null)
                 {
                     response.Body.PersonalizationPreferences = preferences.PersonalizationPreferences;

@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName
         {
             var isSelf = request.Username == request.TargetUsername;
 
-            if (!isSelf && !await _friendshipService.AreFriendsAsync(request.Username, request.TargetUsername))
+            if (!isSelf && !await _friendshipService.AreFriendsAsync(request.Username, request.TargetUsername, cancellationToken))
             {
                 return new GetUserPhotoByNameQueryResponse()
                 {
@@ -41,7 +41,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName
             return new GetUserPhotoByNameQueryResponse()
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoReceivedSuccessfully),
-                Body = new() { Path = await _profileService.GetUserPhotoAsync(request.TargetUsername) }
+                Body = new() { Path = await _profileService.GetUserPhotoAsync(request.TargetUsername, cancellationToken) }
             };
         }
     }

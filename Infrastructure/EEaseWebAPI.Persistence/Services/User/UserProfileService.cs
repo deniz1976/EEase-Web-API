@@ -33,7 +33,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             _friendshipService = friendshipService;
         }
 
-        public async Task<GetUserInfo> GetUserInfoQuery(string username)
+        public async Task<GetUserInfo> GetUserInfoQuery(string username, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(username);
 
@@ -54,10 +54,11 @@ namespace EEaseWebAPI.Persistence.Services.User
         }
 
         public async Task<(GetUserInfo userInfo, ProfileVisibilityStatus visibilityStatus)> GetUserInfoByNameAsync(
-            string username, string targetUsername)
+            string username, string targetUsername, CancellationToken cancellationToken = default)
         {
             var targetUser = await FindAsync(targetUsername);
-            var relationship = await _friendshipService.GetRelationshipAsync(username, targetUsername);
+            var relationship = await _friendshipService.GetRelationshipAsync(
+                username, targetUsername, cancellationToken);
 
             var userInfo = new GetUserInfo
             {
@@ -83,16 +84,16 @@ namespace EEaseWebAPI.Persistence.Services.User
         }
 
         public async Task<(GetUserInfo userInfo, ProfileVisibilityStatus visibilityStatus)> GetUserInfoByIdAsync(
-            string username, string targetUserId)
+            string username, string targetUserId, CancellationToken cancellationToken = default)
         {
             var targetUser = await _userManager.FindByIdAsync(targetUserId)
                 ?? throw new Application.Exceptions.Login.UserNotFoundException(
                     "User Not Found", (int)StatusEnum.UserNotFound);
 
-            return await GetUserInfoByNameAsync(username, targetUser.UserName!);
+            return await GetUserInfoByNameAsync(username, targetUser.UserName!, cancellationToken);
         }
 
-        public async Task<bool> UpdateUser(UpdateUserCommandRequest request)
+        public async Task<bool> UpdateUser(UpdateUserCommandRequest request, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(request.User))
             {
@@ -101,7 +102,7 @@ namespace EEaseWebAPI.Persistence.Services.User
 
             var user = await FindAsync(request.User);
 
-            if (request.Username != null && !await IsUsernameAvailable(request.Username, user.Id))
+            if (request.Username != null && !await IsUsernameAvailable(request.Username, user.Id, cancellationToken))
             {
                 throw new UsernameAlreadyTakenException();
             }
@@ -129,7 +130,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return true;
         }
 
-        public async Task<bool> UpdateUserCountry(string username, string country)
+        public async Task<bool> UpdateUserCountry(string username, string country, CancellationToken cancellationToken = default)
         {
             var availableCountries = await _cityService.GetAllCountries();
 
@@ -153,7 +154,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return true;
         }
 
-        public async Task<bool> UpdateUserCurrency(string username, string currencyCode)
+        public async Task<bool> UpdateUserCurrency(string username, string currencyCode, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(currencyCode))
             {
@@ -177,7 +178,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             return (await _userManager.UpdateAsync(user)).Succeeded;
         }
 
-        public async Task<string> GetUserCurrencyAsync(string username)
+        public async Task<string> GetUserCurrencyAsync(string username, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(username);
 
@@ -186,10 +187,10 @@ namespace EEaseWebAPI.Persistence.Services.User
                     "The user has no currency set.", (int)StatusEnum.UserUpdateFailed);
         }
 
-        public async Task<string?> GetUserPhotoAsync(string username) =>
+        public async Task<string?> GetUserPhotoAsync(string username, CancellationToken cancellationToken = default) =>
             (await FindAsync(username)).PhotoPath;
 
-        public async Task<bool> SetUserPhoto(string username, string photoPath)
+        public async Task<bool> SetUserPhoto(string username, string photoPath, CancellationToken cancellationToken = default)
         {
             var user = await FindAsync(username);
             user.PhotoPath = photoPath;
@@ -212,12 +213,13 @@ namespace EEaseWebAPI.Persistence.Services.User
         /// "alice" exists; comparing the raw name let that through and the save failed later
         /// with a duplicate error nobody could act on.
         /// </summary>
-        private Task<bool> IsUsernameAvailable(string username, string userId)
+        private Task<bool> IsUsernameAvailable(
+            string username, string userId, CancellationToken cancellationToken)
         {
             var normalizedUserName = username.ToUpperInvariant();
 
             return _userManager.Users.AllAsync(candidate =>
-                candidate.NormalizedUserName != normalizedUserName || candidate.Id == userId);
+                candidate.NormalizedUserName != normalizedUserName || candidate.Id == userId, cancellationToken);
         }
 
         /// <summary>

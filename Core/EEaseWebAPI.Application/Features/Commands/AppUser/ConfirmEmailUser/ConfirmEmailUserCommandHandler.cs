@@ -24,7 +24,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmailUser
 
         public async Task<ConfirmEmailUserCommandResponse> Handle(ConfirmEmailUserCommandRequest request, CancellationToken cancellationToken)
         {
-            var result = await _registrationService.EmailConfirm(request.Code, request.EmailOrUsername);
+            var result = await _registrationService.EmailConfirm(request.Code, request.EmailOrUsername, cancellationToken);
 
             return new ConfirmEmailUserCommandResponse
             {

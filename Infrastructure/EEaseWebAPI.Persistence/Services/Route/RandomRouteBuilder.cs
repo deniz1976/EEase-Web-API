@@ -55,7 +55,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var dayCount = RouteBuilding.CalculateDayCount(startDate, endDate);
             var touristicNeeded = dayCount * RouteBuilding.TouristicPlacesPerDay;
 
-            var owner = await _systemUserProvider.GetOrCreateAsync();
+            var owner = await _systemUserProvider.GetOrCreateAsync(cancellationToken);
 
             var accomodation = await FindHotelAsync(destination, priceLevel);
 

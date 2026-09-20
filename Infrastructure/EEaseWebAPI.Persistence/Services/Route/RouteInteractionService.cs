@@ -40,17 +40,17 @@ namespace EEaseWebAPI.Persistence.Services.Route
             _preferenceFeedbackService = preferenceFeedbackService;
         }
 
-        public async Task<bool> LikeRoute(string username, Guid routeId)
+        public async Task<bool> LikeRoute(string username, Guid routeId, CancellationToken cancellationToken = default)
         {
             var user = await RequireUserAsync(username);
 
             var route = await _context.StandardRoutes
                 .Include(candidate => candidate.LikedUsers)
                 .Include(candidate => candidate.User)
-                .FirstOrDefaultAsync(candidate => candidate.Id == routeId)
+                .FirstOrDefaultAsync(candidate => candidate.Id == routeId, cancellationToken)
                 ?? throw new RouteNotFoundException("Route not found", RouteNotFoundCode);
 
-            var access = await _routeAccessPolicy.EvaluateAsync(route, username, user.Id);
+            var access = await _routeAccessPolicy.EvaluateAsync(route, username, user.Id, cancellationToken);
 
             if (!access.IsAccessible)
                 throw new ForbiddenException(access.Message!, StatusEnum.UnauthorizedToViewRoute);
@@ -72,52 +72,52 @@ namespace EEaseWebAPI.Persistence.Services.Route
             // blind increment could not recover from.
             route.LikeCount = route.LikedUsers.Count;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return !wasLiked;
         }
 
-        public async Task<bool> DeleteRoute(string username, Guid? routeId)
+        public async Task<bool> DeleteRoute(string username, Guid? routeId, CancellationToken cancellationToken = default)
         {
             var user = await RequireUserAsync(username);
 
             var route = await _context.StandardRoutes
                 .Include(candidate => candidate.TravelDays)
-                .FirstOrDefaultAsync(candidate => candidate.Id == routeId)
+                .FirstOrDefaultAsync(candidate => candidate.Id == routeId, cancellationToken)
                 ?? throw new RouteNotFoundException("Route not found", RouteNotFoundCode);
 
             if (route.UserId != user.Id)
                 throw new DeleteRouteException("Unauthorized to delete route");
 
             _context.StandardRoutes.Remove(route);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return true;
         }
 
-        public async Task<string> DeleteAllRoutes(string username)
+        public async Task<string> DeleteAllRoutes(string username, CancellationToken cancellationToken = default)
         {
             var user = await RequireUserAsync(username);
 
             var routes = await _context.StandardRoutes
                 .Where(route => route.UserId == user.Id)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             if (routes.Count == 0)
                 return AppMessages.NoRoutesToDelete;
 
             _context.StandardRoutes.RemoveRange(routes);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return AppMessages.RoutesDeleted;
         }
 
-        public async Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username)
+        public async Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username, CancellationToken cancellationToken = default)
         {
             var user = await RequireUserAsync(username);
 
             var route = await _context.StandardRoutes
-                .FirstOrDefaultAsync(candidate => candidate.Id == routeId)
+                .FirstOrDefaultAsync(candidate => candidate.Id == routeId, cancellationToken)
                 ?? throw new RouteNotFoundException("Route not found", RouteNotFoundCode);
 
             if (route.UserId != user.Id)
@@ -128,7 +128,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 throw new InvalidRouteStatusException();
 
             route.Status = status;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return new UpdateRouteStatusCommandResponseBody { IsUpdated = true };
         }
@@ -141,7 +141,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
         {
             var user = await RequireUserAsync(username);
 
-            var place = await FindPlaceAsync(googlePlaceId, placeType)
+            var place = await FindPlaceAsync(googlePlaceId, placeType, cancellationToken)
                 ?? throw new InvalidPlaceTypeException($"Place not found with Google ID: {googlePlaceId}");
 
             var feedback = await _preferenceFeedbackService.ApplyAsync(
@@ -158,7 +158,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
         /// A place lives in a different table depending on the slot it fills, so the slot
         /// name decides where to look it up.
         /// </summary>
-        private async Task<BaseEntity?> FindPlaceAsync(string googlePlaceId, string placeType)
+        private async Task<BaseEntity?> FindPlaceAsync(
+            string googlePlaceId, string placeType, CancellationToken cancellationToken)
         {
             // Invariant lowering on purpose: a Turkish locale would turn "I" into a dotless
             // letter and stop the slot names below from matching.
@@ -167,7 +168,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 case "accommodation":
                     return await _context.TravelAccomodations
                         .Include(place => place.DisplayName)
-                        .FirstOrDefaultAsync(place => place.GoogleId == googlePlaceId);
+                        .FirstOrDefaultAsync(place => place.GoogleId == googlePlaceId, cancellationToken);
 
                 case "breakfast":
                 case "lunch":
@@ -179,10 +180,10 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
                     return placeType.ToLowerInvariant() switch
                     {
-                        "breakfast" => await restaurants.OfType<Breakfast>().FirstOrDefaultAsync(),
-                        "lunch" => await restaurants.OfType<Lunch>().FirstOrDefaultAsync(),
-                        "dinner" => await restaurants.OfType<Dinner>().FirstOrDefaultAsync(),
-                        _ => await restaurants.OfType<PlaceAfterDinner>().FirstOrDefaultAsync()
+                        "breakfast" => await restaurants.OfType<Breakfast>().FirstOrDefaultAsync(cancellationToken),
+                        "lunch" => await restaurants.OfType<Lunch>().FirstOrDefaultAsync(cancellationToken),
+                        "dinner" => await restaurants.OfType<Dinner>().FirstOrDefaultAsync(cancellationToken),
+                        _ => await restaurants.OfType<PlaceAfterDinner>().FirstOrDefaultAsync(cancellationToken)
                     };
 
                 case "firstplace":
@@ -191,7 +192,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 case "place":
                     return await _context.Places
                         .Include(place => place.DisplayName)
-                        .FirstOrDefaultAsync(place => place.GoogleId == googlePlaceId);
+                        .FirstOrDefaultAsync(place => place.GoogleId == googlePlaceId, cancellationToken);
 
                 default:
                     throw new InvalidPlaceTypeException($"Invalid place type: {placeType}");

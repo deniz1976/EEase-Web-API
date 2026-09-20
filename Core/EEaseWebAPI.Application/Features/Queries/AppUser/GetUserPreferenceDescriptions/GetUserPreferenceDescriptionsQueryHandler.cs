@@ -18,7 +18,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDesc
 
         public async Task<GetUserPreferenceDescriptionsQueryResponse> Handle(GetUserPreferenceDescriptionsQueryRequest request, CancellationToken cancellationToken)
         {
-            var descriptions = await _preferenceService.GetDescriptionsAsync(request.Username);
+            var descriptions = await _preferenceService.GetDescriptionsAsync(request.Username, cancellationToken);
 
             return new GetUserPreferenceDescriptionsQueryResponse
             {
