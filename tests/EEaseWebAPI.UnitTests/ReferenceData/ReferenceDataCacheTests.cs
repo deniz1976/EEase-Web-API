@@ -73,6 +73,24 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
         }
 
         [Fact]
+        public void Every_kind_of_reference_data_has_a_key_of_its_own()
+        {
+            // The city list, the city names and the countries shared one key once, so
+            // warming them up left only the last one cached and the other two read from the
+            // database on every request.
+            var keys = new CacheOptions();
+
+            new[]
+            {
+                keys.AllCitiesCacheKey,
+                keys.CityNamesCacheKey,
+                keys.AllCountriesCacheKey,
+                keys.AllCurrenciesCacheKey,
+                keys.UsersCacheKey
+            }.Should().OnlyHaveUniqueItems();
+        }
+
+        [Fact]
         public void The_keys_come_from_configuration()
         {
             var cache = new ReferenceDataCache(

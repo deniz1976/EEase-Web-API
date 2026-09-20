@@ -1,80 +1,47 @@
 using EEaseWebAPI.Application.Abstractions.Services;
-using EEaseWebAPI.Application.Exceptions.GetCitiesBySearch;
 using EEaseWebAPI.Application.MapEntities.Cities;
 using EEaseWebAPI.Domain.Entities.AllWorldCities;
-using EEaseWebAPI.Application.Repositories;
 using EEaseWebAPI.Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
+using EEaseWebAPI.Persistence.Contexts;
 using EEaseWebAPI.Persistence.Services.Caching;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EEaseWebAPI.Persistence.Services.ReferenceData
 {
     public sealed class CityService : ICityService
     {
         private const string DefaultCountry = "Turkey";
-        private const string CapitalCity = "primary";
-        private const int MinimumSearchTermLength = 2;
 
-        private readonly IAllWorldCitiesRepository _cities;
+        private readonly EEaseAPIDbContext _context;
         private readonly ReferenceDataCache _cache;
         private readonly UserManager<AppUser> _userManager;
 
         public CityService(
-            IAllWorldCitiesRepository cities,
+            EEaseAPIDbContext context,
             ReferenceDataCache cache,
             UserManager<AppUser> userManager)
         {
-            _cities = cities;
+            _context = context;
             _cache = cache;
             _userManager = userManager;
         }
 
         public Task<List<string>> GetAllCityNames() =>
             _cache.GetOrLoadAsync(_cache.Keys.CityNamesCacheKey, async () =>
-                (await GetAllCitiesAsync())
-                    .Select(city => city.City ?? city.CityAscii ?? string.Empty)
-                    .Where(name => !string.IsNullOrEmpty(name))
-                    .Distinct()
-                    .ToList());
+                CitySearch.NamesOf(await GetAllCitiesAsync()));
 
         public Task<List<string>> GetAllCountries() =>
             _cache.GetOrLoadAsync(_cache.Keys.AllCountriesCacheKey, async () =>
-                (await GetAllCitiesAsync())
-                    .Select(city => city.Country ?? string.Empty)
-                    .Where(country => !string.IsNullOrEmpty(country))
-                    .Distinct()
-                    .OrderBy(country => country)
-                    .ToList());
+                CitySearch.CountriesOf(await GetAllCitiesAsync()));
 
         public async Task<(List<CityDto> Cities, int TotalCount)> GetCitiesBySearchAsync(
             string searchTerm, int pageSize, int pageNumber, string? username)
         {
-            if (string.IsNullOrEmpty(searchTerm) || searchTerm.Length < MinimumSearchTermLength)
-                throw new InvalidSearchTermException();
-
             var cities = await GetAllCitiesAsync();
             var homeCountry = await HomeCountryOfAsync(username);
 
-            // The traveller's own country first, then capitals, then the biggest cities:
-            // a search for "san" should not open with a village.
-            var matches = cities
-                .Where(city => Matches(city, searchTerm))
-                .OrderByDescending(city => city.Country == homeCountry)
-                .ThenByDescending(city => city.Capital == CapitalCity)
-                .ThenByDescending(city => city.Population)
-                .ToList();
-
-            var page = matches
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(city => new CityDto
-                {
-                    CityName = city.City ?? city.CityAscii ?? string.Empty,
-                    Country = city.Country ?? string.Empty
-                })
-                .ToList();
-
-            return (page, matches.Count);
+            return CitySearch.Search(cities, searchTerm, homeCountry, pageSize, pageNumber);
         }
 
         public async Task InitializeCacheAsync()
@@ -90,10 +57,7 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
         /// </summary>
         private Task<List<AllWorldCities>> GetAllCitiesAsync() =>
             _cache.GetOrLoadAsync(_cache.Keys.AllCitiesCacheKey, async () =>
-                (await _cities.GetAllCitiesAsync())
-                    .OrderByDescending(city => city.Capital == CapitalCity)
-                    .ThenByDescending(city => city.Population)
-                    .ToList());
+                CitySearch.Rank(await _context.AllWorldCities.AsNoTracking().ToListAsync()));
 
         private async Task<string> HomeCountryOfAsync(string? username)
         {
@@ -106,9 +70,5 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
 
             return string.IsNullOrEmpty(user?.Country) ? DefaultCountry : user.Country;
         }
-
-        private static bool Matches(AllWorldCities city, string searchTerm) =>
-            city.City?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true ||
-            city.CityAscii?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true;
     }
 }

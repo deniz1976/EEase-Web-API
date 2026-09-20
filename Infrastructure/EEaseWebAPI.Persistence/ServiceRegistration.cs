@@ -1,10 +1,8 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Options;
-using EEaseWebAPI.Application.Repositories;
 using EEaseWebAPI.Domain.Entities.Identity;
 using EEaseWebAPI.Persistence.Contexts;
-using EEaseWebAPI.Persistence.Repositories;
 using EEaseWebAPI.Persistence.Services;
 using EEaseWebAPI.Persistence.Services.Gemini;
 using EEaseWebAPI.Persistence.Services.Route;
@@ -26,7 +24,6 @@ namespace EEaseWebAPI.Persistence
             services.AddMemoryCache();
             services.AddDatabase(configuration);
             services.AddIdentityCore();
-            services.AddRepositories();
             services.AddDomainServices();
             services.AddExternalApiClients(configuration);
 
@@ -86,13 +83,6 @@ namespace EEaseWebAPI.Persistence
                 })
                 .AddEntityFrameworkStores<EEaseAPIDbContext>()
                 .AddDefaultTokenProviders();
-
-            return services;
-        }
-
-        private static IServiceCollection AddRepositories(this IServiceCollection services)
-        {
-            services.AddScoped<IAllWorldCitiesRepository, AllWorldCitiesRepository>();
 
             return services;
         }
