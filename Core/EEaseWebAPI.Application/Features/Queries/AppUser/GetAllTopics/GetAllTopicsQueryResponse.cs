@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetAllTopics
 {
-    public class GetAllTopicsQueryResponse
+    public class GetAllTopicsQueryResponse : ApiResponse<GetAllTopicsQueryResponseBody>
     {
-        public Header? Header { get; set; }
-        public GetAllTopicsQueryResponseBody? Body { get; set; }
     }
 
     public class GetAllTopicsQueryResponseBody

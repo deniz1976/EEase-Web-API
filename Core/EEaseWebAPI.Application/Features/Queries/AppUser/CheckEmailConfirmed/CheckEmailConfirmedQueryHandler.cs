@@ -24,15 +24,11 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailConfirmed
             if(request == null || request.emailOrUsername == null)
                 throw new ArgumentNullException(nameof(request));
             var result = await _registrationService.CheckEmailConfirmed(request.emailOrUsername);
-            Header header = _headerService.HeaderCreate();
             return new CheckEmailConfirmedQueryResponse
             {
-                response = new()
-                {
-                    Body = new CheckEmailBody { result = result},
-                    Header = _headerService.HeaderCreate(result ? (int)StatusEnum.EmailConfirmed : (int)StatusEnum.EmailNotConfirmed)
-
-                }
+                Header = _headerService.HeaderCreate(
+                    result ? (int)StatusEnum.EmailConfirmed : (int)StatusEnum.EmailNotConfirmed),
+                Body = new CheckEmailBody { result = result }
             };
         }
     }

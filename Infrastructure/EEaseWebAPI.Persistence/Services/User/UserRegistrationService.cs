@@ -40,7 +40,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             _codeGenerator = codeGenerator;
         }
 
-        public async Task<CreateUserResponse> CreateAsync(CreateUser model)
+        public async Task<string> CreateAsync(CreateUser model)
         {
             if (await _userManager.FindByEmailAsync(model.Email) != null)
             {
@@ -85,17 +85,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             await _mailService.SendVerificationEmailAsync(
                 model.Email, AppMessages.Mail_VerificationSubject, verificationCode);
 
-            return new CreateUserResponse
-            {
-                response = new Application.MapEntities.CreateUser.CreateUser
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.SuccessfullyCreated),
-                    Body = new Application.MapEntities.CreateUser.CreateUserBody
-                    {
-                        message = AppMessages.AccountCreated
-                    }
-                }
-            };
+            return AppMessages.AccountCreated;
         }
 
         public async Task<bool> SendVerificationEmailAgain(string email)

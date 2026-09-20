@@ -7,10 +7,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.DeleteAllRoutes
 {
-    public class DeleteAllRoutesCommandResponse
+    public class DeleteAllRoutesCommandResponse : ApiResponse<DeleteAllRoutesCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public DeleteAllRoutesCommandResponseBody? Body { get; set; } = new DeleteAllRoutesCommandResponseBody();
     }
 
     public class DeleteAllRoutesCommandResponseBody

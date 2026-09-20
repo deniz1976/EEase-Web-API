@@ -2,10 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendRequests
 {
-    public class GetPendingFriendRequestsQueryResponse
+    public class GetPendingFriendRequestsQueryResponse : ApiResponse<GetPendingFriendRequestsQueryResponseBody>
     {
-        public Header? Header { get; set; }
-        public GetPendingFriendRequestsQueryResponseBody? Body { get; set; }
     }
 
     public class GetPendingFriendRequestsQueryResponseBody

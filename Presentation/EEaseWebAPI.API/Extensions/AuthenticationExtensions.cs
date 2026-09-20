@@ -1,4 +1,9 @@
 using EEaseWebAPI.API.Constants;
+using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.API;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -44,11 +49,63 @@ namespace EEaseWebAPI.API.Extensions
 
                         ClockSkew = TimeSpan.Zero
                     };
+
+                    // Without this the framework answers a missing or expired token with an
+                    // empty body, which is the one answer a caller could not read the same
+                    // way as every other.
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnChallenge = context =>
+                        {
+                            context.HandleResponse();
+
+                            return WriteAsync(
+                                context.HttpContext,
+                                StatusCodes.Status401Unauthorized,
+                                "Unauthorized",
+                                StatusEnum.AuthenticationRequired,
+                                "This endpoint needs a signed in caller.");
+                        },
+                        OnForbidden = context => WriteAsync(
+                            context.HttpContext,
+                            StatusCodes.Status403Forbidden,
+                            "Forbidden",
+                            StatusEnum.AccessForbidden,
+                            "This caller is not allowed to do that.")
+                    };
                 });
 
             services.AddAuthorization();
 
             return services;
+        }
+
+        private static Task WriteAsync(
+            HttpContext context, int statusCode, string title, StatusEnum statusEnum, string fallback)
+        {
+            context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/json";
+
+            // The caller reads this in their own language, like every other error.
+            var localizer = context.RequestServices.GetService<IStringLocalizer<ErrorMessages>>();
+            var translation = localizer?[statusEnum.ToString()];
+            var message = translation is null || translation.ResourceNotFound ? fallback : translation.Value;
+
+            return context.Response.WriteAsJsonAsync(new ErrorResponse
+            {
+                Header = new Header
+                {
+                    Success = false,
+                    ResponseDate = DateTime.UtcNow,
+                    EnumStatusCode = (int)statusEnum
+                },
+                Body = new ErrorBody
+                {
+                    StatusCode = statusCode,
+                    Title = title,
+                    Message = message
+                }
+            });
         }
     }
 }

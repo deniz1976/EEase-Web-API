@@ -7,12 +7,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.Login
 {
-    public class Login
-    {
-        public LoginBody? Body { get; set; }
-
-        public Header? Header { get; set; }
-    }
 
     public class LoginBody
     {

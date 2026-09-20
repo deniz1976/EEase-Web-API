@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes
 {
-    public class GetLikedRoutesQueryResponse
+    public class GetLikedRoutesQueryResponse : ApiResponse<GetLikedRoutesQueryResponseBody>
     {
-        public Header? Header { get; set; }
-        public GetLikedRoutesQueryResponseBody? Body { get; set; }
     }
 
     public class GetLikedRoutesQueryResponseBody

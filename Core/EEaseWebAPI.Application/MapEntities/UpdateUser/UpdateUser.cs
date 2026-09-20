@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.UpdateUser
 {
-    public class UpdateUser
-    {
-        public Header? Header { get; set; }
-        public UpdateUserBody? Body { get; set; }
-    }
 
     public class UpdateUserBody
     {

@@ -35,41 +35,24 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
             if (request.user == null)
                 throw new UserNotFoundException("User not found",(int)StatusEnum.UserNotFound);
 
-            var result = await _profileService.UpdateUser(request);
+            // An update that did not happen leaves the service by throwing, so there is no
+            // third outcome to answer with an empty 500.
+            await _profileService.UpdateUser(request);
 
-            if(result && request.Username != null)
-            {
-
-                return new UpdateUserCommandResponse()
+            // A new username means the old token names somebody who no longer exists.
+            var body = request.Username == null
+                ? new MapEntities.UpdateUser.UpdateUserBody { message = AppMessages.UserUpdated }
+                : new MapEntities.UpdateUser.UpdateUserBody
                 {
-                    UpdateUser = new MapEntities.UpdateUser.UpdateUser()
-                    {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.UserUpdatedSuccessfully),
-                        Body = new MapEntities.UpdateUser.UpdateUserBody()
-                        {
-                            message = AppMessages.UserUpdatedWithNewToken,
-                            newToken = await _authService.UpdateUserGetNewToken(request.Username)
-                        }
-                    }
+                    message = AppMessages.UserUpdatedWithNewToken,
+                    newToken = await _authService.UpdateUserGetNewToken(request.Username)
                 };
-            }
 
-            if(result && request.Username == null)
+            return new UpdateUserCommandResponse
             {
-                return new UpdateUserCommandResponse()
-                {
-                    UpdateUser = new MapEntities.UpdateUser.UpdateUser()
-                    {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.UserUpdatedSuccessfully),
-                        Body = new MapEntities.UpdateUser.UpdateUserBody()
-                        {
-                            message = AppMessages.UserUpdated
-                        }
-                    }
-                };
-            }
-
-            throw new Exception("An unexpected error occured");
+                Header = _headerService.HeaderCreate((int)StatusEnum.UserUpdatedSuccessfully),
+                Body = body
+            };
         }
     }
 }

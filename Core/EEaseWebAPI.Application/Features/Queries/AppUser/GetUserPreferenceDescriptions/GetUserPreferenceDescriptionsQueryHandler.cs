@@ -22,11 +22,8 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDesc
 
             return new GetUserPreferenceDescriptionsQueryResponse
             {
-                response = new GetUserPreferenceDescriptionsResponse
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.PreferenceDescriptionsRetrievedSuccessfully),
-                    Body = descriptions
-                }
+                Header = _headerService.HeaderCreate((int)StatusEnum.PreferenceDescriptionsRetrievedSuccessfully),
+                Body = descriptions
             };
         }
     }

@@ -3,11 +3,6 @@ using EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDescript
 
 namespace EEaseWebAPI.Application.MapEntities.GetUserInfoByName
 {
-    public class GetUserInfoByName
-    {
-        public Header? Header { get; set; }
-        public GetUserInfoByNameBody? Body { get; set; }
-    }
 
     public class GetUserInfoByNameBody
     {

@@ -5,6 +5,7 @@ using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.MapEntities.CreateUser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            CreateUserResponse result = await _registrationService.CreateAsync(new()
+            var message = await _registrationService.CreateAsync(new()
             {
                 Email = request.Email,
                 Name = request.Name,
@@ -40,12 +41,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser
 
             return new CreateUserCommandResponse
             {
-                response = new()
-                {
-                    Body = result?.response?.Body,
-                    Header = _headerService.HeaderCreate((int)StatusEnum.SuccessfullyCreated)
-
-                }
+                Header = _headerService.HeaderCreate((int)StatusEnum.SuccessfullyCreated),
+                Body = new CreateUserBody { message = message }
             };
 
         }

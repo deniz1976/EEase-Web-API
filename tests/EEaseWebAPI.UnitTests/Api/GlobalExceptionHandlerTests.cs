@@ -28,7 +28,7 @@ namespace EEaseWebAPI.UnitTests.Api
                 Localizers.For<ErrorMessages>());
         }
 
-        private async Task<(int StatusCode, JsonElement Body)> HandleAsync(Exception exception, string? culture = null)
+        private async Task<(int StatusCode, JsonElement Body, int EnumStatusCode)> HandleAsync(Exception exception, string? culture = null)
         {
             var previous = CultureInfo.CurrentUICulture;
 
@@ -48,7 +48,13 @@ namespace EEaseWebAPI.UnitTests.Api
 
                 using var document = await JsonDocument.ParseAsync(context.Response.Body);
 
-                return (context.Response.StatusCode, document.RootElement.Clone());
+                // Errors travel in the same envelope as everything else, so what a test
+                // wants to read sits under "body", with the enum code in "header".
+                var root = document.RootElement.Clone();
+                var payload = root.GetProperty("body").Clone();
+                var enumStatusCode = root.GetProperty("header").GetProperty("enumStatusCode");
+
+                return (context.Response.StatusCode, payload, enumStatusCode.GetInt32());
             }
             finally
             {
@@ -59,17 +65,17 @@ namespace EEaseWebAPI.UnitTests.Api
         [Fact]
         public async Task A_signed_in_user_who_may_not_see_a_route_is_forbidden_not_unauthorized()
         {
-            var (statusCode, body) = await HandleAsync(
+            var (statusCode, body, enumStatusCode) = await HandleAsync(
                 new ForbiddenException("This route is private", StatusEnum.UnauthorizedToViewRoute));
 
             statusCode.Should().Be(StatusCodes.Status403Forbidden);
-            body.GetProperty("enumStatusCode").GetInt32().Should().Be((int)StatusEnum.UnauthorizedToViewRoute);
+            enumStatusCode.Should().Be((int)StatusEnum.UnauthorizedToViewRoute);
         }
 
         [Fact]
         public async Task Deleting_someone_elses_route_is_forbidden()
         {
-            var (statusCode, _) = await HandleAsync(new DeleteRouteException());
+            var (statusCode, _, _) = await HandleAsync(new DeleteRouteException());
 
             statusCode.Should().Be(StatusCodes.Status403Forbidden);
         }
@@ -77,7 +83,7 @@ namespace EEaseWebAPI.UnitTests.Api
         [Fact]
         public async Task A_request_without_an_identity_stays_unauthorized()
         {
-            var (statusCode, _) = await HandleAsync(new UnauthorizedAccessException("not signed in"));
+            var (statusCode, _, _) = await HandleAsync(new UnauthorizedAccessException("not signed in"));
 
             statusCode.Should().Be(StatusCodes.Status401Unauthorized);
         }
@@ -85,7 +91,7 @@ namespace EEaseWebAPI.UnitTests.Api
         [Fact]
         public async Task A_missing_user_is_a_not_found()
         {
-            var (statusCode, _) = await HandleAsync(new UserNotFoundException("User not found", 7));
+            var (statusCode, _, _) = await HandleAsync(new UserNotFoundException("User not found", 7));
 
             statusCode.Should().Be(StatusCodes.Status404NotFound);
         }
@@ -93,7 +99,7 @@ namespace EEaseWebAPI.UnitTests.Api
         [Fact]
         public async Task An_unexpected_fault_is_a_server_error()
         {
-            var (statusCode, body) = await HandleAsync(new InvalidCastException("boom"));
+            var (statusCode, body, enumStatusCode) = await HandleAsync(new InvalidCastException("boom"));
 
             statusCode.Should().Be(StatusCodes.Status500InternalServerError);
             body.GetProperty("message").GetString().Should().NotContain("boom");
@@ -102,8 +108,8 @@ namespace EEaseWebAPI.UnitTests.Api
         [Fact]
         public async Task The_message_is_written_in_the_language_the_caller_asked_for()
         {
-            var (_, english) = await HandleAsync(new RouteNotFoundException("Route not found", 93), "en");
-            var (_, turkish) = await HandleAsync(new RouteNotFoundException("Route not found", 93), "tr");
+            var (_, english, _) = await HandleAsync(new RouteNotFoundException("Route not found", 93), "en");
+            var (_, turkish, _) = await HandleAsync(new RouteNotFoundException("Route not found", 93), "tr");
 
             english.GetProperty("message").GetString().Should().Be("Route not found.");
             turkish.GetProperty("message").GetString().Should().Be("Rota bulunamadı.");
@@ -112,7 +118,7 @@ namespace EEaseWebAPI.UnitTests.Api
         [Fact]
         public async Task A_language_nobody_translated_falls_back_to_english()
         {
-            var (_, body) = await HandleAsync(new RouteNotFoundException("Route not found", 93), "de");
+            var (_, body, _) = await HandleAsync(new RouteNotFoundException("Route not found", 93), "de");
 
             body.GetProperty("message").GetString().Should().Be("Route not found.");
         }
@@ -120,7 +126,7 @@ namespace EEaseWebAPI.UnitTests.Api
         [Fact]
         public async Task An_exception_whose_code_has_no_translation_keeps_its_own_detail()
         {
-            var (_, body) = await HandleAsync(
+            var (_, body, _) = await HandleAsync(
                 new RouteGenerationException("No hotel could be found in Rome."), "tr");
 
             body.GetProperty("message").GetString().Should().Be("No hotel could be found in Rome.");
@@ -131,7 +137,7 @@ namespace EEaseWebAPI.UnitTests.Api
         {
             // Reading the missing code as UnknownError turned every plain rejection into
             // "an unexpected error occurred", which tells the caller nothing.
-            var (statusCode, body) = await HandleAsync(new ArgumentException("Username must be unique."), "tr");
+            var (statusCode, body, enumStatusCode) = await HandleAsync(new ArgumentException("Username must be unique."), "tr");
 
             statusCode.Should().Be(StatusCodes.Status400BadRequest);
             body.GetProperty("message").GetString().Should().Be("Username must be unique.");
@@ -142,15 +148,14 @@ namespace EEaseWebAPI.UnitTests.Api
         {
             // 5xx answers are generic on purpose, but a typed exception is a sentence we
             // wrote for the caller, not a fault we failed to foresee.
-            var (statusCode, body) = await HandleAsync(
+            var (statusCode, body, enumStatusCode) = await HandleAsync(
                 new MailDeliveryException(
                     "The verification code could not be sent.",
                     (int)StatusEnum.VerificationCodeSendFailed),
                 "tr");
 
             statusCode.Should().Be(StatusCodes.Status502BadGateway);
-            body.GetProperty("enumStatusCode").GetInt32()
-                .Should().Be((int)StatusEnum.VerificationCodeSendFailed);
+            enumStatusCode.Should().Be((int)StatusEnum.VerificationCodeSendFailed);
             body.GetProperty("message").GetString()
                 .Should().Be("Doğrulama kodu gönderilemedi. Lütfen birazdan tekrar deneyin.");
         }
@@ -160,7 +165,7 @@ namespace EEaseWebAPI.UnitTests.Api
         {
             var errors = new Dictionary<string, string[]> { ["Email"] = new[] { "Email is required." } };
 
-            var (statusCode, body) = await HandleAsync(new RequestValidationException(errors), "tr");
+            var (statusCode, body, enumStatusCode) = await HandleAsync(new RequestValidationException(errors), "tr");
 
             statusCode.Should().Be(StatusCodes.Status400BadRequest);
             body.GetProperty("message").GetString().Should().Be("Gönderilen istek doğrulama kurallarını sağlamıyor.");

@@ -37,13 +37,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
         {
             return new DeleteUserCommandResponse
             {
-                DeleteUser = new MapEntities.DeleteUser.DeleteUser
+                Header = _headerService.HeaderCreate(headerCode),
+                Body = new MapEntities.DeleteUser.DeleteUserBody
                 {
-                    Header = _headerService.HeaderCreate(headerCode),
-                    Body = new MapEntities.DeleteUser.DeleteUserBody
-                    {
-                        message = message
-                    }
+                    message = message
                 }
             };
         }

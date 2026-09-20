@@ -3,8 +3,7 @@ using EEaseWebAPI.Application.MapEntities.UpdateUserPreferences;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferences
 {
-    public class UpdateUserPreferencesCommandResponse
+    public class UpdateUserPreferencesCommandResponse : ApiResponse<UpdateUserPreferencesBody>
     {
-        public UpdateUserPreferencesResponse? response { get; set; }
     }
 }

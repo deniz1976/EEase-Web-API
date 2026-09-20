@@ -31,13 +31,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmailUser
 
             return new ConfirmEmailUserCommandResponse
             {
-                confirmEmail = new()
+                Header = _headerService.HeaderCreate((int)StatusEnum.EmailConfirmed),
+                Body = new()
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.EmailConfirmed),
-                    Body = new()
-                    {
-                        result = result
-                    }
+                    result = result
                 }
             };
 

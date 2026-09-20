@@ -3,10 +3,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
 {
-    public class UpdateRouteStatusCommandResponse
+    public class UpdateRouteStatusCommandResponse : ApiResponse<UpdateRouteStatusCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public UpdateRouteStatusCommandResponseBody? Body { get; set; }
     }
 
     public class UpdateRouteStatusCommandResponseBody

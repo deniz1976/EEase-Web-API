@@ -1,10 +1,5 @@
 namespace EEaseWebAPI.Application.MapEntities.Cities
 {
-    public class GetCitiesBySearch
-    {
-        public Header Header { get; set; }
-        public GetCitiesBySearchBody Body { get; set; }
-    }
 
     public class GetCitiesBySearchBody
     {

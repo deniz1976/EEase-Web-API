@@ -25,13 +25,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
 
             return new ResetUserPreferencesCommandResponse
             {
-                Response = new ResetUserPreferencesResponse
+                Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesResetSuccessfully),
+                Body = new ResetUserPreferencesBody
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesResetSuccessfully),
-                    Body = new ResetUserPreferencesBody
-                    {
-                        Message = AppMessages.PreferencesReset
-                    }
+                    Message = AppMessages.PreferencesReset
                 }
             };
         }

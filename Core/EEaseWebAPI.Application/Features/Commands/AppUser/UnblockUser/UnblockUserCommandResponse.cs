@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
 {
-    public class UnblockUserCommandResponse
+    public class UnblockUserCommandResponse : ApiResponse<UnblockFriendCommandResponseBody>
     {
-        public UnblockFriendCommandResponseBody? Body { get; set; }
-
-        public Header? Header { get; set; }
     }
 
     public class UnblockFriendCommandResponseBody

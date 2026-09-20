@@ -2,10 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetBlockedUsers
 {
-    public class GetBlockedUsersQueryResponse
+    public class GetBlockedUsersQueryResponse : ApiResponse<GetBlockedUsersQueryResponseBody>
     {
-        public Header? Header { get; set; }
-        public GetBlockedUsersQueryResponseBody? Body { get; set; }
     }
 
     public class GetBlockedUsersQueryResponseBody

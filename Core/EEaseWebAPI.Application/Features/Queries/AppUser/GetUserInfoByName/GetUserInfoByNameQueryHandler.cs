@@ -35,57 +35,54 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
 
             var response = new GetUserInfoByNameQueryResponse
             {
-                response = new()
+                Header = _headerService.HeaderCreate((int)StatusEnum.UserInfoRetrievedSuccessfully),
+                Body = new()
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.UserInfoRetrievedSuccessfully),
-                    Body = new()
-                    {
-                        visibilityStatus = visibilityStatus
-                    }
+                    visibilityStatus = visibilityStatus
                 }
             };
 
-            response.response.Body.Id = userInfo.Id;
+            response.Body.Id = userInfo.Id;
 
             if (visibilityStatus == ProfileVisibilityStatus.BlockedByTarget)
             {
-                response.response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedByTarget);
-                response.response.Body.errorMessage = AppMessages.BlockedByTargetProfile;
+                response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedByTarget);
+                response.Body.errorMessage = AppMessages.BlockedByTargetProfile;
                 return response;
             }
             else if (visibilityStatus == ProfileVisibilityStatus.BlockedTarget)
             {
-                response.response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedTarget);
-                response.response.Body.errorMessage = AppMessages.BlockedTargetProfile;
-                response.response.Body.username = userInfo.username;
+                response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedTarget);
+                response.Body.errorMessage = AppMessages.BlockedTargetProfile;
+                response.Body.username = userInfo.username;
                 return response;
             }
 
-            response.response.Body.username = userInfo.username;
-            response.response.Body.name = userInfo.name;
-            response.response.Body.surname = userInfo.surname;
-            response.response.Body.bio = userInfo.bio;
-            response.response.Body.photoPath = userInfo.photoPath;
-            response.response.Body.gender = userInfo.gender;
-            response.response.Body.country = userInfo.country;
-            response.response.Body.isFriend = visibilityStatus == ProfileVisibilityStatus.FullAccess &&request.username != request.targetUsername;
-            response.response.Body.canSendFriendRequest = visibilityStatus == ProfileVisibilityStatus.LimitedAccess;
-            response.response.Body.FriendRequestStatus = userInfo.friendRequestStatus;
+            response.Body.username = userInfo.username;
+            response.Body.name = userInfo.name;
+            response.Body.surname = userInfo.surname;
+            response.Body.bio = userInfo.bio;
+            response.Body.photoPath = userInfo.photoPath;
+            response.Body.gender = userInfo.gender;
+            response.Body.country = userInfo.country;
+            response.Body.isFriend = visibilityStatus == ProfileVisibilityStatus.FullAccess &&request.username != request.targetUsername;
+            response.Body.canSendFriendRequest = visibilityStatus == ProfileVisibilityStatus.LimitedAccess;
+            response.Body.FriendRequestStatus = userInfo.friendRequestStatus;
 
             if (visibilityStatus == ProfileVisibilityStatus.FullAccess)
             {
                 var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.username, request.targetUsername);
                 if (preferences != null)
                 {
-                    response.response.Body.PersonalizationPreferences = preferences.PersonalizationPreferences;
-                    response.response.Body.FoodPreferences = preferences.FoodPreferences;
-                    response.response.Body.AccommodationPreferences = preferences.AccommodationPreferences;
+                    response.Body.PersonalizationPreferences = preferences.PersonalizationPreferences;
+                    response.Body.FoodPreferences = preferences.FoodPreferences;
+                    response.Body.AccommodationPreferences = preferences.AccommodationPreferences;
                 }
             }
 
             if (visibilityStatus == ProfileVisibilityStatus.LimitedAccess)
             {
-                response.response.Body.errorMessage = AppMessages.NotFriendsProfile;
+                response.Body.errorMessage = AppMessages.NotFriendsProfile;
             }
 
             return response;

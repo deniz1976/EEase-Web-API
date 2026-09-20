@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogin
 {
-    public class CreateRouteWithoutLoginCommandResponse
+    public class CreateRouteWithoutLoginCommandResponse : ApiResponse<CreateRouteWithoutLoginCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public CreateRouteWithoutLoginCommandResponseBody? Body { get; set; }
     }
 
     public class CreateRouteWithoutLoginCommandResponseBody

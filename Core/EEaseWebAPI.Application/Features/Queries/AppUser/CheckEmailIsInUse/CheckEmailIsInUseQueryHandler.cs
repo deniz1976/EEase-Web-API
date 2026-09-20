@@ -31,14 +31,11 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse
 
             return new CheckEmailIsInUseQueryResponse()
             {
-                CheckEmailIsInUse = new MapEntities.CheckEmailIsInUse.CheckEmailIsInUse()
+                Header = _headerService.HeaderCreate(isEmailInUse ? (int)StatusEnum.EmailAlreadyInUse : (int)StatusEnum.SuccessfullyCreated),
+                Body = new MapEntities.CheckEmailIsInUse.CheckEmailIsInUseBody()
                 {
-                    Header = _headerService.HeaderCreate(isEmailInUse ? (int)StatusEnum.EmailAlreadyInUse : (int)StatusEnum.SuccessfullyCreated),
-                    Body = new MapEntities.CheckEmailIsInUse.CheckEmailIsInUseBody()
-                    {
-                        message = message,
-                        result = isEmailInUse
-                    }
+                    message = message,
+                    result = isEmailInUse
                 }
             };
         }

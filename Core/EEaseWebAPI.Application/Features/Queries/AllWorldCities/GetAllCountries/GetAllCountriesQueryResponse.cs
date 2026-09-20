@@ -3,10 +3,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountries
 {
-    public class GetAllCountriesQueryResponse
+    public class GetAllCountriesQueryResponse : ApiResponse<GetAllCountriesQueryResponseBody>
     {
-        public Header? Header { get; set; }
-        public GetAllCountriesQueryResponseBody? Body { get; set; }
     }
 
     public class GetAllCountriesQueryResponseBody

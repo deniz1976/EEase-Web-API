@@ -34,11 +34,8 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeChec
             {
                 return new ResetPasswordCodeCheckQueryResponse()
                 {
-                    ResetPasswordCodeCheck = new MapEntities.ResetPasswordCodeCheck.ResetPasswordCodeCheck
-                    {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
-                        Body = new() { message = AppMessages.ResetCodeCorrect }
-                    }
+                    Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
+                    Body = new() { message = AppMessages.ResetCodeCorrect }
                 };
             }
 

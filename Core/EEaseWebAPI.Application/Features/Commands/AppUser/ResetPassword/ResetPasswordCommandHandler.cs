@@ -33,11 +33,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser
 
             return new ResetPasswordCommandResponse()
             {
-                ResetPasswordWithCode = new ResetPasswordWithCode()
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
-                    Body = new ResetPasswordWithCodeBody() { message = AppMessages.PasswordChanged}
-                }
+                Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
+                Body = new ResetPasswordWithCodeBody() { message = AppMessages.PasswordChanged}
             };
         }
     }

@@ -26,18 +26,17 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto
             {
                 throw new ArgumentNullException("Request or required properties cannot be null.");
             }
-            var result = await _profileService.SetUserPhoto(request.Username, request.PhotoUrl);
+            // The service throws with a reason of its own when the save fails, so reaching
+            // here means it worked; the bare Exception that used to stand in for the false
+            // case read as a 500 with nothing in it.
+            await _profileService.SetUserPhoto(request.Username, request.PhotoUrl);
 
-            if (result)
+            return new SetUserPhotoCommandResponse
             {
-                return new()
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoChangedSuccessfully, true, DateTime.UtcNow)
-                };
-
-            }
-
-            throw new Exception("Unexpected error occured");
+                Header = _headerService.HeaderCreate(
+                    (int)StatusEnum.UserPhotoChangedSuccessfully, true, DateTime.UtcNow),
+                Body = new SetUserPhotoCommandResponseBody { PhotoPath = request.PhotoUrl }
+            };
         }
     }
 }

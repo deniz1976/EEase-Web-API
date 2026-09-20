@@ -2,10 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
 {
-    public class UpdateUserCountryCommandResponse
+    public class UpdateUserCountryCommandResponse : ApiResponse<UpdateUserCountryCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public UpdateUserCountryCommandResponseBody? Body { get; set; }
     }
 
     public class UpdateUserCountryCommandResponseBody

@@ -32,7 +32,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(SendFriendRequestCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("SendFriendRequest/{targetUsername}")]
         public async Task<IActionResult> SendFriendRequest(string targetUsername)
@@ -49,7 +49,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(GetPendingFriendRequestsQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
         public async Task<IActionResult> GetPendingRequests()
@@ -61,7 +61,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(GetUserFriendsQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
         public async Task<IActionResult> GetFriends()
@@ -73,7 +73,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(RespondToFriendRequestCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("RespondToFriendRequest/{requesterUsername}")]
         public async Task<IActionResult> RespondToFriendRequest(
@@ -92,7 +92,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(RemoveFriendCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpDelete("RemoveFriend/{friendUsername}")]
         public async Task<IActionResult> RemoveFriend(string friendUsername)
@@ -109,7 +109,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(BlockFriendCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("BlockUser/{targetUsername}")]
         public async Task<IActionResult> BlockUser(string targetUsername)
@@ -126,7 +126,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(UnblockUserCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("UnblockUser/{targetUsername}")]
         public async Task<IActionResult> UnblockUser(string targetUsername)
@@ -142,7 +142,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(GetBlockedUsersQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
         public async Task<IActionResult> GetBlockedUsers()
@@ -155,7 +155,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(CancelFriendRequestCommandResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CancelFriendRequest(string targetUsername)
         {
@@ -171,7 +171,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(CheckFriendRequestQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CheckFriendRequest(string targetUsername)
         {

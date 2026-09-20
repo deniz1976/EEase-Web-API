@@ -28,7 +28,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LoginUserCommandResponse),StatusCodes.Status200OK)]
 
         public async Task<IActionResult> Login(LoginUserCommandRequest request)
@@ -38,7 +38,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(RefreshTokenLoginUserCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> RefreshTokenLoginAsync(RefreshTokenLoginUserCommandRequest request)
         {
@@ -47,7 +47,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordUserCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetPassword(ResetPasswordUserCommandRequest request)
         {
@@ -56,7 +56,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCodeCheckQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetPasswordCodeCheck(ResetPasswordCodeCheckQueryRequest request)
         {
@@ -65,7 +65,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPut("[Action]")]
-        [ProducesResponseType(typeof(GlobalError),StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCommandResponse),StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetPasswordWithCode(ResetPasswordCommandRequest request)
         {
@@ -75,7 +75,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPut("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ChangePasswordCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
@@ -86,7 +86,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpGet("[Action]")]
-        [ProducesResponseType(typeof(GlobalError),StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckEmailIsInUseQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckEmailIsInUse([FromQuery]CheckEmailIsInUseQueryRequest request)
         {

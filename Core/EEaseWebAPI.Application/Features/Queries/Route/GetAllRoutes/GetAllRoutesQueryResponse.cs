@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.DTOs.Route;
+using EEaseWebAPI.Application.DTOs.Route;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.MapEntities;
 using EEaseWebAPI.Domain.Entities.Route;
@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Queries.Route.GetAllRoutes
 {
-    public class GetAllRoutesQueryResponse
+    public class GetAllRoutesQueryResponse : ApiResponse<GetAllRoutesQueryResponseBody>
     {
-        public Header Header { get; set; }
-        public GetAllRoutesQueryResponseBody Body { get; set; }
     }
 
     public class GetAllRoutesQueryResponseBody

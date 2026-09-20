@@ -22,7 +22,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(GetCitiesBySearchQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCitiesBySearch([FromQuery] string searchTerm, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1)
         {
             var response = await _mediator.Send(new GetCitiesBySearchQueryRequest
@@ -41,7 +41,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetCitiesBySearchQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCitiesBySearchWithPreferences([FromQuery] string searchTerm, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1)
         {
             var response = await _mediator.Send(new GetCitiesBySearchQueryRequest
@@ -60,7 +60,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetAllCountriesQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllCountries()
         {
             var response = await _mediator.Send(new GetAllCountriesQueryRequest());

@@ -2,10 +2,9 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
 {
-    public class GetRouteByIdQueryResponse
+    public class GetRouteByIdQueryResponse : ApiResponse<GetRouteByIdQueryResponseBody>
+
     {
-        public GetRouteByIdQueryResponseBody? Body { get; set; }
-        public Header? Header { get; set; }
 
     }
 

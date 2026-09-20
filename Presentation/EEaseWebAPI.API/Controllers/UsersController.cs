@@ -41,7 +41,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [ProducesResponseType(typeof(CreateUserCommandResponse),StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError),StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [HttpPost("[Action]")]
         public async Task<IActionResult> CreateUser(CreateUserCommandRequest createUserCommandRequest)
         {
@@ -50,7 +50,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SendVerificationCodeCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendVerificationCodeAgain(SendVerificationCodeCommandRequest request)
         {
@@ -61,7 +61,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPut("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateUser(UpdateUserDTO updateUserDTO)
@@ -82,7 +82,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserInfoQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("[Action]")]
@@ -95,7 +95,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckEmailConfirmedQueryResponse),StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckEmailConfirmed(CheckEmailConfirmedQueryRequest request)
         {
@@ -104,7 +104,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ConfirmEmailUserCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> EmailConfirm(ConfirmEmailUserCommandRequest request)
         {
@@ -114,7 +114,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteUserCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
@@ -129,7 +129,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteUserWithCodeCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
@@ -143,7 +143,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(StatusCheckQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> StatusCheck()
@@ -156,7 +156,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPut("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserPreferencesCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateUserPreferences([FromBody] string message)
@@ -173,7 +173,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPut("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserPreferencesWithTopicsCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateUserPreferencesWithTopics([FromBody] List<string> topics)
@@ -189,7 +189,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetUserPreferencesCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ResetUserPreferences()
@@ -205,7 +205,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPut("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCountryCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateCountry([FromBody] string country)
@@ -222,7 +222,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPreferenceDescriptionsQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetUserPreferenceDescriptions()
@@ -238,7 +238,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(GetAllTopicsQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTopics()
         {
             var request = new GetAllTopicsQueryRequest();
@@ -248,7 +248,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPut("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateUserCurrencyCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateUserCurrency([FromBody] string currencyCode)
@@ -266,7 +266,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserCurrencyQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetUserCurrency()
@@ -282,7 +282,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserInfoByNameQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetUserInfoByName([FromQuery]string TargetUsername)
@@ -299,7 +299,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserInfoByIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetUserInfoById([FromQuery]string UserId)
@@ -316,7 +316,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPhotoQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetUserPhoto()
@@ -332,7 +332,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetUserPhotoByNameQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetUserPhotoByName([FromQuery]string TargetUsername)
@@ -349,7 +349,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPut("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SetUserPhotoCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SetUserPhoto([FromQuery] string photoPath)
@@ -367,7 +367,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SearchUsersQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SearchUsers([FromQuery] string searchTerm)

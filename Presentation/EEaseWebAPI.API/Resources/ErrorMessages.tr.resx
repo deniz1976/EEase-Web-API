@@ -181,4 +181,10 @@
   <data name="UserDeleteCodeSendFailed" xml:space="preserve">
     <value>Hesap silme kodu gönderilemedi. Lütfen birazdan tekrar deneyin.</value>
   </data>
+  <data name="AuthenticationRequired" xml:space="preserve">
+    <value>Bu işlem için giriş yapmış olmanız gerekiyor.</value>
+  </data>
+  <data name="AccessForbidden" xml:space="preserve">
+    <value>Bu işlem için yetkiniz yok.</value>
+  </data>
 </root>

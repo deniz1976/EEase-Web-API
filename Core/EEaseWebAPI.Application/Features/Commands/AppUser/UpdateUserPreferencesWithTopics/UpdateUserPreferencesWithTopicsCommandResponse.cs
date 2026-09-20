@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,10 +7,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferencesWithTopics
 {
-    public class UpdateUserPreferencesWithTopicsCommandResponse
+    public class UpdateUserPreferencesWithTopicsCommandResponse : ApiResponse<UpdateUserPreferencesWithTopicsCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public UpdateUserPreferencesWithTopicsCommandResponseBody? Body { get; set; }
     }
 
     public class UpdateUserPreferencesWithTopicsCommandResponseBody

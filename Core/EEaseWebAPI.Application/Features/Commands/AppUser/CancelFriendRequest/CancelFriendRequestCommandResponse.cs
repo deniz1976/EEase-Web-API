@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.CancelFriendRequest
 {
-    public class CancelFriendRequestCommandResponse
+    public class CancelFriendRequestCommandResponse : ApiResponse<CancelFriendRequestCommandResponseBody>
     {
-        public Header? Header { get; set; }
-
-        public CancelFriendRequestCommandResponseBody? Body { get; set; }
     }
 
     public class CancelFriendRequestCommandResponseBody

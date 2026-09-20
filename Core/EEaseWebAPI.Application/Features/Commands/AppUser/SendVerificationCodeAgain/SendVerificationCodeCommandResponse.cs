@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCodeAgain
 {
-    public class SendVerificationCodeCommandResponse
+    public class SendVerificationCodeCommandResponse : ApiResponse<SendVerificationCodeBody>
     {
-        public Header? Header { get; set; }
-        public SendVerificationCodeBody? Body { get; set;}
     }
 
     public class SendVerificationCodeBody

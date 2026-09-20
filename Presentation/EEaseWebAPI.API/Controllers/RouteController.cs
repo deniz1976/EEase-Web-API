@@ -36,7 +36,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError),StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CreateRouteWithoutLoginCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> CreateRouteWithoutLogin([FromBody] CreateRouteWithoutLoginCommandRequest request)
@@ -46,7 +46,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("[Action]")]
-        [ProducesResponseType(typeof(GlobalError),StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRouteComponentPhotoCommandResponse),StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRouteComponentPhoto(GetRouteComponentPhotoCommandRequest request)
         {
@@ -55,7 +55,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpGet("[Action]")]
-        [ProducesResponseType(typeof(GlobalError),StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetAllRoutesQueryResponse),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
@@ -74,7 +74,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpGet("[Action]/{userId}")]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRoutesByUserIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
@@ -95,7 +95,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpGet("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetLikedRoutesQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLikedRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -114,7 +114,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikeRouteCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> LikeRoute([FromBody] Guid routeId)
         {
@@ -131,7 +131,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpDelete("[Action]/{routeId}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteRouteCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteRoute([FromRoute] Guid routeId)
         {
@@ -148,7 +148,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CreateCustomRouteCommandResponse),StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> CreateCustomRoute(CreateCustomRouteDTO createCustomRouteDTO)
@@ -173,7 +173,7 @@ namespace EEaseWebAPI.API.Controllers
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRouteByIdQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRouteById([FromRoute] Guid routeId)
         {
@@ -190,7 +190,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPut("[Action]/{routeId}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateRouteStatusCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateRouteStatus([FromRoute] Guid routeId, [FromBody] int status)
         {
@@ -208,7 +208,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> LikePlaceOrRestaurant([FromBody] LikePlaceOrRestaurantEndpointDTO request)
         {
@@ -233,7 +233,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPut("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> DislikePlaceOrRestaurant([FromBody] DislikePlaceOrRestaurantDTO request)
@@ -264,7 +264,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpGet("[Action]/{routeId}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckRouteLikeStatusQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckRouteLikeStatus([FromRoute] Guid routeId)
         {
@@ -281,7 +281,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpDelete("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteAllRoutesCommandResponse), StatusCodes.Status200OK)]
 
         public async Task<IActionResult> DeleteAllRoutes()

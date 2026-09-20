@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto
 {
-    public class GetRouteComponentPhotoCommandResponse
+    public class GetRouteComponentPhotoCommandResponse : ApiResponse<GetRouteComponentPhotoCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public GetRouteComponentPhotoCommandResponseBody? Body { get; set; }
     }
 
     public class GetRouteComponentPhotoCommandResponseBody

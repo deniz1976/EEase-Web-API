@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.CheckEmailIsInUse;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse
 {
-    public class CheckEmailIsInUseQueryResponse
+    public class CheckEmailIsInUseQueryResponse : ApiResponse<CheckEmailIsInUseBody>
     {
-        public Application.MapEntities.CheckEmailIsInUse.CheckEmailIsInUse? CheckEmailIsInUse { get; set; }
     }
 }

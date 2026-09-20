@@ -34,14 +34,11 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RefreshTokenLoginUse
 
             return new RefreshTokenLoginUserCommandResponse
             {
-                RefreshTokenLogin = new MapEntities.RefreshTokenLogin.RefreshTokenLogin
+                Header = _headerService.HeaderCreate((int)StatusEnum.TokenRefreshedSuccessfully),
+                Body = new MapEntities.RefreshTokenLogin.RefreshTokenLoginBody()
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.TokenRefreshedSuccessfully),
-                    Body = new MapEntities.RefreshTokenLogin.RefreshTokenLoginBody()
-                    {
-                        Token = token.Token,
-                        warning = token.warning
-                    }
+                    Token = token.Token,
+                    warning = token.warning
                 }
             };
 

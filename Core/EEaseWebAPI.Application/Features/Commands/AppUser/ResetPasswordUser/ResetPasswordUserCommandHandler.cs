@@ -26,24 +26,15 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
             if(request == null || request.EmailOrUsername == null)
                 throw new ArgumentNullException(nameof(request));
 
-            var control = await _passwordService.SendResetCodeAsync(request.EmailOrUsername);
+            // A code that could not be sent is reported by the service; reaching here means
+            // it went out.
+            await _passwordService.SendResetCodeAsync(request.EmailOrUsername);
 
-            if (control)
+            return new ResetPasswordUserCommandResponse
             {
-                return new ResetPasswordUserCommandResponse()
-                {
-                    resetPassword = new MapEntities.ResetPassword()
-                    {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.ResetPasswordCodeSentSuccessfully),
-                        Body = new MapEntities.ResetPasswordBody()
-                        {
-                            message = AppMessages.ResetCodeSent
-                        }
-                    }
-                };
-            }
-
-            throw new Exception("Unexpected error occured");
+                Header = _headerService.HeaderCreate((int)StatusEnum.ResetPasswordCodeSentSuccessfully),
+                Body = new MapEntities.ResetPasswordBody { message = AppMessages.ResetCodeSent }
+            };
         }
     }
 }

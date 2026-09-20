@@ -29,13 +29,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
 
             return new ChangePasswordCommandResponse()
                 {
-                    ChangePassword = new MapEntities.ChangePassword.ChangePassword()
+                    Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
+                    Body = new MapEntities.ChangePassword.ChangePasswordBody()
                     {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
-                        Body = new MapEntities.ChangePassword.ChangePasswordBody()
-                        {
-                            message = result
-                        }
+                        message = result
                     }
                 };
 

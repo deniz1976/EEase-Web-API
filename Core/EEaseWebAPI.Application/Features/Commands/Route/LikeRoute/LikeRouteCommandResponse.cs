@@ -2,10 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.LikeRoute
 {
-    public class LikeRouteCommandResponse
+    public class LikeRouteCommandResponse : ApiResponse<LikeRouteCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public LikeRouteCommandResponseBody? Body { get; set; }
     }
 
     public class LikeRouteCommandResponseBody

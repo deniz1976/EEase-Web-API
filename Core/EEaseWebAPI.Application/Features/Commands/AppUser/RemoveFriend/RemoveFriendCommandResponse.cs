@@ -2,10 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.RemoveFriend
 {
-    public class RemoveFriendCommandResponse
+    public class RemoveFriendCommandResponse : ApiResponse<RemoveFriendCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public RemoveFriendCommandResponseBody? Body { get; set; }
     }
 
     public class RemoveFriendCommandResponseBody

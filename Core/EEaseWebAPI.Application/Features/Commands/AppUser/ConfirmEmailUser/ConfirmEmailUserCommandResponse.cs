@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.ConfirmEmail;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmailUser
 {
-    public class ConfirmEmailUserCommandResponse
+    public class ConfirmEmailUserCommandResponse : ApiResponse<ConfirmEmailBody>
     {
-        public MapEntities.ConfirmEmail.ConfirmEmail confirmEmail {  get; set; }
     }
 }

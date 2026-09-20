@@ -1,14 +1,8 @@
-﻿using EEaseWebAPI.Application.MapEntities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
 {
-    public class ResetPasswordUserCommandResponse
+    public class ResetPasswordUserCommandResponse : ApiResponse<ResetPasswordBody>
     {
-        public EEaseWebAPI.Application.MapEntities.ResetPassword? resetPassword {  get; set; }
     }
 }

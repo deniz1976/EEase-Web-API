@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.ResetPasswordCodeCheck;
 
 namespace EEaseWebAPI.Application.Features.Queries
 {
-    public class ResetPasswordCodeCheckQueryResponse
+    public class ResetPasswordCodeCheckQueryResponse : ApiResponse<ResetPasswordCodeCheckQueryBody>
     {
-        public MapEntities.ResetPasswordCodeCheck.ResetPasswordCodeCheck? ResetPasswordCodeCheck { get; set; }
     }
 }

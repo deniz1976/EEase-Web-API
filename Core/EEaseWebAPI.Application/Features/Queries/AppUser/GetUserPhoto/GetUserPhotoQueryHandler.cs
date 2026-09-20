@@ -25,11 +25,8 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
             if(request == null || request.username == null) { throw new ArgumentNullException(nameof(request)); }
             return new GetUserPhotoQueryResponse()
             {
-                response = new()
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoReceivedSuccessfully),
-                    Body = new() { path= await _profileService.GetUserPhotoAsync(request.username) }
-                }
+                Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoReceivedSuccessfully),
+                Body = new() { path= await _profileService.GetUserPhotoAsync(request.username) }
             };
         }
     }

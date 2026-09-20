@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.ChangePassword;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
 {
-    public class ChangePasswordCommandResponse
+    public class ChangePasswordCommandResponse : ApiResponse<ChangePasswordBody>
     {
-        public MapEntities.ChangePassword.ChangePassword? ChangePassword {  get; set; }
     }
 }

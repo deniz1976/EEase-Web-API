@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailConfirmed
 {
-    public class CheckEmailConfirmedQueryResponse
+    public class CheckEmailConfirmedQueryResponse : ApiResponse<CheckEmailBody>
     {
-        public MapEntities.CheckEmail? response { get; set; }
     }
 }

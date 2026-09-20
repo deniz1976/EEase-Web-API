@@ -24,13 +24,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
 
             return new UpdateUserPreferencesCommandResponse
             {
-                response = new UpdateUserPreferencesResponse
+                Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesUpdatedSuccessfully),
+                Body = new UpdateUserPreferencesBody
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesUpdatedSuccessfully),
-                    Body = new UpdateUserPreferencesBody
-                    {
-                        message = AppMessages.PreferencesUpdated
-                    }
+                    message = AppMessages.PreferencesUpdated
                 }
             };
         }

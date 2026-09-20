@@ -8,10 +8,8 @@ using EEaseWebAPI.Domain.Entities.Route;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaurant
 {
-    public class DislikePlaceOrRestaurantCommandResponse
+    public class DislikePlaceOrRestaurantCommandResponse : ApiResponse<DislikePlaceOrRestaurantCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public DislikePlaceOrRestaurantCommandResponseBody? Body { get; set; }
     }
     public class DislikePlaceOrRestaurantCommandResponseBody
     {

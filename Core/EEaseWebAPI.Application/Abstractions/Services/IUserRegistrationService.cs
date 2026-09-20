@@ -5,7 +5,8 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface IUserRegistrationService
     {
-        Task<CreateUserResponse> CreateAsync(CreateUser model);
+        /// <summary>Returns the message the caller is shown once the account exists.</summary>
+        Task<string> CreateAsync(CreateUser model);
 
         Task<bool> SendVerificationEmailAgain(string email);
 

@@ -1,14 +1,9 @@
-﻿using EEaseWebAPI.Application.MapEntities.RefreshTokenLogin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.RefreshTokenLogin;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.RefreshTokenLoginUser
 {
-    public class RefreshTokenLoginUserCommandResponse
+    public class RefreshTokenLoginUserCommandResponse : ApiResponse<RefreshTokenLoginBody>
     {
-        public RefreshTokenLogin? RefreshTokenLogin { get; set; }
     }
 }

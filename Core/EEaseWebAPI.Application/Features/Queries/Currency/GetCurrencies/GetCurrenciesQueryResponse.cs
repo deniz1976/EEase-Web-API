@@ -1,14 +1,9 @@
-﻿using EEaseWebAPI.Application.MapEntities.GetCurrencies;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.GetCurrencies;
 
 namespace EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies
 {
-    public class GetCurrenciesQueryResponse
+    public class GetCurrenciesQueryResponse : ApiResponse<GetCurrenciesBody>
     {
-        public MapEntities.GetCurrencies.GetCurrencies? getCurrencies {  get; set; }
     }
 }

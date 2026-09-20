@@ -1,14 +1,9 @@
-﻿using EEaseWebAPI.Application.MapEntities.DeleteUser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.DeleteUserWithCode;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode
 {
-    public class DeleteUserWithCodeCommandResponse
+    public class DeleteUserWithCodeCommandResponse : ApiResponse<DeleteUserWithCodeBody>
     {
-        public Application.MapEntities.DeleteUserWithCode.DeleteUserWithCode? DeleteUser { get; set; }
     }
 }

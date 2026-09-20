@@ -1,11 +1,10 @@
+using EEaseWebAPI.Application.MapEntities;
 using EEaseWebAPI.Application.DTOs;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant
 {
-    public class LikePlaceOrRestaurantCommandResponse
+    public class LikePlaceOrRestaurantCommandResponse : ApiResponse<LikePlaceOrRestaurantCommandResponseBody>
     {
-        public MapEntities.Header? Header { get; set; }
-        public LikePlaceOrRestaurantCommandResponseBody? Body { get; set; }
     }
 
     public class LikePlaceOrRestaurantCommandResponseBody

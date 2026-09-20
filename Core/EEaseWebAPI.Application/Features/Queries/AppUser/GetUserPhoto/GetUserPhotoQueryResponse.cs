@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.GetUserPhoto;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
 {
-    public class GetUserPhotoQueryResponse
+    public class GetUserPhotoQueryResponse : ApiResponse<GetUserPhotoBody>
     {
-        public MapEntities.GetUserPhoto.GetUserPhoto? response { get; set; }
     }
-
 }

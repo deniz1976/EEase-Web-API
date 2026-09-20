@@ -2,10 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
 {
-    public class GetUserFriendsQueryResponse
+    public class GetUserFriendsQueryResponse : ApiResponse<GetUserFriendsQueryResponseBody>
     {
-        public Header? Header { get; set; }
-        public GetUserFriendsQueryResponseBody? Body { get; set; }
     }
 
     public class GetUserFriendsQueryResponseBody

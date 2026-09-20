@@ -32,25 +32,19 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhotoByName
             {
                 return new GetUserPhotoByNameQueryResponse()
                 {
-                    response = new()
+                    Header = _headerService.HeaderCreate((int)StatusEnum.NotFriends),
+                    Body = new()
                     {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.NotFriends),
-                        Body = new()
-                        {
-                            path = null,
-                            errorMessage = AppMessages.NotFriendsPhoto
-                        }
+                        path = null,
+                        errorMessage = AppMessages.NotFriendsPhoto
                     }
                 };
             }
 
             return new GetUserPhotoByNameQueryResponse()
             {
-                response = new()
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoReceivedSuccessfully),
-                    Body = new() { path = await _profileService.GetUserPhotoAsync(request.targetUsername) }
-                }
+                Header = _headerService.HeaderCreate((int)StatusEnum.UserPhotoReceivedSuccessfully),
+                Body = new() { path = await _profileService.GetUserPhotoAsync(request.targetUsername) }
             };
         }
     }

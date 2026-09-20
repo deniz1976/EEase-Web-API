@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute
 {
-    public class CreateCustomRouteCommandResponse
+    public class CreateCustomRouteCommandResponse : ApiResponse<CreateCustomRouteCommandResponseBody>
     {
-        public Header? Header { get; set; }
-
-        public CreateCustomRouteCommandResponseBody? Body { get; set; }
     }
 
     public class CreateCustomRouteCommandResponseBody

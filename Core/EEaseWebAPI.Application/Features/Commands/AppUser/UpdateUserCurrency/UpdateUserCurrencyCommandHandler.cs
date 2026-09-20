@@ -27,13 +27,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency
 
             return new UpdateUserCurrencyCommandResponse
             {
-                Response = new()
+                Header = _headerService.HeaderCreate((int)StatusEnum.UserCurrencyUpdatedSuccessfully),
+                Body = new()
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.UserCurrencyUpdatedSuccessfully),
-                    Body = new()
-                    {
-                        Message = AppMessages.CurrencyUpdated
-                    }
+                    Message = AppMessages.CurrencyUpdated
                 }
             };
         }

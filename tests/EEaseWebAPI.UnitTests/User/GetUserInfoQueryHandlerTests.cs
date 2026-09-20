@@ -54,7 +54,7 @@ namespace EEaseWebAPI.UnitTests.User
                 new GetUserInfoByIdQueryRequest { username = "viewer", userId = "target-id" },
                 CancellationToken.None);
 
-            response.response.Body!.FoodPreferences.Should().ContainSingle();
+            response.Body!.FoodPreferences.Should().ContainSingle();
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace EEaseWebAPI.UnitTests.User
                 new GetUserInfoByNameQueryRequest { username = "viewer", targetUsername = "target" },
                 CancellationToken.None);
 
-            response.response.Body!.FoodPreferences.Should().ContainSingle();
+            response.Body!.FoodPreferences.Should().ContainSingle();
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace EEaseWebAPI.UnitTests.User
                 new GetUserInfoByIdQueryRequest { username = "viewer", userId = "target-id" },
                 CancellationToken.None);
 
-            response.response.Body!.errorMessage.Should().NotBeNullOrEmpty();
+            response.Body!.errorMessage.Should().NotBeNullOrEmpty();
 
             await _preferences.DidNotReceive().GetDescriptionsForViewerAsync(
                 Arg.Any<string>(), Arg.Any<string>());

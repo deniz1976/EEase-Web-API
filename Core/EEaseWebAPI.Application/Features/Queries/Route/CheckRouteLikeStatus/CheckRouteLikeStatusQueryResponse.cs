@@ -2,10 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
 {
-    public class CheckRouteLikeStatusQueryResponse
+    public class CheckRouteLikeStatusQueryResponse : ApiResponse<CheckRouteLikeStatusQueryResponseBody>
     {
-        public Header Header { get; set; }
-        public CheckRouteLikeStatusQueryResponseBody Body { get; set; }
     }
 
     public class CheckRouteLikeStatusQueryResponseBody

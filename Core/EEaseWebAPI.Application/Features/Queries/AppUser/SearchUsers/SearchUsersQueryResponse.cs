@@ -4,10 +4,8 @@ using System.Collections.Generic;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
 {
-    public class SearchUsersQueryResponse
+    public class SearchUsersQueryResponse : ApiResponse<SearchUsersQueryResponseBody>
     {
-        public Header Header { get; set; }
-        public SearchUsersQueryResponseBody Body { get; set; }
     }
 
     public class SearchUsersQueryResponseBody

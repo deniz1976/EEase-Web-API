@@ -44,13 +44,10 @@ namespace EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies
 
             return new GetCurrenciesQueryResponse
             {
-                getCurrencies = new()
+                Header = _headerService.HeaderCreate((int)StatusEnum.GetCurrenciesSuccessfully),
+                Body = new()
                 {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.GetCurrenciesSuccessfully),
-                    Body = new()
-                    {
-                        Currencies = paginatedResult
-                    }
+                    Currencies = paginatedResult
                 }
             };
         }

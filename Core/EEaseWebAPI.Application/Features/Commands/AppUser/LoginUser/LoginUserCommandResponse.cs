@@ -1,14 +1,9 @@
-﻿using EEaseWebAPI.Application.MapEntities.Login;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EEaseWebAPI.Application.MapEntities;
+using EEaseWebAPI.Application.MapEntities.Login;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.LoginUser
 {
-    public class LoginUserCommandResponse
+    public class LoginUserCommandResponse : ApiResponse<LoginBody>
     {
-        public Login? Login { get; set; }
     }
 }

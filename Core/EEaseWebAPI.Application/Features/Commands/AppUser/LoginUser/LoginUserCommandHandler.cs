@@ -34,11 +34,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.LoginUser
 
             var response = new LoginUserCommandResponse
             {
-                Login = new Login
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.TokenCreatedSuccessfully),
-                    Body = body
-                }
+                Header = _headerService.HeaderCreate((int)StatusEnum.TokenCreatedSuccessfully),
+                Body = body
             };
 
             return response;

@@ -26,24 +26,16 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode
             if(request == null || request.code == null || request.username == null)
                 throw new ArgumentNullException(nameof(request));
 
-            var message = await _accountService.ConfirmDeletionAsync(request.username,request.code);
+            // The service reports a refusal by throwing, with a reason the caller can read;
+            // the bare Exception that stood in for "it came back empty" could only ever have
+            // reached the caller as a 500 with nothing in it.
+            var message = await _accountService.ConfirmDeletionAsync(request.username, request.code);
 
-            if(message != null)
+            return new DeleteUserWithCodeCommandResponse
             {
-                return new DeleteUserWithCodeCommandResponse()
-                {
-                    DeleteUser = new MapEntities.DeleteUserWithCode.DeleteUserWithCode()
-                    {
-                        Header = _headerService.HeaderCreate((int)StatusEnum.UserDeletedSuccessfully),
-                        Body = new MapEntities.DeleteUserWithCode.DeleteUserWithCodeBody()
-                        {
-                            message = message
-                        }
-                    }
-                };
-            }
-
-            throw new Exception("An unexpected error occured.");
+                Header = _headerService.HeaderCreate((int)StatusEnum.UserDeletedSuccessfully),
+                Body = new MapEntities.DeleteUserWithCode.DeleteUserWithCodeBody { message = message }
+            };
         }
     }
 }

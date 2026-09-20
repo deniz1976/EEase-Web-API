@@ -2,10 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendRequest
 {
-    public class RespondToFriendRequestCommandResponse
+    public class RespondToFriendRequestCommandResponse : ApiResponse<RespondToFriendRequestCommandResponseBody>
     {
-        public Header? Header { get; set; }
-        public RespondToFriendRequestCommandResponseBody? Body { get; set; }
     }
 
     public class RespondToFriendRequestCommandResponseBody

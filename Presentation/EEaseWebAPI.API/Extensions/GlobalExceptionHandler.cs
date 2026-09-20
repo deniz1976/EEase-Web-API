@@ -56,29 +56,22 @@ namespace EEaseWebAPI.API.Extensions
             httpContext.Response.StatusCode = statusCode;
             httpContext.Response.ContentType = MediaTypeNames.Application.Json;
 
-            var payload = new GlobalError
+            var payload = new ErrorResponse
             {
-                StatusCode = statusCode,
-                EnumStatusCode = enumStatusCode,
-                Title = ReasonPhrase(statusCode),
-                Message = ResolveMessage(exception, carriedCode, statusCode)
+                Header = new Header
+                {
+                    Success = false,
+                    ResponseDate = DateTime.UtcNow,
+                    EnumStatusCode = enumStatusCode
+                },
+                Body = new ErrorBody
+                {
+                    StatusCode = statusCode,
+                    Title = ReasonPhrase(statusCode),
+                    Message = ResolveMessage(exception, carriedCode, statusCode),
+                    Errors = (exception as RequestValidationException)?.Errors
+                }
             };
-
-            if (exception is RequestValidationException validationException)
-            {
-                await httpContext.Response.WriteAsJsonAsync(
-                    new ValidationErrorResponse
-                    {
-                        StatusCode = payload.StatusCode,
-                        EnumStatusCode = payload.EnumStatusCode,
-                        Title = payload.Title,
-                        Message = payload.Message,
-                        Errors = validationException.Errors
-                    },
-                    cancellationToken);
-
-                return true;
-            }
 
             await httpContext.Response.WriteAsJsonAsync(payload, cancellationToken);
             return true;
@@ -167,11 +160,5 @@ namespace EEaseWebAPI.API.Extensions
             Enum.IsDefined(typeof(HttpStatusCode), statusCode)
                 ? ((HttpStatusCode)statusCode).ToString()
                 : "Error";
-    }
-
-    public sealed class ValidationErrorResponse : GlobalError
-    {
-        public IReadOnlyDictionary<string, string[]> Errors { get; init; } =
-            new Dictionary<string, string[]>();
     }
 }

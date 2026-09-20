@@ -3,8 +3,7 @@ using EEaseWebAPI.Application.MapEntities.ResetUserPreferences;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
 {
-    public class ResetUserPreferencesCommandResponse
+    public class ResetUserPreferencesCommandResponse : ApiResponse<ResetUserPreferencesBody>
     {
-        public ResetUserPreferencesResponse? Response { get; set; }
     }
 }

@@ -4,10 +4,8 @@ using EEaseWebAPI.Application.MapEntities.Cities;
 
 namespace EEaseWebAPI.Application.Features.Queries.Cities.GetCitiesBySearch
 {
-    public class GetCitiesBySearchQueryResponse
+    public class GetCitiesBySearchQueryResponse : ApiResponse<GetCitiesBySearchQueryResponseBody>
     {
-        public Header? Header { get; set; }
-        public GetCitiesBySearchQueryResponseBody? Body { get; set; }
     }
 
     public class GetCitiesBySearchQueryResponseBody

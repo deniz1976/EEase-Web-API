@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId
 {
-    public class GetRoutesByUserIdQueryResponse
+    public class GetRoutesByUserIdQueryResponse : ApiResponse<GetRoutesByUserIdQueryResponseBody>
     {
-        public Header Header { get; set; }
-        public GetRoutesByUserIdQueryResponseBody Body { get; set; }
     }
 
     public class GetRoutesByUserIdQueryResponseBody

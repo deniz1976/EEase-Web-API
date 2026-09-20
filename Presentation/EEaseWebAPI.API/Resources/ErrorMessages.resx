@@ -181,4 +181,10 @@
   <data name="UserDeleteCodeSendFailed" xml:space="preserve">
     <value>The account deletion code could not be sent. Please try again shortly.</value>
   </data>
+  <data name="AuthenticationRequired" xml:space="preserve">
+    <value>This endpoint needs a signed in caller.</value>
+  </data>
+  <data name="AccessForbidden" xml:space="preserve">
+    <value>This caller is not allowed to do that.</value>
+  </data>
 </root>

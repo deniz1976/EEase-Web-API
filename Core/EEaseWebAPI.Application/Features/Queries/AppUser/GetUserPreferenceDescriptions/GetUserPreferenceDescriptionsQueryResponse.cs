@@ -2,15 +2,8 @@ using EEaseWebAPI.Application.MapEntities;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDescriptions
 {
-    public class GetUserPreferenceDescriptionsQueryResponse
+    public class GetUserPreferenceDescriptionsQueryResponse : ApiResponse<GetUserPreferenceDescriptionsBody>
     {
-        public GetUserPreferenceDescriptionsResponse? response { get; set; }
-    }
-
-    public class GetUserPreferenceDescriptionsResponse
-    {
-        public Header? Header { get; set; }
-        public GetUserPreferenceDescriptionsBody? Body { get; set; }
     }
 
     public class GetUserPreferenceDescriptionsBody

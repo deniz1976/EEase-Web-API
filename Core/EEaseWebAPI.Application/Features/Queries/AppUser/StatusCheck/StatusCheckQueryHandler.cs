@@ -27,20 +27,11 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck
             if(request == null ||request.username ==null)
                 throw new ArgumentNullException(nameof(request));
 
-            var body = await _accountService.StatusCheck(request.username);
-            if(body != null)
+            return new StatusCheckQueryResponse
             {
-                return new StatusCheckQueryResponse()
-                {
-                    StatusCheck = new MapEntities.StatusCheck.StatusCheck()
-                    {
-                        Body = body,
-                        Header = _headerService.HeaderCreate((int)StatusEnum.GetUserStatusSuccessfully)
-                    }
-                };
-            }
-
-            throw new Exception("An unexpected error occured.");
+                Header = _headerService.HeaderCreate((int)StatusEnum.GetUserStatusSuccessfully),
+                Body = await _accountService.StatusCheck(request.username)
+            };
         }
     }
 }

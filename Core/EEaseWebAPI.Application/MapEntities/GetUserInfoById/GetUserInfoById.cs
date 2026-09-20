@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.GetUserInfoById
 {
-    public class GetUserInfoById
-    {
-        public Header? Header { get; set; }
-        public GetUserInfoByIdBody? Body { get; set; }
-    }
 
     public class GetUserInfoByIdBody
     {

@@ -53,12 +53,20 @@ namespace EEaseWebAPI.API.Extensions
                         retryAfterSeconds.ToString(CultureInfo.InvariantCulture);
 
                     await context.HttpContext.Response.WriteAsJsonAsync(
-                        new GlobalError
+                        new ErrorResponse
                         {
-                            StatusCode = StatusCodes.Status429TooManyRequests,
-                            EnumStatusCode = (int)StatusEnum.ServiceUnavailable,
-                            Title = "Too Many Requests",
-                            Message = $"Rate limit exceeded. Try again in {retryAfterSeconds} seconds."
+                            Header = new Header
+                            {
+                                Success = false,
+                                ResponseDate = DateTime.UtcNow,
+                                EnumStatusCode = (int)StatusEnum.ServiceUnavailable
+                            },
+                            Body = new ErrorBody
+                            {
+                                StatusCode = StatusCodes.Status429TooManyRequests,
+                                Title = "Too Many Requests",
+                                Message = $"Rate limit exceeded. Try again in {retryAfterSeconds} seconds."
+                            }
                         },
                         cancellationToken);
                 };
