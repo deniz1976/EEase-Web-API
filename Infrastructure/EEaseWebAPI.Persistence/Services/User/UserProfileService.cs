@@ -4,6 +4,7 @@ using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions.UpdateUser;
 using EEaseWebAPI.Application.Exceptions.UpdateUserCountry;
 using EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser;
+using EEaseWebAPI.Application.Validators.User;
 using EEaseWebAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,6 @@ namespace EEaseWebAPI.Persistence.Services.User
 {
     public class UserProfileService : IUserProfileService
     {
-        private const int NameMinLength = 2;
-        private const int NameMaxLength = 16;
-        private const int BioMaxLength = 80;
-
-        private static readonly string[] Genders = { "Male", "Female" };
-
         private readonly UserManager<AppUser> _userManager;
         private readonly ICityService _cityService;
         private readonly ICurrencyService _currencyService;
@@ -108,28 +103,10 @@ namespace EEaseWebAPI.Persistence.Services.User
 
             if (request.Username != null && !await IsUsernameAvailable(request.Username, user.Id))
             {
-                throw new ArgumentException("Username must be unique.");
+                throw new UsernameAlreadyTakenException();
             }
 
-            ValidateLength(request.Name, nameof(request.Name), NameMinLength, NameMaxLength);
-            ValidateLength(request.Surname, nameof(request.Surname), NameMinLength, NameMaxLength);
-
-            if (request.bio != null && request.bio.Length > BioMaxLength)
-            {
-                throw new ArgumentException($"Bio must be at most {BioMaxLength} characters.");
-            }
-
-            if (request.Gender != null && !Genders.Contains(request.Gender))
-            {
-                throw new ArgumentException("Gender must be 'Male' or 'Female'.");
-            }
-
-            if (request.BornDate != null &&
-                UserRegistrationService.AgeOn(request.BornDate.Value) < UserRegistrationService.MinimumAge)
-            {
-                throw new ArgumentException(
-                    $"User must be at least {UserRegistrationService.MinimumAge} years old.");
-            }
+            Validate(request);
 
             user.UserName = request.Username ?? user.UserName;
             user.Name = request.Name ?? user.Name;
@@ -243,11 +220,43 @@ namespace EEaseWebAPI.Persistence.Services.User
                 candidate.NormalizedUserName != normalizedUserName || candidate.Id == userId);
         }
 
-        private static void ValidateLength(string? value, string field, int minimum, int maximum)
+        /// <summary>
+        /// <see cref="UpdateUserValidator"/> already answered the caller with the offending
+        /// field named; this catches a call that never went through the pipeline, so the
+        /// message is a sentence rather than a field map.
+        /// </summary>
+        private static void Validate(UpdateUserCommandRequest request)
         {
-            if (value != null && (value.Length < minimum || value.Length > maximum))
+            ValidateLength(request.Name, nameof(request.Name));
+            ValidateLength(request.Surname, nameof(request.Surname));
+
+            if (request.bio != null && request.bio.Length > UserProfileRules.BioMaxLength)
             {
-                throw new ArgumentException($"{field} must be between {minimum} and {maximum} characters.");
+                throw new InvalidUserDataException(
+                    $"Bio must be at most {UserProfileRules.BioMaxLength} characters.");
+            }
+
+            if (request.Gender != null && !UserProfileRules.IsKnownGender(request.Gender))
+            {
+                throw new InvalidUserDataException("Gender must be 'Male' or 'Female'.");
+            }
+
+            if (request.BornDate != null && !UserProfileRules.IsOldEnough(request.BornDate.Value))
+            {
+                throw new InvalidUserDataException(
+                    $"User must be at least {UserProfileRules.MinimumAge} years old.");
+            }
+        }
+
+        private static void ValidateLength(string? value, string field)
+        {
+            if (value != null &&
+                (value.Length < UserProfileRules.NameMinLength ||
+                 value.Length > UserProfileRules.NameMaxLength))
+            {
+                throw new InvalidUserDataException(
+                    $"{field} must be between {UserProfileRules.NameMinLength} and " +
+                    $"{UserProfileRules.NameMaxLength} characters.");
             }
         }
 

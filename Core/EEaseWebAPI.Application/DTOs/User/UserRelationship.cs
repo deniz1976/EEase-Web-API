@@ -7,7 +7,7 @@ namespace EEaseWebAPI.Application.DTOs.User
         FriendRequestStatus RequestStatus)
     {
         public static UserRelationship Self { get; } =
-            new(ProfileVisibilityStatus.FullAccess, FriendRequestStatus.NoRequest);
+            new(ProfileVisibilityStatus.FullAccess, FriendRequestStatus.Self);
 
         public bool HasFullAccess => Visibility == ProfileVisibilityStatus.FullAccess;
     }

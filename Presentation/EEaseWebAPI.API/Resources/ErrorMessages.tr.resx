@@ -166,4 +166,10 @@
   <data name="UnknownError" xml:space="preserve">
     <value>Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.</value>
   </data>
+  <data name="UsernameAlreadyTaken" xml:space="preserve">
+    <value>Bu kullanıcı adı zaten alınmış.</value>
+  </data>
+  <data name="InvalidUserData" xml:space="preserve">
+    <value>Gönderilen kullanıcı bilgileri geçerli değil.</value>
+  </data>
 </root>

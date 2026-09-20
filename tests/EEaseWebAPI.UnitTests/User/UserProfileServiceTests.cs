@@ -124,14 +124,14 @@ namespace EEaseWebAPI.UnitTests.User
         [Fact]
         public async Task Taking_somebody_elses_username_is_refused()
         {
-            await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateUser(Update(username: "bob")));
+            await Assert.ThrowsAsync<UsernameAlreadyTakenException>(() => _service.UpdateUser(Update(username: "bob")));
         }
 
         [Fact]
         public async Task Somebody_elses_username_in_different_capitals_is_refused_too()
         {
             // Identity would reject it on save anyway, with an error the caller cannot act on.
-            await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateUser(Update(username: "BOB")));
+            await Assert.ThrowsAsync<UsernameAlreadyTakenException>(() => _service.UpdateUser(Update(username: "BOB")));
         }
 
         [Fact]
@@ -154,13 +154,13 @@ namespace EEaseWebAPI.UnitTests.User
         [Fact]
         public async Task A_one_letter_name_is_refused()
         {
-            await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateUser(Update(name: "A")));
+            await Assert.ThrowsAsync<InvalidUserDataException>(() => _service.UpdateUser(Update(name: "A")));
         }
 
         [Fact]
         public async Task An_over_long_bio_is_refused()
         {
-            await Assert.ThrowsAsync<ArgumentException>(
+            await Assert.ThrowsAsync<InvalidUserDataException>(
                 () => _service.UpdateUser(Update(bio: new string('x', 81))));
         }
 
@@ -175,7 +175,7 @@ namespace EEaseWebAPI.UnitTests.User
         [Fact]
         public async Task An_unknown_gender_is_refused()
         {
-            await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateUser(Update(gender: "Other")));
+            await Assert.ThrowsAsync<InvalidUserDataException>(() => _service.UpdateUser(Update(gender: "Other")));
         }
 
         [Fact]
@@ -183,7 +183,7 @@ namespace EEaseWebAPI.UnitTests.User
         {
             var bornDate = DateOnly.FromDateTime(DateTime.UtcNow).AddYears(-12);
 
-            await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateUser(Update(bornDate: bornDate)));
+            await Assert.ThrowsAsync<InvalidUserDataException>(() => _service.UpdateUser(Update(bornDate: bornDate)));
         }
 
         [Fact]

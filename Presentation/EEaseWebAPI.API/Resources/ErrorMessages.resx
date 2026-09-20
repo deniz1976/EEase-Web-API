@@ -166,4 +166,10 @@
   <data name="UnknownError" xml:space="preserve">
     <value>An unexpected error occurred. Please try again later.</value>
   </data>
+  <data name="UsernameAlreadyTaken" xml:space="preserve">
+    <value>This username is already taken.</value>
+  </data>
+  <data name="InvalidUserData" xml:space="preserve">
+    <value>The submitted user information is not valid.</value>
+  </data>
 </root>

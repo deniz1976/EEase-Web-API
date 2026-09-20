@@ -142,4 +142,16 @@
   <data name="Route_CompanionUsernameEmpty" xml:space="preserve">
     <value>A companion username cannot be empty.</value>
   </data>
+  <data name="Name_TooLong" xml:space="preserve">
+    <value>Name must be at most {0} characters.</value>
+  </data>
+  <data name="Surname_TooLong" xml:space="preserve">
+    <value>Surname must be at most {0} characters.</value>
+  </data>
+  <data name="Bio_TooLong" xml:space="preserve">
+    <value>Bio must be at most {0} characters.</value>
+  </data>
+  <data name="BornDate_TooYoung" xml:space="preserve">
+    <value>You must be at least {0} years old.</value>
+  </data>
 </root>

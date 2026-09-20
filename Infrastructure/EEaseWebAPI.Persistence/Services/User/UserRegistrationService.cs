@@ -2,6 +2,7 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.DTOs.User;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Validators.User;
 using EEaseWebAPI.Application.Exceptions.CreateUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser;
 using EEaseWebAPI.Domain.Entities.Identity;
@@ -14,7 +15,7 @@ namespace EEaseWebAPI.Persistence.Services.User
 {
     public class UserRegistrationService : IUserRegistrationService
     {
-        public const int MinimumAge = 13;
+        public const int MinimumAge = UserProfileRules.MinimumAge;
 
         private static readonly CultureInfo NameCulture = CultureInfo.GetCultureInfo("tr-TR");
 
@@ -160,18 +161,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                     "User not found", (int)StatusEnum.UserNotFound);
         }
 
-        public static int AgeOn(DateOnly bornDate)
-        {
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
-            var age = today.Year - bornDate.Year;
-
-            if (bornDate.AddYears(age) > today)
-            {
-                age--;
-            }
-
-            return age;
-        }
+        public static int AgeOn(DateOnly bornDate) => UserProfileRules.AgeOn(bornDate);
 
         private static string? Normalize(string? input) =>
             string.IsNullOrWhiteSpace(input)

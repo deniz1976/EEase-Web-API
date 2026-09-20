@@ -121,6 +121,7 @@ namespace EEaseWebAPI.Application.Enums
         GetRoutesByUserIdRetrievedSuccessfully = 117,
         RouteGenerationFailed = 118,
         UnauthorizedToModifyRoute = 119,
+        UsernameAlreadyTaken = 120,
 
         ServiceUnavailable = 995,
         NetworkError = 996,
@@ -135,7 +136,8 @@ namespace EEaseWebAPI.Application.Enums
         Requester = 1,
         Addressee = 2,
         AlreadyFriends = 3,
-        Blocked = 4
+        Blocked = 4,
+        Self = 5
     }
 
     public enum ProfileVisibilityStatus

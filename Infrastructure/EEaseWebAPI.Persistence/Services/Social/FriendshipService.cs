@@ -214,7 +214,9 @@ namespace EEaseWebAPI.Persistence.Services.Social
 
         public async Task<FriendRequestStatus> GetRequestStatusAsync(string username, string targetUsername)
         {
-            var (user, target) = await ResolveAsync(username, targetUsername);
+            // Asking about yourself is a question, not an action: it answers Self rather
+            // than refusing the way sending yourself a friend request does.
+            var (user, target) = await ResolveAsync(username, targetUsername, allowSelf: true);
 
             return (await GetRelationshipAsync(user, target)).RequestStatus;
         }

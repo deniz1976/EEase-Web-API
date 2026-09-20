@@ -205,4 +205,7 @@
   <data name="Mail_DeleteAccountSubject" xml:space="preserve">
     <value>Delete Account</value>
   </data>
+  <data name="FriendRequestSelf" xml:space="preserve">
+    <value>This is your own profile.</value>
+  </data>
 </root>

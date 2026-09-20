@@ -344,19 +344,19 @@ namespace EEaseWebAPI.UnitTests.Friendship
         }
 
         [Fact]
-        public async Task Checking_your_own_request_status_is_rejected()
+        public async Task Checking_your_own_request_status_answers_self()
         {
-            await Assert.ThrowsAsync<CannotPerformActionOnSelfException>(
-                () => _service.GetRequestStatusAsync("alice", "ALICE"));
+            (await _service.GetRequestStatusAsync("alice", "ALICE"))
+                .Should().Be(FriendRequestStatus.Self);
         }
 
         [Fact]
-        public async Task Looking_at_your_own_profile_is_full_access_without_a_request()
+        public async Task Looking_at_your_own_profile_is_full_access_and_reads_as_self()
         {
             var relationship = await _service.GetRelationshipAsync("alice", "ALICE");
 
             relationship.Visibility.Should().Be(ProfileVisibilityStatus.FullAccess);
-            relationship.RequestStatus.Should().Be(FriendRequestStatus.NoRequest);
+            relationship.RequestStatus.Should().Be(FriendRequestStatus.Self);
         }
 
         [Fact]

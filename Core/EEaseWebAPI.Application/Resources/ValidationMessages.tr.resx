@@ -142,4 +142,16 @@
   <data name="Route_CompanionUsernameEmpty" xml:space="preserve">
     <value>Birlikte seyahat edilen kullanıcı adı boş olamaz.</value>
   </data>
+  <data name="Name_TooLong" xml:space="preserve">
+    <value>Ad en fazla {0} karakter olabilir.</value>
+  </data>
+  <data name="Surname_TooLong" xml:space="preserve">
+    <value>Soyad en fazla {0} karakter olabilir.</value>
+  </data>
+  <data name="Bio_TooLong" xml:space="preserve">
+    <value>Biyografi en fazla {0} karakter olabilir.</value>
+  </data>
+  <data name="BornDate_TooYoung" xml:space="preserve">
+    <value>En az {0} yaşında olmalısınız.</value>
+  </data>
 </root>

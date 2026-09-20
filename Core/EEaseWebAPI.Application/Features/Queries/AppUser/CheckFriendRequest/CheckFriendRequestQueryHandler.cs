@@ -47,6 +47,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
                 FriendRequestStatus.Addressee => AppMessages.FriendRequestWaitingForYou,
                 FriendRequestStatus.AlreadyFriends => AppMessages.AlreadyFriends,
                 FriendRequestStatus.Blocked => AppMessages.UserIsBlocked,
+                FriendRequestStatus.Self => AppMessages.FriendRequestSelf,
                 _ => AppMessages.UnknownFriendRequestStatus
             };
         }
