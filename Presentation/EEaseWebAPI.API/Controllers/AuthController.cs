@@ -32,7 +32,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LoginUserCommandResponse),StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> Login(LoginUserCommandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Login([FromBody] LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
             LoginUserCommandResponse loginUserCommandResponse = await _mediator.Send(request, cancellationToken);
             return Ok(loginUserCommandResponse);
@@ -42,7 +42,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(RefreshTokenLoginUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> RefreshTokenLoginAsync(RefreshTokenLoginUserCommandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> RefreshTokenLogin([FromBody] RefreshTokenLoginUserCommandRequest request, CancellationToken cancellationToken)
         {
             RefreshTokenLoginUserCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -52,7 +52,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordUserCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPassword(ResetPasswordUserCommandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordUserCommandRequest request, CancellationToken cancellationToken)
         {
             ResetPasswordUserCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -62,7 +62,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCodeCheckQueryResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPasswordCodeCheck(ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ResetPasswordCodeCheck([FromBody] ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
         {
             ResetPasswordCodeCheckQueryResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -72,7 +72,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCommandResponse),StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> ResetPasswordWithCode(ResetPasswordCommandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ResetPasswordWithCode([FromBody] ResetPasswordCommandRequest request, CancellationToken cancellationToken)
         {
             ResetPasswordCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -95,7 +95,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckEmailIsInUseQueryResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
-        public async Task<IActionResult> CheckEmailIsInUse([FromQuery]CheckEmailIsInUseQueryRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CheckEmailIsInUse([FromQuery] CheckEmailIsInUseQueryRequest request, CancellationToken cancellationToken)
         {
             CheckEmailIsInUseQueryResponse checkEmailIsInUseQueryResponse = await _mediator.Send(request, cancellationToken);
             return Ok(checkEmailIsInUseQueryResponse);

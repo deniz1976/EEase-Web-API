@@ -1,4 +1,5 @@
 using EEaseWebAPI.API.Constants;
+using EEaseWebAPI.Application.DTOs.Route;
 using EEaseWebAPI.Application.DTOs.Route.CreateCustomRoute;
 using EEaseWebAPI.Application.DTOs.Route.DislikePlaceOrRestaurantDTO;
 using EEaseWebAPI.Application.DTOs.Route.LikePlaceOrRestaurantDTO;
@@ -45,10 +46,10 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("[Action]")]
+        [HttpGet("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(GetRouteComponentPhotoCommandResponse),StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRouteComponentPhoto(GetRouteComponentPhotoCommandRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRouteComponentPhoto([FromQuery] GetRouteComponentPhotoCommandRequest request, CancellationToken cancellationToken)
         {
             GetRouteComponentPhotoCommandResponse response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -78,7 +79,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetRoutesByUserIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        public async Task<IActionResult> GetAllRoutes([FromRoute] string userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetRoutesByUserId([FromRoute] string userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
             GetRoutesByUserIdQueryRequest request = new GetRoutesByUserIdQueryRequest()
             {
@@ -111,12 +112,12 @@ namespace EEaseWebAPI.API.Controllers
 
         }
 
-        [HttpPost("[Action]")]
+        [HttpPost("[Action]/{routeId}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LikeRouteCommandResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> LikeRoute([FromBody] Guid routeId, CancellationToken cancellationToken)
+        public async Task<IActionResult> LikeRoute([FromRoute] Guid routeId, CancellationToken cancellationToken)
         {
             LikeRouteCommandRequest request = new LikeRouteCommandRequest
             {
@@ -151,9 +152,8 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CreateCustomRouteCommandResponse),StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
-        public async Task<IActionResult> CreateCustomRoute(CreateCustomRouteDTO createCustomRouteDTO, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCustomRoute([FromBody] CreateCustomRouteDTO createCustomRouteDTO, CancellationToken cancellationToken)
         {
-#pragma warning disable CS8601
             CreateCustomRouteCommandRequest request = new CreateCustomRouteCommandRequest()
             {
                 Usernames = createCustomRouteDTO.Usernames,
@@ -163,7 +163,6 @@ namespace EEaseWebAPI.API.Controllers
                 EndDate = createCustomRouteDTO.EndDate,
                 Destination = createCustomRouteDTO.Destination
             };
-#pragma warning restore CS8601
 
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
@@ -192,12 +191,13 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(UpdateRouteStatusCommandResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateRouteStatus([FromRoute] Guid routeId, [FromBody] int status, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateRouteStatus(
+            [FromRoute] Guid routeId, [FromBody] RouteVisibilityUpdate status, CancellationToken cancellationToken)
         {
             UpdateRouteStatusCommandRequest request = new UpdateRouteStatusCommandRequest
             {
                 RouteId = routeId,
-                Status = status,
+                Status = status.Status,
                 Username = CurrentUsername
             };
 
@@ -212,12 +212,6 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> LikePlaceOrRestaurant([FromBody] LikePlaceOrRestaurantEndpointDTO request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.PlaceType))
-                return BadRequest("PlaceType is required");
-
-            if (string.IsNullOrEmpty(request.GooglePlaceId))
-                return BadRequest("GooglePlaceId is required");
-
             LikePlaceOrRestaurantCommandRequest commandRequest = new()
             {
                 GooglePlaceId = request.GooglePlaceId,
@@ -230,7 +224,7 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut("[Action]")]
+        [HttpPost("[Action]")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -238,15 +232,6 @@ namespace EEaseWebAPI.API.Controllers
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> DislikePlaceOrRestaurant([FromBody] DislikePlaceOrRestaurantDTO request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.PlaceType))
-                return BadRequest("PlaceType is required");
-
-            if (string.IsNullOrEmpty(request.GooglePlaceId))
-                return BadRequest("GooglePlaceId is required");
-
-            if(string.IsNullOrEmpty(request.RouteId))
-                return BadRequest("RouteId is required");
-
             DislikePlaceOrRestaurantCommandRequest commandRequest = new()
             {
                 GooglePlaceId = request.GooglePlaceId,

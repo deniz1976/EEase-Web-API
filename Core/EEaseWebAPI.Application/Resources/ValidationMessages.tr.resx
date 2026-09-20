@@ -166,6 +166,15 @@
   <data name="OldPassword_Required" xml:space="preserve">
     <value>Mevcut şifre gereklidir.</value>
   </data>
+  <data name="GooglePlaceId_Required" xml:space="preserve">
+    <value>Mekan kimliği gereklidir.</value>
+  </data>
+  <data name="PlaceType_Required" xml:space="preserve">
+    <value>Mekan türü gereklidir.</value>
+  </data>
+  <data name="RouteId_Required" xml:space="preserve">
+    <value>Rota kimliği gereklidir.</value>
+  </data>
   <data name="PhotoPath_Required" xml:space="preserve">
     <value>Fotoğraf adresi gereklidir.</value>
   </data>

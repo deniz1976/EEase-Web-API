@@ -166,6 +166,15 @@
   <data name="OldPassword_Required" xml:space="preserve">
     <value>The current password is required.</value>
   </data>
+  <data name="GooglePlaceId_Required" xml:space="preserve">
+    <value>A place id is required.</value>
+  </data>
+  <data name="PlaceType_Required" xml:space="preserve">
+    <value>A place type is required.</value>
+  </data>
+  <data name="RouteId_Required" xml:space="preserve">
+    <value>A route id is required.</value>
+  </data>
   <data name="PhotoPath_Required" xml:space="preserve">
     <value>A photo path is required.</value>
   </data>

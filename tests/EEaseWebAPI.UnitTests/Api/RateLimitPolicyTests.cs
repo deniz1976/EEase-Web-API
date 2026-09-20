@@ -76,7 +76,7 @@ namespace EEaseWebAPI.UnitTests.Api
         public static TheoryData<string, string> SecretHandlingEndpoints() => new()
         {
             { "AuthController", "Login" },
-            { "AuthController", "RefreshTokenLoginAsync" },
+            { "AuthController", "RefreshTokenLogin" },
             { "AuthController", "ResetPassword" },
             { "AuthController", "ResetPasswordCodeCheck" },
             { "AuthController", "ResetPasswordWithCode" },
