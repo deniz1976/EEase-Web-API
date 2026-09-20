@@ -3,7 +3,7 @@ using EEaseWebAPI.Application.DTOs.Route;
 using EEaseWebAPI.Domain.Entities.Route;
 using EEaseWebAPI.Domain.Enums;
 
-namespace EEaseWebAPI.Persistence.Services
+namespace EEaseWebAPI.Persistence.Services.Route
 {
     public sealed class RouteAccessPolicy : IRouteAccessPolicy
     {

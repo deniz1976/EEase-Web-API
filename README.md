@@ -34,8 +34,12 @@ Infrastructure/
     Services/Route            Route reading, likes/visibility, dislike handling,
                               random and preference-based route building,
                               place search/selection, preference scoring,
-                              query building, place replacement, route enrichment
+                              query building, place replacement, route enrichment,
+                              visibility rules
+    Services/ReferenceData    Cities, countries and currencies
+    Services/Caching          The in-memory caches and their warm-up on start-up
     Services/Gemini           Gemini client, prompts, API key pool
+    Services/GooglePlaces     Google Places client
 Presentation/
   EEaseWebAPI.API             Controllers, pipeline setup, Swagger
 tests/

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace EEaseWebAPI.Persistence.Services
+namespace EEaseWebAPI.Persistence.Services.Caching
 {
     public sealed class CacheInitializationService : BackgroundService
     {

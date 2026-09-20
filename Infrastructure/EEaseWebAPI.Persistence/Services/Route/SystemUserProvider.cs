@@ -4,7 +4,7 @@ using EEaseWebAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace EEaseWebAPI.Persistence.Services
+namespace EEaseWebAPI.Persistence.Services.Route
 {
     public sealed class SystemUserProvider : ISystemUserProvider
     {

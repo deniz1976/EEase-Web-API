@@ -4,7 +4,13 @@ namespace EEaseWebAPI.Application.Options
     {
         public const string SectionName = "CacheConfiguration";
 
+        /// <summary>Every world city row, used to answer city searches.</summary>
         public string AllCitiesCacheKey { get; init; } = "AllWorldCities_Cache";
+
+        /// <summary>Just the city names. A different shape, so a different key.</summary>
+        public string CityNamesCacheKey { get; init; } = "CityNames_Cache";
+
+        public string AllCountriesCacheKey { get; init; } = "AllCountries_Cache";
 
         public string AllCurrenciesCacheKey { get; init; } = "AllCurrencies_Cache";
 

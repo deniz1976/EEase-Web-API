@@ -7,7 +7,7 @@ using EEaseWebAPI.Application.Options;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace EEaseWebAPI.Persistence.Services
+namespace EEaseWebAPI.Persistence.Services.GooglePlaces
 {
     public sealed class GooglePlacesService : IGooglePlacesService
     {

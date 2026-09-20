@@ -12,8 +12,6 @@ namespace EEaseWebAPI.API.Constants
 
     public static class RateLimitPolicies
     {
-        public const string PerClient = "per-client";
-
         public const string Expensive = "expensive";
     }
 }

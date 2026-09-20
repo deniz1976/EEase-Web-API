@@ -4,12 +4,10 @@ using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace EEaseWebAPI.API.Controllers
 {
     [Route("api/[controller]")]
-    [EnableRateLimiting("global_key")]
     [ApiController]
     public class CurrencyController : ApiControllerBase
     {

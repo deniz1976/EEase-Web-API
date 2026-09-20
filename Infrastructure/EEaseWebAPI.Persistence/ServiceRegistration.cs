@@ -121,10 +121,11 @@ namespace EEaseWebAPI.Persistence
             services.AddScoped<IAccountDeletionPolicy, Services.Authentication.AccountDeletionPolicy>();
             services.AddSingleton<IVerificationCodeGenerator, Services.Authentication.VerificationCodeGenerator>();
             services.AddScoped<IHeaderService, HeaderService>();
-            services.AddScoped<ICurrencyService, CurrencyService>();
-            services.AddScoped<ICityService, CityService>();
-            services.AddScoped<IRouteAccessPolicy, RouteAccessPolicy>();
-            services.AddScoped<ISystemUserProvider, SystemUserProvider>();
+            services.AddScoped<ICurrencyService, Services.ReferenceData.CurrencyService>();
+            services.AddScoped<ICityService, Services.ReferenceData.CityService>();
+            services.AddScoped<Services.Caching.ReferenceDataCache>();
+            services.AddScoped<IRouteAccessPolicy, Services.Route.RouteAccessPolicy>();
+            services.AddScoped<ISystemUserProvider, Services.Route.SystemUserProvider>();
             services.AddSingleton<IRoutePlanValidator, RoutePlanValidator>();
             services.AddScoped<IPlaceSearchService, PlaceSearchService>();
             services.AddScoped<IPlaceSelectionService, PlaceSelectionService>();
@@ -143,9 +144,9 @@ namespace EEaseWebAPI.Persistence
             services.AddScoped<IRandomRouteBuilder, Services.Route.RandomRouteBuilder>();
             services.AddScoped<IPreferenceRouteBuilder, Services.Route.PreferenceRouteBuilder>();
             services.AddScoped<ICustomRouteService, Services.Route.CustomRouteService>();
-            services.AddScoped<IUserCacheService, UserCacheService>();
+            services.AddScoped<IUserCacheService, Services.Caching.UserCacheService>();
 
-            services.AddHostedService<CacheInitializationService>();
+            services.AddHostedService<Services.Caching.CacheInitializationService>();
 
             return services;
         }
@@ -165,7 +166,7 @@ namespace EEaseWebAPI.Persistence
 
             services.AddScoped<IGeminiAIService, GeminiAIService>();
 
-            services.AddHttpClient<IGooglePlacesService, GooglePlacesService>((provider, client) =>
+            services.AddHttpClient<IGooglePlacesService, Services.GooglePlaces.GooglePlacesService>((provider, client) =>
             {
                 var options = provider.GetRequiredService<IOptions<GooglePlacesOptions>>().Value;
                 client.BaseAddress = new Uri(options.BaseAddress);

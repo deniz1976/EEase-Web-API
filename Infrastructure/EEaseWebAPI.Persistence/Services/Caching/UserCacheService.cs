@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EEaseWebAPI.Persistence.Services
+namespace EEaseWebAPI.Persistence.Services.Caching
 {
     public class UserCacheService : IUserCacheService
     {

@@ -2,7 +2,7 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Domain.Entities.Identity;
 using EEaseWebAPI.Domain.Entities.Route;
 using EEaseWebAPI.Domain.Enums;
-using EEaseWebAPI.Persistence.Services;
+using EEaseWebAPI.Persistence.Services.Route;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
