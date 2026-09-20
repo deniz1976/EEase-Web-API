@@ -20,5 +20,11 @@ namespace EEaseWebAPI.Application.Options
 
         [Range(1, 3600)]
         public int ExpensiveWindowSeconds { get; init; } = 60;
+
+        [Range(1, 10000)]
+        public int SensitivePermitLimit { get; init; } = 10;
+
+        [Range(1, 3600)]
+        public int SensitiveWindowSeconds { get; init; } = 60;
     }
 }

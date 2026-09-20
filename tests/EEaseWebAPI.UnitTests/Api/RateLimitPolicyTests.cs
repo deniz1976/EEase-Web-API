@@ -73,6 +73,41 @@ namespace EEaseWebAPI.UnitTests.Api
             offered.Should().BeSubsetOf(registered);
         }
 
+        public static TheoryData<string, string> SecretHandlingEndpoints() => new()
+        {
+            { "AuthController", "Login" },
+            { "AuthController", "RefreshTokenLoginAsync" },
+            { "AuthController", "ResetPassword" },
+            { "AuthController", "ResetPasswordCodeCheck" },
+            { "AuthController", "ResetPasswordWithCode" },
+            { "AuthController", "ChangePassword" },
+            { "AuthController", "CheckEmailIsInUse" },
+            { "UsersController", "CreateUser" },
+            { "UsersController", "SendVerificationCodeAgain" },
+            { "UsersController", "CheckEmailConfirmed" },
+            { "UsersController", "EmailConfirm" },
+            { "UsersController", "DeleteAccount" },
+            { "UsersController", "DeleteAccountWithCode" }
+        };
+
+        [Theory]
+        [MemberData(nameof(SecretHandlingEndpoints))]
+        public void An_endpoint_that_hands_out_or_checks_a_secret_is_limited(
+            string controllerName, string actionName)
+        {
+            // The global limit allows a hundred requests every thirty seconds, which is a
+            // limit on load, not on somebody working through a list of passwords or asking
+            // for a hundred reset codes to be mailed to somebody else.
+            var controller = typeof(ApiControllerBase).Assembly.GetTypes()
+                .Single(type => type.Name == controllerName);
+
+            var action = controller.GetMethods(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Single(method => method.Name == actionName);
+
+            PolicyNames(action).Should().Contain(RateLimitPolicies.Sensitive);
+        }
+
         /// <summary>
         /// The registered policies are not exposed publicly, so they are read off the
         /// options the same way the framework stores them.

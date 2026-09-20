@@ -26,6 +26,7 @@ using EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 namespace EEaseWebAPI.API.Controllers
 {
@@ -43,6 +44,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(CreateUserCommandResponse),StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [HttpPost("[Action]")]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> CreateUser(CreateUserCommandRequest createUserCommandRequest)
         {
             CreateUserCommandResponse createUserCommandResponse = await _mediator.Send(createUserCommandRequest);
@@ -52,6 +54,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(SendVerificationCodeCommandResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> SendVerificationCodeAgain(SendVerificationCodeCommandRequest request)
         {
            SendVerificationCodeCommandResponse response = await _mediator.Send(request);
@@ -97,6 +100,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckEmailConfirmedQueryResponse),StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> CheckEmailConfirmed(CheckEmailConfirmedQueryRequest request)
         {
             CheckEmailConfirmedQueryResponse response = await _mediator.Send(request);
@@ -106,6 +110,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ConfirmEmailUserCommandResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> EmailConfirm(ConfirmEmailUserCommandRequest request)
         {
             ConfirmEmailUserCommandResponse response = await _mediator.Send(request);
@@ -117,7 +122,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteUserCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> DeleteAccount()
         {
 
@@ -132,7 +137,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(DeleteUserWithCodeCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> DeleteAccountWithCode([FromBody] DeleteAccountWithCode code)
         {
             DeleteUserWithCodeCommandRequest deleteUserWithCodeCommandRequest = new DeleteUserWithCodeCommandRequest() {Username = CurrentUsername,Code = code.Code };

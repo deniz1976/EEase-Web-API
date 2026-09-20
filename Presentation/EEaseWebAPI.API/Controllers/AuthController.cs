@@ -12,6 +12,7 @@ using EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeCheck;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EEaseWebAPI.API.Controllers
@@ -30,7 +31,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(LoginUserCommandResponse),StatusCodes.Status200OK)]
-
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> Login(LoginUserCommandRequest request)
         {
             LoginUserCommandResponse loginUserCommandResponse = await _mediator.Send(request);
@@ -40,6 +41,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(RefreshTokenLoginUserCommandResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> RefreshTokenLoginAsync(RefreshTokenLoginUserCommandRequest request)
         {
             RefreshTokenLoginUserCommandResponse response = await _mediator.Send(request);
@@ -49,6 +51,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordUserCommandResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> ResetPassword(ResetPasswordUserCommandRequest request)
         {
             ResetPasswordUserCommandResponse response = await _mediator.Send(request);
@@ -58,6 +61,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCodeCheckQueryResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> ResetPasswordCodeCheck(ResetPasswordCodeCheckQueryRequest request)
         {
             ResetPasswordCodeCheckQueryResponse response = await _mediator.Send(request);
@@ -67,6 +71,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPut("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ResetPasswordCommandResponse),StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> ResetPasswordWithCode(ResetPasswordCommandRequest request)
         {
             ResetPasswordCommandResponse response = await _mediator.Send(request);
@@ -78,6 +83,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ChangePasswordCommandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
         {
             ChangePasswordCommandRequest request = new ChangePasswordCommandRequest() { Username = CurrentUsername,OldPassword = changePasswordDTO.OldPassword, NewPassword = changePasswordDTO.NewPassword};
@@ -88,6 +94,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpGet("[Action]")]
         [ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(CheckEmailIsInUseQueryResponse), StatusCodes.Status200OK)]
+        [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> CheckEmailIsInUse([FromQuery]CheckEmailIsInUseQueryRequest request)
         {
             CheckEmailIsInUseQueryResponse checkEmailIsInUseQueryResponse = await _mediator.Send(request);

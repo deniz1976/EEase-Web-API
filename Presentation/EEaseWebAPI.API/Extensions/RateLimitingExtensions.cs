@@ -42,6 +42,17 @@ namespace EEaseWebAPI.API.Extensions
                             QueueLimit = 0
                         }));
 
+                options.AddPolicy(RateLimitPolicies.Sensitive, context =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: ResolveClientKey(context),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            AutoReplenishment = true,
+                            PermitLimit = limits.SensitivePermitLimit,
+                            Window = TimeSpan.FromSeconds(limits.SensitiveWindowSeconds),
+                            QueueLimit = 0
+                        }));
+
                 options.OnRejected = async (context, cancellationToken) =>
                 {
                     var retryAfterSeconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
