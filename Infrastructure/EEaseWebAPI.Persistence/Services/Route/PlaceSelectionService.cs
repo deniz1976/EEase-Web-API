@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.DTOs.Route;
 using EEaseWebAPI.Domain.Entities.Route;
@@ -8,6 +9,15 @@ namespace EEaseWebAPI.Persistence.Services.Route
 {
     public sealed class PlaceSelectionService : IPlaceSelectionService
     {
+        /// <summary>
+        /// What Google said about a place, for as long as this request lasts. A place is
+        /// asked about more than once: the same hotel is copied onto every day, a rejected
+        /// plan is built again from the same pool, and the details of a place do not change
+        /// between those calls. The task is stored rather than the answer, so two slots
+        /// asking at the same time make one call between them.
+        /// </summary>
+        private readonly ConcurrentDictionary<string, Task<string>> _details = new();
+
         private readonly IGooglePlacesService _googlePlacesService;
         private readonly ILogger<PlaceSelectionService> _logger;
 
@@ -64,6 +74,24 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return selected;
         }
 
+        private async Task<string> DetailsOfAsync(string googleId, CancellationToken cancellationToken)
+        {
+            var pending = _details.GetOrAdd(
+                googleId, id => _googlePlacesService.GetPlaceDetailsAsync(id, cancellationToken));
+
+            try
+            {
+                return await pending;
+            }
+            catch
+            {
+                // A call that failed is not an answer worth keeping: the next slot that wants
+                // this place should be allowed to ask again.
+                _details.TryRemove(googleId, out _);
+                throw;
+            }
+        }
+
         public async Task<T> MaterializeAsync<T>(
             string googleId,
             PRICE_LEVEL? priceLevel = null,
@@ -77,7 +105,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var details = await _googlePlacesService.GetPlaceDetailsAsync(googleId, cancellationToken);
+            var details = await DetailsOfAsync(googleId, cancellationToken);
 
             T? place;
 

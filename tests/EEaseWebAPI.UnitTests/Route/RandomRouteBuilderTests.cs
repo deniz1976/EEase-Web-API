@@ -71,30 +71,25 @@ namespace EEaseWebAPI.UnitTests.Route
                     Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
                 .Returns(_ => new TravelAccomodation { Id = Guid.NewGuid(), GoogleId = "hotel-1" });
 
-            _selection.SelectAsync<Breakfast>(Arg.Any<IReadOnlyList<string>>(), Arg.Any<PlacePicker>(),
-                    Arg.Any<PRICE_LEVEL?>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => new Breakfast { Id = Guid.NewGuid() });
+            _selection.MaterializeAsync<Breakfast>(
+                    Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
+                .Returns(call => new Breakfast { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
 
-            _selection.SelectAsync<Lunch>(Arg.Any<IReadOnlyList<string>>(), Arg.Any<PlacePicker>(),
-                    Arg.Any<PRICE_LEVEL?>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => new Lunch { Id = Guid.NewGuid() });
+            _selection.MaterializeAsync<Lunch>(
+                    Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
+                .Returns(call => new Lunch { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
 
-            _selection.SelectAsync<Dinner>(Arg.Any<IReadOnlyList<string>>(), Arg.Any<PlacePicker>(),
-                    Arg.Any<PRICE_LEVEL?>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => new Dinner { Id = Guid.NewGuid() });
+            _selection.MaterializeAsync<Dinner>(
+                    Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
+                .Returns(call => new Dinner { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
 
-            _selection.SelectAsync<PlaceAfterDinner>(Arg.Any<IReadOnlyList<string>>(), Arg.Any<PlacePicker>(),
-                    Arg.Any<PRICE_LEVEL?>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => new PlaceAfterDinner { Id = Guid.NewGuid() });
+            _selection.MaterializeAsync<PlaceAfterDinner>(
+                    Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
+                .Returns(call => new PlaceAfterDinner { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
 
-            _selection.SelectManyAsync<Place>(Arg.Any<IReadOnlyList<string>>(), Arg.Any<PlacePicker>(),
-                    Arg.Any<int>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => (IReadOnlyList<Place>)new List<Place>
-                {
-                    new() { Id = Guid.NewGuid() },
-                    new() { Id = Guid.NewGuid() },
-                    new() { Id = Guid.NewGuid() }
-                });
+            _selection.MaterializeAsync<Place>(
+                    Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
+                .Returns(call => new Place { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
         }
 
         private Task<StandardRoute> Build(
@@ -233,11 +228,11 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             var attempts = 0;
 
-            _selection.SelectAsync<Dinner>(Arg.Any<IReadOnlyList<string>>(), Arg.Any<PlacePicker>(),
-                    Arg.Any<PRICE_LEVEL?>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => ++attempts == 1
+            _selection.MaterializeAsync<Dinner>(
+                    Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
+                .Returns(call => ++attempts == 1
                     ? throw new InvalidOperationException("no dinner left")
-                    : Task.FromResult(new Dinner { Id = Guid.NewGuid() }));
+                    : Task.FromResult(new Dinner { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() }));
 
             var route = await Build();
 
@@ -247,12 +242,53 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_city_where_no_day_can_ever_be_filled_is_reported()
         {
-            _selection.SelectAsync<Dinner>(Arg.Any<IReadOnlyList<string>>(), Arg.Any<PlacePicker>(),
-                    Arg.Any<PRICE_LEVEL?>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
+            _selection.MaterializeAsync<Dinner>(
+                    Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
                 .Returns<Dinner>(_ => throw new InvalidOperationException("no dinner left"));
 
             await _builder.Invoking(builder => Build())
                 .Should().ThrowAsync<RouteGenerationException>();
+        }
+
+        [Fact]
+        public async Task No_place_is_used_twice_anywhere_in_the_route()
+        {
+            var route = await Build();
+
+            var used = route.TravelDays.SelectMany(day => new[]
+            {
+                day.Breakfast!.GoogleId, day.Lunch!.GoogleId, day.Dinner!.GoogleId,
+                day.PlaceAfterDinner!.GoogleId,
+                day.FirstPlace!.GoogleId, day.SecondPlace!.GoogleId, day.ThirdPlace!.GoogleId
+            });
+
+            used.Should().OnlyHaveUniqueItems();
+        }
+
+        [Fact]
+        public async Task The_searches_that_do_not_need_each_other_are_made_together()
+        {
+            var inFlight = 0;
+            var highWater = 0;
+
+            _search.CollectPlaceIdsAsync(
+                    Arg.Any<IEnumerable<string>>(), Arg.Any<int>(),
+                    Arg.Any<IEnumerable<string>?>(), Arg.Any<CancellationToken>())
+                .Returns(async call =>
+                {
+                    highWater = Math.Max(highWater, Interlocked.Increment(ref inFlight));
+                    await Task.Delay(20);
+                    Interlocked.Decrement(ref inFlight);
+
+                    return (IReadOnlyList<string>)Enumerable.Range(1, 20)
+                        .Select(index => $"collected-{index}").ToList();
+                });
+
+            await Build();
+
+            // Touristic places and evening venues are looked for at the same time; they used
+            // to be waited for one after the other, and so did the hotel and the three meals.
+            highWater.Should().BeGreaterThan(1);
         }
 
         [Fact]

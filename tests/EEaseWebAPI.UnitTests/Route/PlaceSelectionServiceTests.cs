@@ -82,6 +82,29 @@ namespace EEaseWebAPI.UnitTests.Route
         }
 
         [Fact]
+        public void Taking_from_several_threads_at_once_still_never_repeats()
+        {
+            // The route builders search side by side now, so two slots can ask the picker for
+            // a place at the same moment.
+            var picker = new PlacePicker(new Random(1));
+            var pool = Enumerable.Range(1, 200).Select(index => $"place-{index}").ToList();
+
+            var taken = new System.Collections.Concurrent.ConcurrentBag<string>();
+
+            Parallel.For(0, pool.Count, _ =>
+            {
+                var googleId = picker.Take(pool);
+
+                if (googleId != null)
+                {
+                    taken.Add(googleId);
+                }
+            });
+
+            taken.Should().HaveCount(pool.Count).And.OnlyHaveUniqueItems();
+        }
+
+        [Fact]
         public void Used_ids_are_visible_to_the_caller()
         {
             var picker = new PlacePicker(new Random(1));
@@ -100,7 +123,7 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             _service = new PlaceSelectionService(_googlePlaces, NullLogger<PlaceSelectionService>.Instance);
 
-            _googlePlaces.GetPlaceDetailsAsync(Arg.Any<string>())
+            _googlePlaces.GetPlaceDetailsAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
                 .Returns(call => $"{{\"displayName\": {{\"text\": \"Place {call.Arg<string>()}\"}}}}");
         }
 
@@ -128,6 +151,53 @@ namespace EEaseWebAPI.UnitTests.Route
             var lunch = await _service.SelectAsync<Lunch>(pool, picker);
 
             breakfast.GoogleId.Should().NotBe(lunch.GoogleId);
+        }
+
+        [Fact]
+        public async Task A_place_is_only_asked_about_once()
+        {
+            // The same hotel is copied onto every day and a rejected plan is built again from
+            // the same pool. What Google says about a place does not change in between.
+            var first = await _service.MaterializeAsync<Breakfast>("abc");
+            var second = await _service.MaterializeAsync<Breakfast>("abc");
+            var asLunch = await _service.MaterializeAsync<Lunch>("abc");
+
+            await _googlePlaces.Received(1).GetPlaceDetailsAsync("abc", Arg.Any<CancellationToken>());
+
+            // Each slot still gets a row of its own.
+            first.Id.Should().NotBe(second.Id);
+            asLunch.GoogleId.Should().Be("abc");
+        }
+
+        [Fact]
+        public async Task Two_slots_asking_at_the_same_time_make_one_call_between_them()
+        {
+            var places = await Task.WhenAll(
+                _service.MaterializeAsync<Breakfast>("abc"),
+                _service.MaterializeAsync<Breakfast>("abc"),
+                _service.MaterializeAsync<Breakfast>("abc"));
+
+            await _googlePlaces.Received(1).GetPlaceDetailsAsync("abc", Arg.Any<CancellationToken>());
+            places.Select(place => place.Id).Should().OnlyHaveUniqueItems();
+        }
+
+        [Fact]
+        public async Task A_call_that_failed_is_not_remembered_as_an_answer()
+        {
+            var calls = 0;
+
+            _googlePlaces.GetPlaceDetailsAsync("flaky", Arg.Any<CancellationToken>())
+                .Returns(_ => ++calls == 1
+                    ? throw new HttpRequestException("Google is having a moment")
+                    : Task.FromResult("{\"displayName\": {\"text\": \"Place flaky\"}}"));
+
+            await Assert.ThrowsAsync<HttpRequestException>(
+                () => _service.MaterializeAsync<Breakfast>("flaky"));
+
+            var place = await _service.MaterializeAsync<Breakfast>("flaky");
+
+            place.DisplayName!.Text.Should().Be("Place flaky");
+            calls.Should().Be(2);
         }
 
         [Fact]

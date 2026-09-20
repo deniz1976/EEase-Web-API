@@ -84,23 +84,35 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             var dislikedGoogleIds = await _dislikedPlaceService.GetGoogleIdsAsync(user.Id, cancellationToken);
 
-            var accommodation = await FindHotelAsync(city, priceLevel, profile, dislikedGoogleIds);
+            // The picker starts out holding every disliked place, so they are never handed back.
+            var picker = new PlacePicker(_random, dislikedGoogleIds);
+
+            var touristicQuery = _placeQueryBuilder.Touristic(profile.Personalization);
+            var afterDinnerQuery = _placeQueryBuilder.AfterDinner(profile.Personalization, priceLevel);
+
+            // The hotel, the sights and the evening venues are three searches that know
+            // nothing of each other, and the meals are searched for while they are still in
+            // the air. The pools only read what the picker has already handed out, so a pool
+            // that was collected a moment earlier costs nothing: a place that has since been
+            // taken is skipped when it is picked, not when it is collected.
+            var hotelSearch = FindHotelAsync(
+                city, priceLevel, profile, dislikedGoogleIds, cancellationToken);
+            var touristicSearch = BuildTouristicPoolAsync(
+                city, touristicQuery, profile, dayCount, picker, cancellationToken);
+            var afterDinnerSearch = BuildAfterDinnerPoolAsync(
+                city, afterDinnerQuery, picker, cancellationToken);
+
+            var accommodation = await hotelSearch;
 
             foreach (var travelDay in standardRoute.TravelDays)
             {
                 travelDay.Accomodation = RouteBuilding.CopyAccommodation(accommodation, priceLevel);
             }
 
-            // The picker starts out holding every disliked place, so they are never handed back.
-            var picker = new PlacePicker(_random, dislikedGoogleIds);
-
             await FillMealsAsync(standardRoute, city, priceLevel, profile, picker, dayCount, cancellationToken);
 
-            var touristicQuery = _placeQueryBuilder.Touristic(profile.Personalization);
-            var touristicGoogleIds = await BuildTouristicPoolAsync(city, touristicQuery, profile, dayCount, picker);
-
-            var afterDinnerQuery = _placeQueryBuilder.AfterDinner(profile.Personalization, priceLevel);
-            var afterDinnerGoogleIds = await BuildAfterDinnerPoolAsync(city, afterDinnerQuery, picker);
+            var touristicGoogleIds = await touristicSearch;
+            var afterDinnerGoogleIds = await afterDinnerSearch;
 
             if (touristicGoogleIds.Count < dayCount * RouteBuilding.TouristicPlacesPerDay ||
                 afterDinnerGoogleIds.Count < dayCount)
@@ -213,7 +225,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
             string destination,
             PRICE_LEVEL? priceLevel,
             PreferenceProfile profile,
-            IReadOnlyCollection<string> excludedGoogleIds)
+            IReadOnlyCollection<string> excludedGoogleIds,
+            CancellationToken cancellationToken)
         {
             var accommodationQuery = _placeQueryBuilder.Accommodation(profile.Accommodation, priceLevel);
 
@@ -304,14 +317,16 @@ namespace EEaseWebAPI.Persistence.Services.Route
             string touristicQuery,
             PreferenceProfile profile,
             int dayCount,
-            PlacePicker picker)
+            PlacePicker picker,
+            CancellationToken cancellationToken)
         {
             var requiredCount = dayCount * TouristicPoolPerDay;
 
             var queries = new List<string> { $"{touristicQuery} in {destination}" };
             queries.AddRange(RouteSearchQueries.Touristic.In(destination));
 
-            var pool = (await _placeSearchService.CollectPlaceIdsAsync(queries, requiredCount)).ToList();
+            var pool = (await _placeSearchService.CollectPlaceIdsAsync(
+                queries, requiredCount, cancellationToken: cancellationToken)).ToList();
 
             if (pool.Count < requiredCount)
             {
@@ -321,7 +336,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 widening.AddRange(RouteSearchQueries.TouristicAlternatives.In(destination));
 
                 pool.AddRange(await _placeSearchService.CollectPlaceIdsAsync(
-                    widening, Math.Max(0, requiredCount - pool.Count), pool));
+                    widening, Math.Max(0, requiredCount - pool.Count), pool, cancellationToken));
             }
 
             return Unused(pool, picker);
@@ -330,12 +345,14 @@ namespace EEaseWebAPI.Persistence.Services.Route
         private async Task<List<string>> BuildAfterDinnerPoolAsync(
             string destination,
             string afterDinnerQuery,
-            PlacePicker picker)
+            PlacePicker picker,
+            CancellationToken cancellationToken)
         {
             var queries = new List<string> { $"{afterDinnerQuery} in {destination}" };
             queries.AddRange(RouteSearchQueries.AfterDinner.In(destination));
 
-            var pool = await _placeSearchService.CollectPlaceIdsAsync(queries);
+            var pool = await _placeSearchService.CollectPlaceIdsAsync(
+                queries, cancellationToken: cancellationToken);
 
             return Unused(pool, picker);
         }

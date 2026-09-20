@@ -1,8 +1,14 @@
 namespace EEaseWebAPI.Application.DTOs.Route
 {
+    /// <summary>
+    /// Hands out places and remembers what it handed out, so no two slots of a route get the
+    /// same one. The searches around it run side by side now, so it guards itself: a place
+    /// handed to two slots at once would be a duplicate nobody asked for.
+    /// </summary>
     public sealed class PlacePicker
     {
         private readonly HashSet<string> _usedGoogleIds = new();
+        private readonly object _gate = new();
         private readonly Random _random;
 
         public PlacePicker(Random random, IEnumerable<string>? alreadyUsed = null)
@@ -18,31 +24,58 @@ namespace EEaseWebAPI.Application.DTOs.Route
             }
         }
 
-        public IReadOnlyCollection<string> UsedGoogleIds => _usedGoogleIds;
+        public IReadOnlyCollection<string> UsedGoogleIds
+        {
+            get
+            {
+                lock (_gate)
+                {
+                    return _usedGoogleIds.ToList();
+                }
+            }
+        }
 
-        public bool IsUsed(string googleId) => _usedGoogleIds.Contains(googleId);
+        public bool IsUsed(string googleId)
+        {
+            lock (_gate)
+            {
+                return _usedGoogleIds.Contains(googleId);
+            }
+        }
 
-        public bool MarkUsed(string googleId) => _usedGoogleIds.Add(googleId);
+        public bool MarkUsed(string googleId)
+        {
+            lock (_gate)
+            {
+                return _usedGoogleIds.Add(googleId);
+            }
+        }
 
         public string? Take(IReadOnlyList<string> pool)
         {
-            var available = Available(pool);
+            lock (_gate)
+            {
+                var available = Available(pool);
 
-            return available.Count == 0 ? null : Claim(available[_random.Next(available.Count)]);
+                return available.Count == 0 ? null : Claim(available[_random.Next(available.Count)]);
+            }
         }
 
         public string? TakeAt(IReadOnlyList<string> pool, int offset)
         {
-            var available = Available(pool);
-
-            if (available.Count == 0)
+            lock (_gate)
             {
-                return null;
+                var available = Available(pool);
+
+                if (available.Count == 0)
+                {
+                    return null;
+                }
+
+                var index = (offset % available.Count + available.Count) % available.Count;
+
+                return Claim(available[index]);
             }
-
-            var index = (offset % available.Count + available.Count) % available.Count;
-
-            return Claim(available[index]);
         }
 
         private List<string> Available(IReadOnlyList<string> pool) =>
