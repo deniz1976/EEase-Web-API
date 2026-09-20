@@ -1,82 +1,152 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.DTOs.User;
+using EEaseWebAPI.Application.Options;
 using EEaseWebAPI.Domain.Entities.Identity;
 using EEaseWebAPI.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace EEaseWebAPI.Persistence.Services.Caching
 {
-    public class UserCacheService : IUserCacheService
+    /// <summary>
+    /// Keeps the confirmed users in memory so that search does not hit the database on every
+    /// keystroke. The cached list is never edited in place: a change publishes a new list, so
+    /// a request reading it cannot see a half finished update.
+    /// </summary>
+    public sealed class UserCacheService : IUserCacheService
     {
+        private const int MaxResults = 10;
+
+        private static readonly object WriteLock = new();
+
         private readonly IMemoryCache _memoryCache;
         private readonly EEaseAPIDbContext _context;
-        private const string USER_CACHE_KEY = "ALL_USERS";
+        private readonly CacheOptions _options;
 
-        public UserCacheService(IMemoryCache memoryCache, EEaseAPIDbContext context)
+        public UserCacheService(
+            IMemoryCache memoryCache,
+            EEaseAPIDbContext context,
+            IOptions<CacheOptions> options)
         {
             _memoryCache = memoryCache;
             _context = context;
+            _options = options.Value;
         }
 
         public async Task LoadUsersToCache()
         {
-            if (!_memoryCache.TryGetValue(USER_CACHE_KEY, out _))
+            if (Cached() is null)
             {
-                var users = await _context.Users
-                    .AsNoTracking()
-                    .Where(u => u.EmailConfirmed)
-                    .Select(u => new UserSearchDTO
-                    {
-                        Id = u.Id,
-                        Username = u.UserName ?? string.Empty,
-                        Name = u.Name ?? string.Empty,
-                        Surname = u.Surname ?? string.Empty,
-                        PhotoUrl = u.PhotoPath ?? string.Empty,
-                        Gender = u.Gender ?? string.Empty
-                    })
-                    .ToListAsync();
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromHours(1));
-
-                _memoryCache.Set(USER_CACHE_KEY, users, cacheEntryOptions);
+                Publish(await ReadUsersAsync());
             }
         }
 
-        public List<UserSearchDTO> SearchUsers(string searchTerm)
+        public async Task<List<UserSearchDTO>> SearchUsersAsync(string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
-                return new List<UserSearchDTO>();
-
-            if (_memoryCache.TryGetValue(USER_CACHE_KEY, out List<UserSearchDTO> users))
             {
-                searchTerm = searchTerm.ToLower().Trim();
-                return users
-                    .Where(u =>
-                        (u.Username?.ToLower().Contains(searchTerm) ?? false) ||
-                        (u.Name?.ToLower().Contains(searchTerm) ?? false) ||
-                        (u.Surname?.ToLower().Contains(searchTerm) ?? false) ||
-                        ((u.Name + " " + u.Surname)?.ToLower().Contains(searchTerm) ?? false))
-                    .Take(10)
-                    .ToList();
+                return new List<UserSearchDTO>();
             }
 
-            return new List<UserSearchDTO>();
+            var users = Cached();
+
+            if (users is null)
+            {
+                users = await ReadUsersAsync();
+                Publish(users);
+            }
+
+            var term = searchTerm.Trim();
+
+            return users
+                .Where(user => Matches(user, term))
+                .Take(MaxResults)
+                .ToList();
         }
 
         public void AddOrUpdateUserInCache(AppUser user)
         {
-            if (!user.EmailConfirmed) return;
-
-            if (_memoryCache.TryGetValue(USER_CACHE_KEY, out List<UserSearchDTO> users))
+            if (!user.EmailConfirmed)
             {
-                var existingUser = users.FirstOrDefault(u => u.Id == user.Id);
-                var updatedUser = new UserSearchDTO
+                return;
+            }
+
+            Replace(user.Id, _ => ToSearchResult(user), addWhenMissing: true);
+        }
+
+        public void UpdateUserAttributesInCache(
+            string userId,
+            string? username = null,
+            string? name = null,
+            string? surname = null,
+            string? photoUrl = null,
+            string? gender = null)
+        {
+            Replace(userId, existing => new UserSearchDTO
+            {
+                Id = existing.Id,
+                Username = username ?? existing.Username,
+                Name = name ?? existing.Name,
+                Surname = surname ?? existing.Surname,
+                PhotoUrl = photoUrl ?? existing.PhotoUrl,
+                Gender = gender ?? existing.Gender
+            });
+        }
+
+        public void RemoveUserFromCache(string userId)
+        {
+            lock (WriteLock)
+            {
+                var users = Cached();
+
+                if (users is null)
+                {
+                    return;
+                }
+
+                Publish(users.Where(user => user.Id != userId).ToList());
+            }
+        }
+
+        private void Replace(string userId, Func<UserSearchDTO, UserSearchDTO> update, bool addWhenMissing = false)
+        {
+            lock (WriteLock)
+            {
+                var users = Cached();
+
+                if (users is null)
+                {
+                    return;
+                }
+
+                var existing = users.FirstOrDefault(user => user.Id == userId);
+
+                if (existing is null && !addWhenMissing)
+                {
+                    return;
+                }
+
+                var updated = users.Where(user => user.Id != userId).ToList();
+
+                updated.Add(update(existing ?? new UserSearchDTO { Id = userId }));
+
+                Publish(updated);
+            }
+        }
+
+        private List<UserSearchDTO>? Cached() =>
+            _memoryCache.TryGetValue(_options.UsersCacheKey, out List<UserSearchDTO>? users) ? users : null;
+
+        private void Publish(List<UserSearchDTO> users) =>
+            _memoryCache.Set(_options.UsersCacheKey, users, new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromHours(_options.UserLifetimeHours)));
+
+        private Task<List<UserSearchDTO>> ReadUsersAsync() =>
+            _context.Users
+                .AsNoTracking()
+                .Where(user => user.EmailConfirmed)
+                .Select(user => new UserSearchDTO
                 {
                     Id = user.Id,
                     Username = user.UserName ?? string.Empty,
@@ -84,68 +154,28 @@ namespace EEaseWebAPI.Persistence.Services.Caching
                     Surname = user.Surname ?? string.Empty,
                     PhotoUrl = user.PhotoPath ?? string.Empty,
                     Gender = user.Gender ?? string.Empty
-                };
+                })
+                .ToListAsync();
 
-                if (existingUser != null)
-                {
-                    var index = users.IndexOf(existingUser);
-                    users[index] = updatedUser;
-                }
-                else
-                {
-                    users.Add(updatedUser);
-                }
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromHours(1));
-
-                _memoryCache.Set(USER_CACHE_KEY, users, cacheEntryOptions);
-            }
-        }
-
-        public void UpdateUserAttributesInCache(string userId, string? username = null, string? name = null, string? surname = null, string? photoUrl = null, string? gender = null)
+        private static UserSearchDTO ToSearchResult(AppUser user) => new()
         {
-            if (_memoryCache.TryGetValue(USER_CACHE_KEY, out List<UserSearchDTO> users))
-            {
-                var existingUser = users.FirstOrDefault(u => u.Id == userId);
+            Id = user.Id,
+            Username = user.UserName ?? string.Empty,
+            Name = user.Name ?? string.Empty,
+            Surname = user.Surname ?? string.Empty,
+            PhotoUrl = user.PhotoPath ?? string.Empty,
+            Gender = user.Gender ?? string.Empty
+        };
 
-                if (existingUser != null)
-                {
-                    if (username != null)
-                        existingUser.Username = username;
+        // Ordinal on purpose: a culture aware comparison folds the Turkish dotted and dotless
+        // i differently on the server than the caller typed them.
+        private static bool Matches(UserSearchDTO user, string term) =>
+            Contains(user.Username, term) ||
+            Contains(user.Name, term) ||
+            Contains(user.Surname, term) ||
+            Contains($"{user.Name} {user.Surname}", term);
 
-                    if (name != null)
-                        existingUser.Name = name;
-
-                    if (surname != null)
-                        existingUser.Surname = surname;
-
-                    if (photoUrl != null)
-                        existingUser.PhotoUrl = photoUrl;
-
-                    if (gender != null)
-                        existingUser.Gender = gender;
-
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetSlidingExpiration(TimeSpan.FromHours(1));
-
-                    _memoryCache.Set(USER_CACHE_KEY, users, cacheEntryOptions);
-                }
-            }
-        }
-
-        public void RemoveUserFromCache(string userId)
-        {
-            if (_memoryCache.TryGetValue(USER_CACHE_KEY, out List<UserSearchDTO> users))
-            {
-                var userToRemove = users.FirstOrDefault(u => u.Id == userId);
-                if (userToRemove != null)
-                {
-                    users.Remove(userToRemove);
-                    _memoryCache.Set(USER_CACHE_KEY, users, new MemoryCacheEntryOptions()
-                        .SetSlidingExpiration(TimeSpan.FromHours(1)));
-                }
-            }
-        }
+        private static bool Contains(string? value, string term) =>
+            value?.Contains(term, StringComparison.OrdinalIgnoreCase) == true;
     }
 }

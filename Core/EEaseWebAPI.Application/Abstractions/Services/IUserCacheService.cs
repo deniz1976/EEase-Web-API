@@ -9,7 +9,11 @@ namespace EEaseWebAPI.Application.Abstractions.Services
     {
         Task LoadUsersToCache();
 
-        List<UserSearchDTO> SearchUsers(string searchTerm);
+        /// <summary>
+        /// Loads the list when it is not cached, so a search never comes back empty just
+        /// because the entry expired.
+        /// </summary>
+        Task<List<UserSearchDTO>> SearchUsersAsync(string searchTerm);
 
         void AddOrUpdateUserInCache(AppUser user);
 

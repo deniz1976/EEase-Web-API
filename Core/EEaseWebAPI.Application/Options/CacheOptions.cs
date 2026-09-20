@@ -14,6 +14,12 @@ namespace EEaseWebAPI.Application.Options
 
         public string AllCurrenciesCacheKey { get; init; } = "AllCurrencies_Cache";
 
+        /// <summary>The searchable list of confirmed users.</summary>
+        public string UsersCacheKey { get; init; } = "AllUsers_Cache";
+
         public int ReferenceDataLifetimeHours { get; init; } = 24;
+
+        /// <summary>Users change far more often than cities do.</summary>
+        public int UserLifetimeHours { get; init; } = 1;
     }
 }
