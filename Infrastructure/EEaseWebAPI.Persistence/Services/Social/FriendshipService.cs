@@ -127,6 +127,7 @@ namespace EEaseWebAPI.Persistence.Services.Social
             var user = await FindUserAsync(username);
 
             return await _context.UserFriendships
+                .AsNoTracking()
                 .Where(friendship =>
                     (friendship.UserAId == user.Id || friendship.UserBId == user.Id) &&
                     friendship.Status == FriendshipStatus.Accepted)
@@ -140,6 +141,7 @@ namespace EEaseWebAPI.Persistence.Services.Social
             var user = await FindUserAsync(username);
 
             return await _context.UserFriendships
+                .AsNoTracking()
                 .Where(friendship =>
                     friendship.AddresseeId == user.Id &&
                     friendship.Status == FriendshipStatus.Pending)
@@ -206,6 +208,7 @@ namespace EEaseWebAPI.Persistence.Services.Social
             var user = await FindUserAsync(username);
 
             return await _context.UserBlocks
+                .AsNoTracking()
                 .Where(block => block.BlockerId == user.Id)
                 .Include(block => block.Blocked)
                 .OrderByDescending(block => block.BlockedDate)

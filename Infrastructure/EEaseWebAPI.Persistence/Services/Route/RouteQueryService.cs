@@ -114,7 +114,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var route = await _context.StandardRoutes
                 .AsNoTracking()
                 .IncludeFullRouteGraph()
-                .FirstOrDefaultAsync(candidate => candidate.Id == routeId)
+                .FirstOrDefaultAsync(candidate => candidate.Id == routeId, cancellationToken)
                 ?? throw new RouteNotFoundException("Route not found", (int)StatusEnum.RouteNotFound);
 
             return await _routeAccessPolicy.ToDtoAsync(route, username, user.Id, cancellationToken);
@@ -126,9 +126,10 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var user = await RequireUserAsync(username);
 
             var route = await _context.StandardRoutes
+                .AsNoTracking()
                 .Include(candidate => candidate.User)
                 .Include(candidate => candidate.LikedUsers)
-                .FirstOrDefaultAsync(candidate => candidate.Id == routeId)
+                .FirstOrDefaultAsync(candidate => candidate.Id == routeId, cancellationToken)
                 ?? throw new RouteNotFoundException("Route not found", (int)StatusEnum.RouteNotFound);
 
             var access = await _routeAccessPolicy.EvaluateAsync(route, username, user.Id, cancellationToken);

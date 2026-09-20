@@ -33,7 +33,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
         {
             var category = CategoryOf(placeType);
 
-            var preferences = await LoadAsync(category, userId)
+            var preferences = await LoadAsync(category, userId, cancellationToken)
                 ?? throw new BaseException(
                     "User personalization not found, you must introduce yourself.",
                     (int)StatusEnum.PreferenceDescriptionsRetrievalFailed);
@@ -85,15 +85,16 @@ namespace EEaseWebAPI.Persistence.Services.Route
             _ => throw new InvalidPlaceTypeException($"Invalid place type: {placeType}")
         };
 
-        private Task<object?> LoadAsync(string category, string userId) => category switch
-        {
-            "accommodation" => Cast(_context.UserAccommodationPreferences
-                .FirstOrDefaultAsync(preference => preference.UserId == userId)),
-            "food" => Cast(_context.UserFoodPreferences
-                .FirstOrDefaultAsync(preference => preference.UserId == userId)),
-            _ => Cast(_context.UserPersonalizations
-                .FirstOrDefaultAsync(preference => preference.UserId == userId))
-        };
+        private Task<object?> LoadAsync(string category, string userId, CancellationToken cancellationToken) =>
+            category switch
+            {
+                "accommodation" => Cast(_context.UserAccommodationPreferences
+                    .FirstOrDefaultAsync(preference => preference.UserId == userId, cancellationToken)),
+                "food" => Cast(_context.UserFoodPreferences
+                    .FirstOrDefaultAsync(preference => preference.UserId == userId, cancellationToken)),
+                _ => Cast(_context.UserPersonalizations
+                    .FirstOrDefaultAsync(preference => preference.UserId == userId, cancellationToken))
+            };
 
         private static async Task<object?> Cast<T>(Task<T?> task) where T : class => await task;
 

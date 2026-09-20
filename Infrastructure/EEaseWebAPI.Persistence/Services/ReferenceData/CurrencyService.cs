@@ -20,7 +20,7 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
         public Task<List<AllWorldCurrencies>> GetCurrenciesAsync(CancellationToken cancellationToken = default) =>
             _cache.GetOrLoadAsync(
                 _cache.Keys.AllCurrenciesCacheKey,
-                token => _context.Currencies.ToListAsync(token),
+                token => _context.Currencies.AsNoTracking().ToListAsync(token),
                 cancellationToken);
 
         public Task InitializeCacheAsync(CancellationToken cancellationToken = default) =>

@@ -66,7 +66,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var route = await _context.StandardRoutes
                 .IncludeFullRouteGraph()
                 .IncludeRoutePreferences()
-                .FirstOrDefaultAsync(candidate => candidate.Id == routeId)
+                .FirstOrDefaultAsync(candidate => candidate.Id == routeId, cancellationToken)
                 ?? throw new RouteNotFoundException("Route not found", (int)StatusEnum.RouteNotFound);
 
             if (route.UserId != user.Id)
@@ -115,18 +115,19 @@ namespace EEaseWebAPI.Persistence.Services.Route
             CancellationToken cancellationToken)
         {
             var accommodationPreferences = await _context.UserAccommodationPreferences
-                .FirstOrDefaultAsync(preference => preference.UserId == userId);
+                .FirstOrDefaultAsync(preference => preference.UserId == userId, cancellationToken);
             var foodPreferences = await _context.UserFoodPreferences
-                .FirstOrDefaultAsync(preference => preference.UserId == userId);
+                .FirstOrDefaultAsync(preference => preference.UserId == userId, cancellationToken);
             var personalizationPreferences = await _context.UserPersonalizations
-                .FirstOrDefaultAsync(preference => preference.UserId == userId);
+                .FirstOrDefaultAsync(preference => preference.UserId == userId, cancellationToken);
 
             var profile = _preferenceProfileBuilder.Build(
                 accommodationPreferences, foodPreferences, personalizationPreferences);
 
-            var disliked = await _dislikedPlaceService.GetGoogleIdsAsync(userId);
+            var disliked = await _dislikedPlaceService.GetGoogleIdsAsync(userId, cancellationToken);
 
-            await _placeReplacementService.ReplaceAsync(route, profile, googlePlaceId, placeType, disliked);
+            await _placeReplacementService.ReplaceAsync(
+                route, profile, googlePlaceId, placeType, disliked, cancellationToken);
 
             // The replacement has no weather or travel time yet; enrichment reruns over the
             // whole route using the dates it was originally planned for.
