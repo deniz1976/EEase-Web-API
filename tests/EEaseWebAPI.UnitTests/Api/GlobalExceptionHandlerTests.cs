@@ -127,6 +127,17 @@ namespace EEaseWebAPI.UnitTests.Api
         }
 
         [Fact]
+        public async Task An_exception_that_carries_no_code_keeps_its_own_message()
+        {
+            // Reading the missing code as UnknownError turned every plain rejection into
+            // "an unexpected error occurred", which tells the caller nothing.
+            var (statusCode, body) = await HandleAsync(new ArgumentException("Username must be unique."), "tr");
+
+            statusCode.Should().Be(StatusCodes.Status400BadRequest);
+            body.GetProperty("message").GetString().Should().Be("Username must be unique.");
+        }
+
+        [Fact]
         public async Task A_validation_failure_lists_the_fields_that_failed()
         {
             var errors = new Dictionary<string, string[]> { ["Email"] = new[] { "Email is required." } };

@@ -33,9 +33,8 @@ namespace EEaseWebAPI.API.Extensions
             CancellationToken cancellationToken)
         {
             var statusCode = ResolveStatusCode(exception);
-            var enumStatusCode = exception is BaseException baseException
-                ? baseException.EnumStatusCode ?? (int)StatusEnum.UnknownError
-                : (int)StatusEnum.UnknownError;
+            var carriedCode = (exception as BaseException)?.EnumStatusCode;
+            var enumStatusCode = carriedCode ?? (int)StatusEnum.UnknownError;
 
             if (statusCode >= StatusCodes.Status500InternalServerError)
             {
@@ -62,7 +61,7 @@ namespace EEaseWebAPI.API.Extensions
                 StatusCode = statusCode,
                 EnumStatusCode = enumStatusCode,
                 Title = ReasonPhrase(statusCode),
-                Message = ResolveMessage(exception, enumStatusCode, statusCode)
+                Message = ResolveMessage(exception, carriedCode, statusCode)
             };
 
             if (exception is RequestValidationException validationException)
@@ -129,7 +128,7 @@ namespace EEaseWebAPI.API.Extensions
         /// code has no translation keeps the message it was thrown with, which is often a
         /// detail no resource file could hold ("no hotel could be found in Rome").
         /// </summary>
-        private string ResolveMessage(Exception exception, int enumStatusCode, int statusCode)
+        private string ResolveMessage(Exception exception, int? carriedCode, int statusCode)
         {
             if (statusCode >= StatusCodes.Status500InternalServerError)
             {
@@ -138,7 +137,12 @@ namespace EEaseWebAPI.API.Extensions
                     : Translate(StatusEnum.UnknownError) ?? "An unexpected error occurred. Please try again later.";
             }
 
-            return Translate((StatusEnum)enumStatusCode) ?? exception.Message;
+            // Only an exception that carries a code can be translated from it. Reading a
+            // missing code as UnknownError would answer "an unexpected error occurred" to a
+            // caller who was simply told their username was taken.
+            return carriedCode is null
+                ? exception.Message
+                : Translate((StatusEnum)carriedCode.Value) ?? exception.Message;
         }
 
         private string? Translate(StatusEnum statusEnum)

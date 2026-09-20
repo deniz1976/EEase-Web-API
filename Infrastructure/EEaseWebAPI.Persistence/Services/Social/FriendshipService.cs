@@ -214,22 +214,23 @@ namespace EEaseWebAPI.Persistence.Services.Social
 
         public async Task<FriendRequestStatus> GetRequestStatusAsync(string username, string targetUsername)
         {
-            await ResolveAsync(username, targetUsername);
+            var (user, target) = await ResolveAsync(username, targetUsername);
 
-            var relationship = await GetRelationshipAsync(username, targetUsername);
-            return relationship.RequestStatus;
+            return (await GetRelationshipAsync(user, target)).RequestStatus;
         }
 
-        public async Task<ProfileVisibilityStatus> GetVisibilityAsync(string username, string targetUsername)
-        {
-            var relationship = await GetRelationshipAsync(username, targetUsername);
-            return relationship.Visibility;
-        }
+        public async Task<ProfileVisibilityStatus> GetVisibilityAsync(string username, string targetUsername) =>
+            (await GetRelationshipAsync(username, targetUsername)).Visibility;
 
         public async Task<UserRelationship> GetRelationshipAsync(string username, string targetUsername)
         {
             var (user, target) = await ResolveAsync(username, targetUsername, allowSelf: true);
 
+            return await GetRelationshipAsync(user, target);
+        }
+
+        private async Task<UserRelationship> GetRelationshipAsync(AppUser user, AppUser target)
+        {
             if (user.Id == target.Id)
                 return UserRelationship.Self;
 

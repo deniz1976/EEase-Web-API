@@ -34,6 +34,7 @@ namespace EEaseWebAPI.UnitTests.User
         {
             Id = "alice-id",
             UserName = "alice",
+            NormalizedUserName = "ALICE",
             Email = "alice@example.com",
             Name = "Alice",
             Surname = "Doe",
@@ -42,7 +43,14 @@ namespace EEaseWebAPI.UnitTests.User
             BornDate = new DateOnly(1990, 1, 1)
         };
 
-        private readonly AppUser _bob = new() { Id = "bob-id", UserName = "bob", Email = "bob@example.com" };
+        // Identity keeps the normalised name next to the raw one; lookups use it.
+        private readonly AppUser _bob = new()
+        {
+            Id = "bob-id",
+            UserName = "bob",
+            NormalizedUserName = "BOB",
+            Email = "bob@example.com"
+        };
 
         public UserProfileServiceTests()
         {
@@ -120,6 +128,24 @@ namespace EEaseWebAPI.UnitTests.User
         }
 
         [Fact]
+        public async Task Somebody_elses_username_in_different_capitals_is_refused_too()
+        {
+            // Identity would reject it on save anyway, with an error the caller cannot act on.
+            await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateUser(Update(username: "BOB")));
+        }
+
+        [Fact]
+        public async Task A_changed_profile_reaches_the_search_cache_in_full()
+        {
+            await _service.UpdateUser(Update(name: "Alicia", surname: "Rossi", gender: "Female"));
+
+            // Gender is part of a search result, so leaving it out of this call left search
+            // showing the old value until the cache expired.
+            _cache.Received(1).UpdateUserAttributesInCache(
+                "alice-id", Arg.Any<string?>(), "Alicia", "Rossi", Arg.Any<string?>(), "Female");
+        }
+
+        [Fact]
         public async Task An_anonymous_caller_cannot_update_a_profile()
         {
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _service.UpdateUser(Update(user: "  ")));
@@ -166,7 +192,7 @@ namespace EEaseWebAPI.UnitTests.User
             await _service.UpdateUser(Update(name: "Alicia", surname: "Doe"));
 
             _alice.Name.Should().Be("Alicia");
-            _cache.Received(1).UpdateUserAttributesInCache("alice-id", null, "Alicia", "Doe");
+            _cache.Received(1).UpdateUserAttributesInCache("alice-id", null, "Alicia", "Doe", null, null);
         }
 
         [Fact]

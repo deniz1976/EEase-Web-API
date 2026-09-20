@@ -17,7 +17,13 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         void AddOrUpdateUserInCache(AppUser user);
 
-        void UpdateUserAttributesInCache(string userId, string? username = null, string? name = null, string? surname = null, string? photoUrl = null,string? Gender = null);
+        void UpdateUserAttributesInCache(
+            string userId,
+            string? username = null,
+            string? name = null,
+            string? surname = null,
+            string? photoUrl = null,
+            string? gender = null);
 
         void RemoveUserFromCache(string userId);
     }

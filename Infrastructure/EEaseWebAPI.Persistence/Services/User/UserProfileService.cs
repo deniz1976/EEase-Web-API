@@ -147,7 +147,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             }
 
             _userCacheService.UpdateUserAttributesInCache(
-                user.Id, request.Username, request.Name, request.Surname);
+                user.Id, request.Username, request.Name, request.Surname, gender: request.Gender);
 
             return true;
         }
@@ -230,9 +230,18 @@ namespace EEaseWebAPI.Persistence.Services.User
             return true;
         }
 
-        private Task<bool> IsUsernameAvailable(string username, string userId) =>
-            _userManager.Users.AllAsync(candidate =>
-                candidate.UserName != username || candidate.Id == userId);
+        /// <summary>
+        /// Identity treats usernames as case insensitive, so "Alice" is not free while
+        /// "alice" exists; comparing the raw name let that through and the save failed later
+        /// with a duplicate error nobody could act on.
+        /// </summary>
+        private Task<bool> IsUsernameAvailable(string username, string userId)
+        {
+            var normalizedUserName = username.ToUpperInvariant();
+
+            return _userManager.Users.AllAsync(candidate =>
+                candidate.NormalizedUserName != normalizedUserName || candidate.Id == userId);
+        }
 
         private static void ValidateLength(string? value, string field, int minimum, int maximum)
         {
