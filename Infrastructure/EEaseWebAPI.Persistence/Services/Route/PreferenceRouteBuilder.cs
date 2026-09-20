@@ -117,7 +117,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
             if (touristicGoogleIds.Count < dayCount * RouteBuilding.TouristicPlacesPerDay ||
                 afterDinnerGoogleIds.Count < dayCount)
             {
-                await WidenPoolsAsync(city, dayCount, touristicGoogleIds, afterDinnerGoogleIds, picker);
+                await WidenPoolsAsync(
+                    city, dayCount, touristicGoogleIds, afterDinnerGoogleIds, picker, cancellationToken);
             }
 
             for (int day = 0; day < dayCount; day++)
@@ -151,17 +152,72 @@ namespace EEaseWebAPI.Persistence.Services.Route
             int dayCount,
             CancellationToken cancellationToken)
         {
+            // Three searches, not three per day. The query behind a breakfast on day one is
+            // the query behind a breakfast on day five, so the trip used to ask Google the
+            // same question once for every day it lasted. The three do not wait for each
+            // other either.
+            var breakfastSearch = SearchMealAsync(
+                destination, priceLevel, profile, MealType.Breakfast, cancellationToken);
+            var lunchSearch = SearchMealAsync(
+                destination, priceLevel, profile, MealType.Lunch, cancellationToken);
+            var dinnerSearch = SearchMealAsync(
+                destination, priceLevel, profile, MealType.Dinner, cancellationToken);
+
+            await Task.WhenAll(breakfastSearch, lunchSearch, dinnerSearch);
+
+            var breakfasts = await breakfastSearch;
+            var lunches = await lunchSearch;
+            var dinners = await dinnerSearch;
+
+            var breakfastIds = new string[dayCount];
+            var lunchIds = new string[dayCount];
+            var dinnerIds = new string[dayCount];
+
+            // Claiming is ordered, so no two days sit down at the same table.
             for (int day = 0; day < dayCount; day++)
             {
-                route.TravelDays[day].Breakfast = await SelectMealAsync<Breakfast>(
-                    destination, priceLevel, profile, MealType.Breakfast, day, picker, cancellationToken);
-
-                route.TravelDays[day].Lunch = await SelectMealAsync<Lunch>(
-                    destination, priceLevel, profile, MealType.Lunch, day, picker, cancellationToken);
-
-                route.TravelDays[day].Dinner = await SelectMealAsync<Dinner>(
-                    destination, priceLevel, profile, MealType.Dinner, day, picker, cancellationToken);
+                breakfastIds[day] = await ClaimMealAsync(
+                    breakfasts, destination, priceLevel, day, picker, cancellationToken);
+                lunchIds[day] = await ClaimMealAsync(
+                    lunches, destination, priceLevel, day, picker, cancellationToken);
+                dinnerIds[day] = await ClaimMealAsync(
+                    dinners, destination, priceLevel, day, picker, cancellationToken);
             }
+
+            // Reading the details of what was claimed is not.
+            var breakfastPlaces = MaterializeMealsAsync<Breakfast>(
+                breakfastIds, breakfasts.FoodQuery, priceLevel, cancellationToken);
+            var lunchPlaces = MaterializeMealsAsync<Lunch>(
+                lunchIds, lunches.FoodQuery, priceLevel, cancellationToken);
+            var dinnerPlaces = MaterializeMealsAsync<Dinner>(
+                dinnerIds, dinners.FoodQuery, priceLevel, cancellationToken);
+
+            await Task.WhenAll(breakfastPlaces, lunchPlaces, dinnerPlaces);
+
+            for (int day = 0; day < dayCount; day++)
+            {
+                route.TravelDays[day].Breakfast = (await breakfastPlaces)[day];
+                route.TravelDays[day].Lunch = (await lunchPlaces)[day];
+                route.TravelDays[day].Dinner = (await dinnerPlaces)[day];
+            }
+        }
+
+        private async Task<T[]> MaterializeMealsAsync<T>(
+            IReadOnlyList<string> googleIds,
+            string foodQuery,
+            PRICE_LEVEL? priceLevel,
+            CancellationToken cancellationToken)
+            where T : class, ISelectablePlace, IHasFoodPreference, new()
+        {
+            var meals = await Task.WhenAll(googleIds.Select(googleId =>
+                _placeSelectionService.MaterializeAsync<T>(googleId, priceLevel, cancellationToken)));
+
+            foreach (var meal in meals)
+            {
+                meal.UserFoodPreference = foodQuery;
+            }
+
+            return meals;
         }
 
         private async Task FillSightseeingAsync(
@@ -216,7 +272,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
                         "Could not select places for day {Day}; widening the search ({Attempt}/{Max}).",
                         day + 1, attempt + 1, MaxDayRetries);
 
-                    await SearchHiddenGemsAsync(destination, touristicGoogleIds, afterDinnerGoogleIds, picker, priceLevel);
+                    await SearchHiddenGemsAsync(
+                        destination, touristicGoogleIds, afterDinnerGoogleIds, picker, priceLevel, cancellationToken);
                 }
             }
         }
@@ -230,12 +287,14 @@ namespace EEaseWebAPI.Persistence.Services.Route
         {
             var accommodationQuery = _placeQueryBuilder.Accommodation(profile.Accommodation, priceLevel);
 
-            var hotels = (await _placeSearchService.SearchFirstMatchAsync(new[]
-            {
-                $"{accommodationQuery} in {destination}",
-                $"{_placeQueryBuilder.HotelStars(priceLevel)} star hotel in {destination}",
-                $"hotel in {destination}"
-            })).Where(hotel => hotel.Id is not null && !excludedGoogleIds.Contains(hotel.Id)).ToList();
+            var hotels = (await _placeSearchService.SearchFirstMatchAsync(
+                new[]
+                {
+                    $"{accommodationQuery} in {destination}",
+                    $"{_placeQueryBuilder.HotelStars(priceLevel)} star hotel in {destination}",
+                    $"hotel in {destination}"
+                },
+                cancellationToken)).Where(hotel => hotel.Id is not null && !excludedGoogleIds.Contains(hotel.Id)).ToList();
 
             if (hotels.Count == 0)
             {
@@ -243,22 +302,19 @@ namespace EEaseWebAPI.Persistence.Services.Route
             }
 
             var hotel = await _placeSelectionService.MaterializeAsync<TravelAccomodation>(
-                hotels[_random.Next(hotels.Count)].Id!, priceLevel);
+                hotels[_random.Next(hotels.Count)].Id!, priceLevel, cancellationToken);
 
             hotel.UserAccomodationPreference = DescribeAccommodationPreference(profile.Accommodation);
 
             return hotel;
         }
 
-        private async Task<T> SelectMealAsync<T>(
+        private async Task<MealCandidates> SearchMealAsync(
             string destination,
             PRICE_LEVEL? priceLevel,
             PreferenceProfile profile,
             MealType mealType,
-            int dayIndex,
-            PlacePicker picker,
             CancellationToken cancellationToken)
-            where T : class, ISelectablePlace, IHasFoodPreference, new()
         {
             var foodQuery = _placeQueryBuilder.Food(profile.Food, priceLevel, mealType);
 
@@ -274,42 +330,87 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 throw new RouteGenerationException($"No {mealType} place could be found in {destination}.");
             }
 
-            var unused = Unused(candidates, picker);
+            return new MealCandidates(mealType, foodQuery, candidates);
+        }
+
+        /// <summary>
+        /// Takes one place out of what the meal was searched for and marks it as spoken for,
+        /// so the rest of the trip cannot sit down at the same table.
+        /// </summary>
+        private async Task<string> ClaimMealAsync(
+            MealCandidates candidates,
+            string destination,
+            PRICE_LEVEL? priceLevel,
+            int dayIndex,
+            PlacePicker picker,
+            CancellationToken cancellationToken)
+        {
+            var unused = Unused(candidates.Places, picker);
 
             if (unused.Count == 0)
             {
-                var alternativeQuery = _placeQueryBuilder.AlternativeFood(mealType, priceLevel);
-                var alternatives = await _placeSearchService.SearchAsync(
-                    $"{alternativeQuery} in {destination}", cancellationToken);
+                // Every candidate is already on the trip. A different phrasing turns up places
+                // the first search did not, and one phrasing is enough for the whole trip.
+                candidates.Alternatives ??= await _placeSearchService.SearchAsync(
+                    $"{_placeQueryBuilder.AlternativeFood(candidates.MealType, priceLevel)} in {destination}",
+                    cancellationToken);
 
-                unused = Unused(alternatives, picker);
+                unused = Unused(candidates.Alternatives, picker);
             }
 
             if (unused.Count == 0)
             {
                 // Nothing fresh is left; reusing a place the trip already visits beats failing
                 // the whole route, but it is worth knowing about.
-                unused = candidates.Where(place => place.Id is not null).Select(place => place.Id!).ToList();
+                unused = candidates.Places
+                    .Where(place => place.Id is not null)
+                    .Select(place => place.Id!)
+                    .ToList();
 
                 _logger.LogWarning("Could not find an unused {MealType} place in {Destination}; reusing one.",
-                    mealType, destination);
+                    candidates.MealType, destination);
             }
 
             if (unused.Count == 0)
             {
                 throw new RouteGenerationException(
-                    $"No {mealType} place in {destination} carried a usable place id.");
+                    $"No {candidates.MealType} place in {destination} carried a usable place id.");
             }
 
-            var index = (_random.Next(unused.Count) + dayIndex) % unused.Count;
-            var selectedGoogleId = unused[index];
-
-            var meal = await _placeSelectionService.MaterializeAsync<T>(selectedGoogleId, priceLevel, cancellationToken);
-            meal.UserFoodPreference = foodQuery;
+            var selectedGoogleId = unused[(_random.Next(unused.Count) + dayIndex) % unused.Count];
 
             picker.MarkUsed(selectedGoogleId);
 
-            return meal;
+            return selectedGoogleId;
+        }
+
+        /// <summary>
+        /// What a meal may be chosen from. The search behind it depends on the meal and the
+        /// city, never on the day, so every day of the trip picks out of the same list.
+        /// </summary>
+        private sealed class MealCandidates
+        {
+            public MealCandidates(
+                MealType mealType,
+                string foodQuery,
+                IReadOnlyList<Application.DTOs.GooglePlaces.Place> places)
+            {
+                MealType = mealType;
+                FoodQuery = foodQuery;
+                Places = places;
+            }
+
+            public MealType MealType { get; }
+
+            public string FoodQuery { get; }
+
+            public IReadOnlyList<Application.DTOs.GooglePlaces.Place> Places { get; }
+
+            /// <summary>
+            /// Searched for the first time a day finds every candidate already taken, and
+            /// kept for the days after it.
+            /// </summary>
+            public IReadOnlyList<Application.DTOs.GooglePlaces.Place>? Alternatives { get; set; }
         }
 
         private async Task<List<string>> BuildTouristicPoolAsync(
@@ -362,14 +463,16 @@ namespace EEaseWebAPI.Persistence.Services.Route
             int dayCount,
             List<string> touristicGoogleIds,
             List<string> afterDinnerGoogleIds,
-            PlacePicker picker)
+            PlacePicker picker,
+            CancellationToken cancellationToken)
         {
             if (touristicGoogleIds.Count < dayCount * RouteBuilding.TouristicPlacesPerDay)
             {
                 touristicGoogleIds.AddRange(await _placeSearchService.CollectPlaceIdsAsync(
                     RouteSearchQueries.TouristicLastResort.In(destination),
                     dayCount * (TouristicPoolPerDay - 1) - touristicGoogleIds.Count,
-                    touristicGoogleIds.Concat(picker.UsedGoogleIds)));
+                    touristicGoogleIds.Concat(picker.UsedGoogleIds),
+                    cancellationToken));
             }
 
             if (afterDinnerGoogleIds.Count < dayCount)
@@ -377,7 +480,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 afterDinnerGoogleIds.AddRange(await _placeSearchService.CollectPlaceIdsAsync(
                     RouteSearchQueries.AfterDinnerLastResort.In(destination),
                     dayCount * AfterDinnerPoolPerDay - afterDinnerGoogleIds.Count,
-                    afterDinnerGoogleIds.Concat(picker.UsedGoogleIds)));
+                    afterDinnerGoogleIds.Concat(picker.UsedGoogleIds),
+                    cancellationToken));
             }
         }
 
@@ -386,17 +490,20 @@ namespace EEaseWebAPI.Persistence.Services.Route
             List<string> touristicGoogleIds,
             List<string> afterDinnerGoogleIds,
             PlacePicker picker,
-            PRICE_LEVEL? priceLevel)
+            PRICE_LEVEL? priceLevel,
+            CancellationToken cancellationToken)
         {
             touristicGoogleIds.AddRange(await _placeSearchService.CollectPlaceIdsAsync(
                 RouteSearchQueries.TouristicHiddenGems.In(destination),
-                excludedPlaceIds: touristicGoogleIds.Concat(picker.UsedGoogleIds)));
+                excludedPlaceIds: touristicGoogleIds.Concat(picker.UsedGoogleIds),
+                cancellationToken: cancellationToken));
 
             var afterDinnerQuery = _placeQueryBuilder.AlternativeAfterDinner(priceLevel);
 
             afterDinnerGoogleIds.AddRange(await _placeSearchService.CollectPlaceIdsAsync(
                 new[] { $"{afterDinnerQuery} in {destination}" },
-                excludedPlaceIds: afterDinnerGoogleIds.Concat(picker.UsedGoogleIds)));
+                excludedPlaceIds: afterDinnerGoogleIds.Concat(picker.UsedGoogleIds),
+                cancellationToken: cancellationToken));
         }
 
         /// <summary>

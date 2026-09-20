@@ -98,13 +98,13 @@ namespace EEaseWebAPI.UnitTests.Route
                 .Returns(_ => new TravelAccomodation { Id = Guid.NewGuid(), GoogleId = "hotel-1" });
 
             _selection.MaterializeAsync<Breakfast>(Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => new Breakfast { Id = Guid.NewGuid() });
+                .Returns(call => new Breakfast { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
 
             _selection.MaterializeAsync<Lunch>(Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => new Lunch { Id = Guid.NewGuid() });
+                .Returns(call => new Lunch { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
 
             _selection.MaterializeAsync<Dinner>(Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
-                .Returns(_ => new Dinner { Id = Guid.NewGuid() });
+                .Returns(call => new Dinner { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
 
             _selection.SelectAsync<PlaceAfterDinner>(Arg.Any<IReadOnlyList<string>>(), Arg.Any<PlacePicker>(),
                     Arg.Any<PRICE_LEVEL?>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
@@ -274,6 +274,30 @@ namespace EEaseWebAPI.UnitTests.Route
             await _builder.Invoking(builder => Build())
                 .Should().ThrowAsync<RouteGenerationException>()
                 .WithMessage("*Day 1*");
+        }
+
+        [Fact]
+        public async Task A_meal_is_searched_for_once_however_long_the_trip_is()
+        {
+            // A five day trip asks the same three questions a two day trip asks: one for the
+            // hotel and one per meal. It used to ask one per meal per day.
+            await _builder.BuildAsync("rome", Start, Start.AddDays(4), PRICE_LEVEL.PRICE_LEVEL_MODERATE, "alice", null);
+
+            await _search.Received(4).SearchFirstMatchAsync(
+                Arg.Any<IEnumerable<string>>(), Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task No_two_days_eat_at_the_same_place()
+        {
+            var route = await _builder.BuildAsync(
+                "rome", Start, Start.AddDays(4), PRICE_LEVEL.PRICE_LEVEL_MODERATE, "alice", null);
+
+            var eaten = route.TravelDays
+                .SelectMany(day => new string?[] { day.Breakfast!.GoogleId, day.Lunch!.GoogleId, day.Dinner!.GoogleId })
+                .ToList();
+
+            eaten.Should().HaveCount(15).And.OnlyHaveUniqueItems();
         }
 
         [Fact]
