@@ -100,7 +100,8 @@ namespace EEaseWebAPI.UnitTests.Authentication
                 () => _service.LoginAsync("alice", "OldPass1!", 900));
 
             _alice.VerificationCode.Should().Be("123456");
-            _mail.Received(1).SendVerificationEmail(_alice.Email, Arg.Any<string>(), "123456");
+            await _mail.Received(1).SendVerificationEmailAsync(
+                _alice.Email, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
         }
 
         [Fact]

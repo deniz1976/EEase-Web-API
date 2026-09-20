@@ -1,4 +1,5 @@
 using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.DTOs.User;
 using EEaseWebAPI.Application.Exceptions.CreateUser;
@@ -37,6 +38,7 @@ namespace EEaseWebAPI.UnitTests.User
             _userManager.UpdateAsync(Arg.Any<AppUser>()).Returns(IdentityResult.Success);
             _userManager.CreateAsync(Arg.Any<AppUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
             _codes.Generate().Returns("123456");
+            _mail.SendVerificationEmailAsync(default!, default!, default!).ReturnsForAnyArgs(true);
 
             _service = new UserRegistrationService(
                 _userManager, _headers, _mail, _cache, _codes);
@@ -108,7 +110,8 @@ namespace EEaseWebAPI.UnitTests.User
             await _service.CreateAsync(Registration());
 
             created!.VerificationCode.Should().Be("123456");
-            _mail.Received(1).SendVerificationEmail("new@example.com", Arg.Any<string>(), "123456");
+            await _mail.Received(1).SendVerificationEmailAsync(
+                "new@example.com", Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -157,7 +160,19 @@ namespace EEaseWebAPI.UnitTests.User
             await _service.SendVerificationEmailAgain("alice@example.com");
 
             _alice.VerificationCode.Should().Be("123456");
-            _mail.Received(1).SendVerificationEmail("alice@example.com", Arg.Any<string>(), "123456");
+            await _mail.Received(1).SendVerificationEmailAsync(
+                "alice@example.com", Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task A_verification_code_that_never_left_is_not_reported_as_sent()
+        {
+            _alice.VerificationCode = "999999";
+            _userManager.FindByEmailAsync("alice@example.com").Returns(_alice);
+            _mail.SendVerificationEmailAsync(default!, default!, default!).ReturnsForAnyArgs(false);
+
+            await Assert.ThrowsAsync<MailDeliveryException>(
+                () => _service.SendVerificationEmailAgain("alice@example.com"));
         }
 
         [Fact]

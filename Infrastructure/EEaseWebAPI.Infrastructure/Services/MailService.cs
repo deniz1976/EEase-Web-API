@@ -24,7 +24,8 @@ namespace EEaseWebAPI.Infrastructure.Services
             _logger = logger;
         }
 
-        public void SendEmail(string email, string subject, string message)
+        public async Task SendEmailAsync(
+            string email, string subject, string message, CancellationToken cancellationToken = default)
         {
             if (!_options.Enabled)
             {
@@ -51,29 +52,47 @@ namespace EEaseWebAPI.Infrastructure.Services
             mimeMessage.From.Add(new MailboxAddress(_options.Name, _options.Email));
             mimeMessage.To.Add(new MailboxAddress(email, email));
 
-            using var client = new SmtpClient();
+            using var client = new SmtpClient
+            {
+                Timeout = (int)TimeSpan.FromSeconds(_options.TimeoutSeconds).TotalMilliseconds
+            };
 
-            client.Connect(_options.Host, _options.Port, SecureSocketOptions.StartTls);
-            client.Authenticate(_options.Email, _options.Key);
-            client.Send(mimeMessage);
-            client.Disconnect(quit: true);
+            await client.ConnectAsync(_options.Host, _options.Port, SecureSocketOptions.StartTls, cancellationToken);
+            await client.AuthenticateAsync(_options.Email, _options.Key, cancellationToken);
+            await client.SendAsync(mimeMessage, cancellationToken);
+            await client.DisconnectAsync(quit: true, cancellationToken);
         }
 
-        public bool SendVerificationEmail(string email, string subject, string code) =>
-            SendTemplate(MailTemplate.VerificationCode, email, subject, code);
+        public Task<bool> SendVerificationEmailAsync(
+            string email, string subject, string code, CancellationToken cancellationToken = default) =>
+            SendTemplateAsync(MailTemplate.VerificationCode, email, subject, code, cancellationToken);
 
-        public bool SendResetPasswordEmail(string email, string subject, string code) =>
-            SendTemplate(MailTemplate.ResetPassword, email, subject, code);
+        public Task<bool> SendResetPasswordEmailAsync(
+            string email, string subject, string code, CancellationToken cancellationToken = default) =>
+            SendTemplateAsync(MailTemplate.ResetPassword, email, subject, code, cancellationToken);
 
-        public bool SendDeleteCodeEmail(string email, string subject, string code) =>
-            SendTemplate(MailTemplate.DeleteAccount, email, subject, code);
+        public Task<bool> SendDeleteCodeEmailAsync(
+            string email, string subject, string code, CancellationToken cancellationToken = default) =>
+            SendTemplateAsync(MailTemplate.DeleteAccount, email, subject, code, cancellationToken);
 
-        private bool SendTemplate(MailTemplate template, string email, string subject, string code)
+        private async Task<bool> SendTemplateAsync(
+            MailTemplate template,
+            string email,
+            string subject,
+            string code,
+            CancellationToken cancellationToken)
         {
             try
             {
-                SendEmail(email, subject, _templateProvider.Render(template, code));
+                await SendEmailAsync(
+                    email, subject, _templateProvider.Render(template, code), cancellationToken);
+
                 return true;
+            }
+            catch (OperationCanceledException)
+            {
+                // The caller went away; that is not a delivery failure to report.
+                throw;
             }
             catch (Exception exception)
             {

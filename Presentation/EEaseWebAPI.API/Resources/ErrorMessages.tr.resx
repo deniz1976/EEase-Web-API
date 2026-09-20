@@ -172,4 +172,13 @@
   <data name="InvalidUserData" xml:space="preserve">
     <value>Gönderilen kullanıcı bilgileri geçerli değil.</value>
   </data>
+  <data name="VerificationCodeSendFailed" xml:space="preserve">
+    <value>Doğrulama kodu gönderilemedi. Lütfen birazdan tekrar deneyin.</value>
+  </data>
+  <data name="ResetPasswordCodeSendFailed" xml:space="preserve">
+    <value>Şifre sıfırlama kodu gönderilemedi. Lütfen birazdan tekrar deneyin.</value>
+  </data>
+  <data name="UserDeleteCodeSendFailed" xml:space="preserve">
+    <value>Hesap silme kodu gönderilemedi. Lütfen birazdan tekrar deneyin.</value>
+  </data>
 </root>

@@ -172,4 +172,13 @@
   <data name="InvalidUserData" xml:space="preserve">
     <value>The submitted user information is not valid.</value>
   </data>
+  <data name="VerificationCodeSendFailed" xml:space="preserve">
+    <value>The verification code could not be sent. Please try again shortly.</value>
+  </data>
+  <data name="ResetPasswordCodeSendFailed" xml:space="preserve">
+    <value>The reset password code could not be sent. Please try again shortly.</value>
+  </data>
+  <data name="UserDeleteCodeSendFailed" xml:space="preserve">
+    <value>The account deletion code could not be sent. Please try again shortly.</value>
+  </data>
 </root>

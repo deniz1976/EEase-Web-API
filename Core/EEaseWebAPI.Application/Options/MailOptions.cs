@@ -19,5 +19,12 @@ namespace EEaseWebAPI.Application.Options
         public string Email { get; init; } = string.Empty;
 
         public bool Enabled { get; init; } = true;
+
+        /// <summary>
+        /// MailKit waits two minutes by default, which is far longer than a caller waiting
+        /// for a six digit code is willing to sit there.
+        /// </summary>
+        [Range(5, 300)]
+        public int TimeoutSeconds { get; init; } = 30;
     }
 }

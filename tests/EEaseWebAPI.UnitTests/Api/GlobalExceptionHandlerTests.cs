@@ -138,6 +138,24 @@ namespace EEaseWebAPI.UnitTests.Api
         }
 
         [Fact]
+        public async Task A_gateway_failure_we_threw_ourselves_is_still_explained()
+        {
+            // 5xx answers are generic on purpose, but a typed exception is a sentence we
+            // wrote for the caller, not a fault we failed to foresee.
+            var (statusCode, body) = await HandleAsync(
+                new MailDeliveryException(
+                    "The verification code could not be sent.",
+                    (int)StatusEnum.VerificationCodeSendFailed),
+                "tr");
+
+            statusCode.Should().Be(StatusCodes.Status502BadGateway);
+            body.GetProperty("enumStatusCode").GetInt32()
+                .Should().Be((int)StatusEnum.VerificationCodeSendFailed);
+            body.GetProperty("message").GetString()
+                .Should().Be("Doğrulama kodu gönderilemedi. Lütfen birazdan tekrar deneyin.");
+        }
+
+        [Fact]
         public async Task A_validation_failure_lists_the_fields_that_failed()
         {
             var errors = new Dictionary<string, string[]> { ["Email"] = new[] { "Email is required." } };

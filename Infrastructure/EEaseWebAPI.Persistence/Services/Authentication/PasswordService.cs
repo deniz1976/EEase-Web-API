@@ -1,6 +1,7 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.ChangePassword;
 using EEaseWebAPI.Application.Exceptions.ResetPassword;
 using EEaseWebAPI.Domain.Entities.Identity;
@@ -41,7 +42,15 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
             await UpdateAsync(user, "Failed to store the reset password code.");
 
-            _mailService.SendResetPasswordEmail(user.Email, AppMessages.Mail_ResetPasswordSubject, code);
+            var sent = await _mailService.SendResetPasswordEmailAsync(
+                user.Email, AppMessages.Mail_ResetPasswordSubject, code);
+
+            if (!sent)
+            {
+                throw new MailDeliveryException(
+                    "The reset password code could not be sent.",
+                    (int)StatusEnum.ResetPasswordCodeSendFailed);
+            }
 
             return true;
         }

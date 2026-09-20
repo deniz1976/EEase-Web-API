@@ -194,7 +194,10 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
             await _userManager.UpdateAsync(user);
 
-            _mailService.SendVerificationEmail(user.Email, AppMessages.Mail_VerificationSubject, user.VerificationCode);
+            // A login that needs confirming is answered the same way whether or not the mail
+            // went out; the caller can ask for the code again.
+            await _mailService.SendVerificationEmailAsync(
+                user.Email, AppMessages.Mail_VerificationSubject, user.VerificationCode);
         }
     }
 }

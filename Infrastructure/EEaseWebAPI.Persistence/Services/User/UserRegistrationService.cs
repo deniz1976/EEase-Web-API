@@ -2,6 +2,7 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.DTOs.User;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Validators.User;
 using EEaseWebAPI.Application.Exceptions.CreateUser;
 using EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser;
@@ -79,7 +80,10 @@ namespace EEaseWebAPI.Persistence.Services.User
                     $"Failed to create user: {Describe(result)}", (int)StatusEnum.UserUpdateFailed);
             }
 
-            _mailService.SendVerificationEmail(model.Email, AppMessages.Mail_VerificationSubject, verificationCode);
+            // The account exists either way: a caller whose mail failed can ask for the code
+            // again rather than losing the registration.
+            await _mailService.SendVerificationEmailAsync(
+                model.Email, AppMessages.Mail_VerificationSubject, verificationCode);
 
             return new CreateUserResponse
             {
@@ -114,7 +118,14 @@ namespace EEaseWebAPI.Persistence.Services.User
                     $"Failed to store the verification code: {Describe(result)}", (int)StatusEnum.UserUpdateFailed);
             }
 
-            _mailService.SendVerificationEmail(user.Email, AppMessages.Mail_VerificationSubject, user.VerificationCode);
+            var sent = await _mailService.SendVerificationEmailAsync(
+                user.Email, AppMessages.Mail_VerificationSubject, user.VerificationCode);
+
+            if (!sent)
+            {
+                throw new MailDeliveryException(
+                    "The verification code could not be sent.", (int)StatusEnum.VerificationCodeSendFailed);
+            }
 
             return true;
         }

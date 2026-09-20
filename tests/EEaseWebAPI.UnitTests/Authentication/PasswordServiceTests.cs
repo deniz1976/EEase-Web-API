@@ -1,4 +1,5 @@
 using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Exceptions.ChangePassword;
 using EEaseWebAPI.Application.Exceptions.ResetPassword;
@@ -35,6 +36,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
             _userManager.FindByNameAsync("alice").Returns(_alice);
             _userManager.UpdateAsync(Arg.Any<AppUser>()).Returns(IdentityResult.Success);
             _codes.Generate().Returns("123456");
+            _mail.SendResetPasswordEmailAsync(default!, default!, default!).ReturnsForAnyArgs(true);
 
             _service = new PasswordService(_userManager, _mail, _codes);
         }
@@ -60,7 +62,16 @@ namespace EEaseWebAPI.UnitTests.Authentication
 
             _alice.ResetPasswordCode.Should().Be("123456");
             _alice.ResetPasswordCodeExpiration.Should().BeAfter(DateTime.UtcNow);
-            _mail.Received(1).SendResetPasswordEmail(_alice.Email, Arg.Any<string>(), "123456");
+            await _mail.Received(1).SendResetPasswordEmailAsync(
+                _alice.Email, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task A_reset_code_that_never_left_is_not_reported_as_sent()
+        {
+            _mail.SendResetPasswordEmailAsync(default!, default!, default!).ReturnsForAnyArgs(false);
+
+            await Assert.ThrowsAsync<MailDeliveryException>(() => _service.SendResetCodeAsync("alice"));
         }
 
         [Fact]

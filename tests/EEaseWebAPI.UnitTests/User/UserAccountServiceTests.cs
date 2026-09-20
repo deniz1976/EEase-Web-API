@@ -1,4 +1,5 @@
 using EEaseWebAPI.Application.Abstractions.Services;
+using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions.DeleteUser;
@@ -36,6 +37,7 @@ namespace EEaseWebAPI.UnitTests.User
             _userManager.FindByNameAsync("alice").Returns(_alice);
             _userManager.UpdateAsync(Arg.Any<AppUser>()).Returns(IdentityResult.Success);
             _codes.Generate().Returns("123456");
+            _mail.SendDeleteCodeEmailAsync(default!, default!, default!).ReturnsForAnyArgs(true);
 
             _service = new UserAccountService(_userManager, _mail, _codes);
         }
@@ -60,7 +62,16 @@ namespace EEaseWebAPI.UnitTests.User
 
             outcome.Should().Be(DeleteRequestOutcome.CodeSent);
             _alice.DeleteCodeExpiration.Should().BeAfter(DateTime.UtcNow);
-            _mail.Received(1).SendDeleteCodeEmail(_alice.Email, Arg.Any<string>(), "123456");
+            await _mail.Received(1).SendDeleteCodeEmailAsync(
+                _alice.Email, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task A_delete_code_that_never_left_is_not_reported_as_sent()
+        {
+            _mail.SendDeleteCodeEmailAsync(default!, default!, default!).ReturnsForAnyArgs(false);
+
+            await Assert.ThrowsAsync<MailDeliveryException>(() => _service.RequestDeletionAsync("alice"));
         }
 
         [Fact]
@@ -76,7 +87,7 @@ namespace EEaseWebAPI.UnitTests.User
             _alice.Status.Should().BeTrue();
             _alice.DeleteDate.Should().BeNull();
             _alice.DeleteCode.Should().BeNull();
-            _mail.DidNotReceiveWithAnyArgs().SendDeleteCodeEmail(default!, default!, default!);
+            await _mail.DidNotReceiveWithAnyArgs().SendDeleteCodeEmailAsync(default!, default!, default!);
         }
 
         [Fact]

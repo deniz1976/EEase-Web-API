@@ -1,6 +1,7 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.DeleteUser;
 using EEaseWebAPI.Application.MapEntities.StatusCheck;
 using EEaseWebAPI.Domain.Entities.Identity;
@@ -65,7 +66,15 @@ namespace EEaseWebAPI.Persistence.Services.User
 
             await _userManager.UpdateAsync(user);
 
-            _mailService.SendDeleteCodeEmail(user.Email, AppMessages.Mail_DeleteAccountSubject, user.DeleteCode);
+            var sent = await _mailService.SendDeleteCodeEmailAsync(
+                user.Email, AppMessages.Mail_DeleteAccountSubject, user.DeleteCode);
+
+            if (!sent)
+            {
+                throw new MailDeliveryException(
+                    "The account deletion code could not be sent.",
+                    (int)StatusEnum.UserDeleteCodeSendFailed);
+            }
 
             return DeleteRequestOutcome.CodeSent;
         }

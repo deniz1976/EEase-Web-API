@@ -108,7 +108,8 @@ namespace EEaseWebAPI.API.Extensions
 
             ExternalServiceNotConfiguredException => StatusCodes.Status503ServiceUnavailable,
 
-            GeminiAIServiceException
+            MailDeliveryException
+                or GeminiAIServiceException
                 or GeminiAPIKeyNotFoundException
                 or GeminiAPIResponseParseException => StatusCodes.Status502BadGateway,
 
@@ -130,6 +131,14 @@ namespace EEaseWebAPI.API.Extensions
         /// </summary>
         private string ResolveMessage(Exception exception, int? carriedCode, int statusCode)
         {
+            // An exception that carries a code is one we chose to throw, so the caller is
+            // told about it in their own language whatever the status code is. A mail that
+            // could not be sent is a 502, but it is still a sentence we wrote for them.
+            if (carriedCode is not null)
+            {
+                return Translate((StatusEnum)carriedCode.Value) ?? exception.Message;
+            }
+
             if (statusCode >= StatusCodes.Status500InternalServerError)
             {
                 return _environment.IsDevelopment()
@@ -137,12 +146,9 @@ namespace EEaseWebAPI.API.Extensions
                     : Translate(StatusEnum.UnknownError) ?? "An unexpected error occurred. Please try again later.";
             }
 
-            // Only an exception that carries a code can be translated from it. Reading a
-            // missing code as UnknownError would answer "an unexpected error occurred" to a
-            // caller who was simply told their username was taken.
-            return carriedCode is null
-                ? exception.Message
-                : Translate((StatusEnum)carriedCode.Value) ?? exception.Message;
+            // Reading a missing code as UnknownError would answer "an unexpected error
+            // occurred" to a caller who was simply told their username was taken.
+            return exception.Message;
         }
 
         private string? Translate(StatusEnum statusEnum)

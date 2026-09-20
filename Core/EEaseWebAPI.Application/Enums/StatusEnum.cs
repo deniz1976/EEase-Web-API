@@ -122,6 +122,7 @@ namespace EEaseWebAPI.Application.Enums
         RouteGenerationFailed = 118,
         UnauthorizedToModifyRoute = 119,
         UsernameAlreadyTaken = 120,
+        VerificationCodeSendFailed = 121,
 
         ServiceUnavailable = 995,
         NetworkError = 996,
