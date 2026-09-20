@@ -5,6 +5,11 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface IPreferenceFeedbackService
     {
-        Task<PreferenceFeedbackResult> ApplyAsync(string userId, BaseEntity place, string placeType, bool liked);
+        Task<PreferenceFeedbackResult> ApplyAsync(
+            string userId,
+            BaseEntity place,
+            string placeType,
+            bool liked,
+            CancellationToken cancellationToken = default);
     }
 }

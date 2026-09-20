@@ -36,12 +36,15 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
             string username,
             string googlePlaceId,
-            string placeType);
+            string placeType,
+            CancellationToken cancellationToken = default);
 
         Task<bool> CheckRouteLikeStatus(string username, Guid routeId);
 
         Task<string> DeleteAllRoutes(string username);
 
-        Task<StandardRoute> DislikePlaceOrRestaurant(DislikePlaceOrRestaurantCommandRequest dislikePlaceOrRestaurantDTO);
+        Task<StandardRoute> DislikePlaceOrRestaurant(
+            DislikePlaceOrRestaurantCommandRequest dislikePlaceOrRestaurantDTO,
+            CancellationToken cancellationToken = default);
     }
 }

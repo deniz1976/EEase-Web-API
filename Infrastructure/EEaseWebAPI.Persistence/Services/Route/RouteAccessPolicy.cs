@@ -65,7 +65,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             if (access.IsAccessible)
             {
                 dto.Status = route.Status;
-                dto.TravelDays = route.TravelDays?.ToList();
+                dto.TravelDays = route.TravelDays.ToList();
             }
 
             return dto;

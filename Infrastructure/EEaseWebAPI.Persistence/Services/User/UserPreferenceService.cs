@@ -46,14 +46,15 @@ namespace EEaseWebAPI.Persistence.Services.User
             return user ?? throw new Application.Exceptions.Login.UserNotFoundException("User not found", (int)StatusEnum.UserNotFound);
         }
 
-        public async Task SetFromMessageAsync(string username, string message)
+        public async Task SetFromMessageAsync(
+            string username, string message, CancellationToken cancellationToken = default)
         {
             var user = await GetUserWithPreferencesAsync(username);
 
             EnsureNoPreferences(user);
 
             var (accommodation, food, personalization) =
-                await _geminiAIService.GetUserPreferencesFromMessage(message);
+                await _geminiAIService.GetUserPreferencesFromMessage(message, cancellationToken);
 
             if (!HasAnyPreference(accommodation) && !HasAnyPreference(food) && !HasAnyPreference(personalization))
             {

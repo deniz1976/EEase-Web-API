@@ -8,7 +8,7 @@ namespace EEaseWebAPI.Application.Abstractions.Services
     {
         Task<AppUser> GetUserWithPreferencesAsync(string username);
 
-        Task SetFromMessageAsync(string username, string message);
+        Task SetFromMessageAsync(string username, string message, CancellationToken cancellationToken = default);
 
         Task SetFromTopicsAsync(string username, IReadOnlyList<string> topics);
 

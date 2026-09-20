@@ -47,7 +47,9 @@ namespace EEaseWebAPI.Persistence.Services.Route
             _logger = logger;
         }
 
-        public async Task<StandardRoute> DislikePlaceOrRestaurant(DislikePlaceOrRestaurantCommandRequest request)
+        public async Task<StandardRoute> DislikePlaceOrRestaurant(
+            DislikePlaceOrRestaurantCommandRequest request,
+            CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(request.PlaceType))
                 throw new InvalidPlaceTypeException("Place type must be specified");
@@ -77,7 +79,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             {
                 var feedback = await _preferenceFeedbackService.ApplyAsync(
                     user.Id, LocatePlace(route, request.GooglePlaceId, request.PlaceType),
-                    request.PlaceType, liked: false);
+                    request.PlaceType, liked: false, cancellationToken);
 
                 await _dislikedPlaceService.RecordAsync(user.Id, request.GooglePlaceId, request.PlaceType);
 

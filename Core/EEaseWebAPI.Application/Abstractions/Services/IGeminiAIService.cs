@@ -1,35 +1,22 @@
-using EEaseWebAPI.Application.DTOs.Route.CreateRouteWithoutLogin;
 using EEaseWebAPI.Domain.Entities.Identity;
-using System.Threading.Tasks;
-using EEaseWebAPI.Domain.Entities.Route;
-using EEaseWebAPI.Application.DTOs.Route.NewCustomRoute;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
 {
+    /// <summary>
+    /// The two things the product asks Gemini for outside route enrichment: reading
+    /// preferences out of a sentence the user wrote, and deciding which preferences a place
+    /// matches. Route enrichment talks to <see cref="IGeminiApiClient"/> directly.
+    /// </summary>
     public interface IGeminiAIService
     {
-        Task<(UserAccommodationPreferences, UserFoodPreferences, UserPersonalization)> GetUserPreferencesFromMessage(string message);
+        Task<(UserAccommodationPreferences Accommodation, UserFoodPreferences Food, UserPersonalization Personalization)>
+            GetUserPreferencesFromMessage(string message, CancellationToken cancellationToken = default);
 
-        Task<string> GenerateContentAsync(string prompt);
-
-        Task<List<EEaseWebAPI.Application.DTOs.Route.CreateRouteWithoutLogin.AnonymousDay>> CreateRouteAnonymous(string? destination, int dayCount, DateOnly? startDate, DateOnly? endDate, PRICE_LEVEL? _PRICE_LEVEL);
-
-        Task<Weather> GetWeatherForDateAsync(string city, DateOnly date, TimeOnly time);
-
-        Task<List<AnonymousDay>> CreateCustomRouteWithPreferences(
-            string destination,
-            int dayCount,
-            DateOnly? startDate,
-            DateOnly? endDate,
-            PRICE_LEVEL? priceLevel,
-            UserAccommodationPreferences accommodationPrefs,
-            UserFoodPreferences foodPrefs,
-            UserPersonalization personalPrefs);
-
-        Task<List<string>> AnalyzePlacePreferencesAsync(string placeName, string placeType, string placeDescription, List<string> availablePreferences);
-
-        Task<List<NewCustomRouteDTO>> CreateCustomRoute(string destination, int dayCount, DateOnly? startDate, DateOnly? endDate, PRICE_LEVEL? priceLevel, UserAccommodationPreferences accommodationPrefs,
-            UserFoodPreferences foodPrefs,
-            UserPersonalization personalPrefs);
+        Task<List<string>> AnalyzePlacePreferencesAsync(
+            string placeName,
+            string placeType,
+            string placeDescription,
+            List<string> availablePreferences,
+            CancellationToken cancellationToken = default);
     }
 }

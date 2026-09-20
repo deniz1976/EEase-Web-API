@@ -9,6 +9,8 @@ namespace EEaseWebAPI.Application.Abstractions.Services
     /// </summary>
     public interface IRouteDislikeService
     {
-        Task<StandardRoute> DislikePlaceOrRestaurant(DislikePlaceOrRestaurantCommandRequest request);
+        Task<StandardRoute> DislikePlaceOrRestaurant(
+            DislikePlaceOrRestaurantCommandRequest request,
+            CancellationToken cancellationToken = default);
     }
 }

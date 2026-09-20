@@ -25,7 +25,11 @@ namespace EEaseWebAPI.Persistence.Services.Route
         }
 
         public async Task<PreferenceFeedbackResult> ApplyAsync(
-            string userId, BaseEntity place, string placeType, bool liked)
+            string userId,
+            BaseEntity place,
+            string placeType,
+            bool liked,
+            CancellationToken cancellationToken = default)
         {
             var category = CategoryOf(placeType);
 
@@ -42,7 +46,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 .Select(property => property.Name)
                 .ToList();
 
-            var selected = await _geminiAIService.AnalyzePlacePreferencesAsync(name, type, description, available);
+            var selected = await _geminiAIService.AnalyzePlacePreferencesAsync(
+                name, type, description, available, cancellationToken);
 
             if (selected == null || selected.Count == 0)
             {

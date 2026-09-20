@@ -59,10 +59,16 @@ namespace EEaseWebAPI.Persistence.Services.Route
             _routeInteractionService.UpdateRouteStatusAsync(routeId, status, username);
 
         public Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
-            string username, string googlePlaceId, string placeType) =>
-            _routeInteractionService.LikePlaceOrRestaurantAsync(username, googlePlaceId, placeType);
+            string username,
+            string googlePlaceId,
+            string placeType,
+            CancellationToken cancellationToken = default) =>
+            _routeInteractionService.LikePlaceOrRestaurantAsync(
+                username, googlePlaceId, placeType, cancellationToken);
 
-        public Task<StandardRoute> DislikePlaceOrRestaurant(DislikePlaceOrRestaurantCommandRequest request) =>
-            _routeDislikeService.DislikePlaceOrRestaurant(request);
+        public Task<StandardRoute> DislikePlaceOrRestaurant(
+            DislikePlaceOrRestaurantCommandRequest request,
+            CancellationToken cancellationToken = default) =>
+            _routeDislikeService.DislikePlaceOrRestaurant(request, cancellationToken);
     }
 }

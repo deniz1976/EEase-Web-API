@@ -132,14 +132,18 @@ namespace EEaseWebAPI.Persistence.Services.Route
         }
 
         public async Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
-            string username, string googlePlaceId, string placeType)
+            string username,
+            string googlePlaceId,
+            string placeType,
+            CancellationToken cancellationToken = default)
         {
             var user = await RequireUserAsync(username);
 
             var place = await FindPlaceAsync(googlePlaceId, placeType)
                 ?? throw new InvalidPlaceTypeException($"Place not found with Google ID: {googlePlaceId}");
 
-            var feedback = await _preferenceFeedbackService.ApplyAsync(user.Id, place, placeType, liked: true);
+            var feedback = await _preferenceFeedbackService.ApplyAsync(
+                user.Id, place, placeType, liked: true, cancellationToken);
 
             return new LikePlaceOrRestaurantCommandResponseBody
             {

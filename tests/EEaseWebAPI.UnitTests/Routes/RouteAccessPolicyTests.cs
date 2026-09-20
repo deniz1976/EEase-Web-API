@@ -127,7 +127,9 @@ namespace EEaseWebAPI.UnitTests.Routes
             dto.Name.Should().Be("Rome tour");
             dto.IsAccessible.Should().BeFalse();
             dto.AccessibilityMessage.Should().NotBeNullOrWhiteSpace();
-            dto.TravelDays.Should().BeNull();
+            // Empty rather than null: the caller gets a list either way, it just has
+            // nothing in it when the route is not theirs to see.
+            dto.TravelDays.Should().BeEmpty();
             dto.Status.Should().BeNull();
         }
 

@@ -18,6 +18,9 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username);
 
         Task<LikePlaceOrRestaurantCommandResponseBody> LikePlaceOrRestaurantAsync(
-            string username, string googlePlaceId, string placeType);
+            string username,
+            string googlePlaceId,
+            string placeType,
+            CancellationToken cancellationToken = default);
     }
 }
