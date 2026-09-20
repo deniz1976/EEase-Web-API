@@ -37,11 +37,15 @@ namespace EEaseWebAPI.Persistence.Services.User
 
         public async Task<AppUser> GetUserWithPreferencesAsync(string username)
         {
+            // Identity looks users up by the normalised name, so comparing the raw one here
+            // would miss a caller that spelled it with different capitals.
+            var normalizedUserName = username.ToUpperInvariant();
+
             var user = await _context.Users
                 .Include(appUser => appUser.UserPersonalization)
                 .Include(appUser => appUser.FoodPreferences)
                 .Include(appUser => appUser.AccommodationPreferences)
-                .FirstOrDefaultAsync(appUser => appUser.UserName == username);
+                .FirstOrDefaultAsync(appUser => appUser.NormalizedUserName == normalizedUserName);
 
             return user ?? throw new Application.Exceptions.Login.UserNotFoundException("User not found", (int)StatusEnum.UserNotFound);
         }

@@ -19,8 +19,11 @@ namespace EEaseWebAPI.UnitTests.User
         private readonly IFriendshipService _friendships = Substitute.For<IFriendshipService>();
         private readonly UserPreferenceService _service;
 
-        private readonly AppUser _alice = new() { Id = "alice-id", UserName = "alice" };
-        private readonly AppUser _bob = new() { Id = "bob-id", UserName = "bob" };
+        // Identity fills NormalizedUserName in on every write, and lookups go through it.
+        private readonly AppUser _alice =
+            new() { Id = "alice-id", UserName = "alice", NormalizedUserName = "ALICE" };
+        private readonly AppUser _bob =
+            new() { Id = "bob-id", UserName = "bob", NormalizedUserName = "BOB" };
 
         public UserPreferenceServiceTests()
         {
@@ -212,5 +215,15 @@ namespace EEaseWebAPI.UnitTests.User
             topics.FoodTopics.Should().NotBeEmpty();
             topics.TravelTopics.Should().NotBeEmpty();
         }
+        [Fact]
+        public async Task A_username_spelled_with_different_capitals_still_finds_the_user()
+        {
+            // Identity itself is case insensitive about usernames; this lookup used to
+            // compare the raw name and answer "user not found".
+            var user = await _service.GetUserWithPreferencesAsync("ALICE");
+
+            user.Id.Should().Be("alice-id");
+        }
+
     }
 }
