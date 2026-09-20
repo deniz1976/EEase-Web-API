@@ -29,7 +29,7 @@ namespace EEaseWebAPI.API.Controllers
             var userName = CurrentUsername;
             GetCurrenciesQueryRequest request = new()
             {
-                username = userName,
+                Username = userName,
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };

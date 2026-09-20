@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +9,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode
 {
     public class DeleteUserWithCodeCommandRequest : IRequest<DeleteUserWithCodeCommandResponse>
     {
-        public string? username { get; set; }
+        public string? Username { get; set; }
 
-        public string? code { get; set; }
+        public string? Code { get; set; }
     }
 }

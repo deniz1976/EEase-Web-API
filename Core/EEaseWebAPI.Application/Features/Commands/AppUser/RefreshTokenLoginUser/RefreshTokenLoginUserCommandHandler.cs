@@ -33,7 +33,7 @@ RefreshTokenLoginBody token = await _authService.RefreshTokenLoginAsync(request.
                 Body = new MapEntities.RefreshTokenLogin.RefreshTokenLoginBody()
                 {
                     Token = token.Token,
-                    warning = token.warning
+                    Warning = token.Warning
                 }
             };
 

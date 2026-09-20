@@ -10,15 +10,15 @@ namespace EEaseWebAPI.Application.MapEntities.GetUserInfoById
 
     public class GetUserInfoByIdBody
     {
-        public string? username { get; set; }
-        public string? name { get; set; }
-        public string? surname { get; set; }
-        public string? bio { get; set; }
-        public string? photoPath { get; set; }
-        public string? errorMessage { get; set; }
-        public bool canSendFriendRequest { get; set; }
-        public bool isFriend { get; set; }
-        public EEaseWebAPI.Application.Enums.ProfileVisibilityStatus visibilityStatus { get; set; }
+        public string? Username { get; set; }
+        public string? Name { get; set; }
+        public string? Surname { get; set; }
+        public string? Bio { get; set; }
+        public string? PhotoPath { get; set; }
+        public string? ErrorMessage { get; set; }
+        public bool CanSendFriendRequest { get; set; }
+        public bool IsFriend { get; set; }
+        public EEaseWebAPI.Application.Enums.ProfileVisibilityStatus VisibilityStatus { get; set; }
         public List<PreferenceDetail>? PersonalizationPreferences { get; set; }
         public List<PreferenceDetail>? FoodPreferences { get; set; }
         public List<PreferenceDetail>? AccommodationPreferences { get; set; }

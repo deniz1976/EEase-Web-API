@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.MapEntities.StatusCheck
 
     public class StatusCheckBody
     {
-        public bool? status {  get; set; }
-        public string? message { get; set; }
+        public bool? Status {  get; set; }
+        public string? Message { get; set; }
     }
 }

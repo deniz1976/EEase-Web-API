@@ -27,7 +27,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
                 Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesUpdatedSuccessfully),
                 Body = new UpdateUserPreferencesBody
                 {
-                    message = AppMessages.PreferencesUpdated
+                    Message = AppMessages.PreferencesUpdated
                 }
             };
         }

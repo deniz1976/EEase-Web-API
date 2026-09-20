@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +9,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
 {
     public class ChangePasswordCommandRequest :IRequest<ChangePasswordCommandResponse>
     {
-        public string? username { get; set; }
+        public string? Username { get; set; }
 
-        public string? oldPassword { get; set; }
+        public string? OldPassword { get; set; }
 
-        public string? newPassword { get; set; }
+        public string? NewPassword { get; set; }
     }
 }

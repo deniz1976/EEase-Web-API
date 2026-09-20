@@ -10,8 +10,8 @@ namespace EEaseWebAPI.Application.MapEntities.UpdateUser
 
     public class UpdateUserBody
     {
-        public Token? newToken { get; set; }
+        public Token? NewToken { get; set; }
 
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
 }

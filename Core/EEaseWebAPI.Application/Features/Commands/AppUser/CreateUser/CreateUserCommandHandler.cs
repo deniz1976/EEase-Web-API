@@ -42,7 +42,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser
             return new CreateUserCommandResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.SuccessfullyCreated),
-                Body = new CreateUserBody { message = message }
+                Body = new CreateUserBody { Message = message }
             };
 
         }

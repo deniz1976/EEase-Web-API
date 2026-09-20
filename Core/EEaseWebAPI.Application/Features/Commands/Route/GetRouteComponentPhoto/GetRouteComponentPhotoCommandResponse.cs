@@ -13,6 +13,6 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto
 
     public class GetRouteComponentPhotoCommandResponseBody
     {
-        public string? photoUri { get; set; }
+        public string? PhotoUri { get; set; }
     }
 }

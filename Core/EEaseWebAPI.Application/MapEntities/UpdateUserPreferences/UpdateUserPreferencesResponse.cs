@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.MapEntities.UpdateUserPreferences
 
     public class UpdateUserPreferencesBody
     {
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
 }

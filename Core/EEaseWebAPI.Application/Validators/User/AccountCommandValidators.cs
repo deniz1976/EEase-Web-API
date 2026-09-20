@@ -21,10 +21,10 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public ChangePasswordCommandValidator()
         {
-            RuleFor(request => request.oldPassword)
+            RuleFor(request => request.OldPassword)
                 .NotEmpty().WithMessage(ValidationMessages.OldPassword_Required);
 
-            RuleFor(request => request.newPassword)
+            RuleFor(request => request.NewPassword)
                 .NotEmpty().WithMessage(ValidationMessages.NewPassword_Required);
         }
     }
@@ -33,10 +33,10 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public ConfirmEmailUserCommandValidator()
         {
-            RuleFor(request => request.code)
+            RuleFor(request => request.Code)
                 .NotEmpty().WithMessage(ValidationMessages.Code_Required);
 
-            RuleFor(request => request.emailOrUsername)
+            RuleFor(request => request.EmailOrUsername)
                 .NotEmpty().WithMessage(ValidationMessages.EmailOrUsername_Required);
         }
     }
@@ -45,7 +45,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public DeleteUserWithCodeCommandValidator()
         {
-            RuleFor(request => request.code)
+            RuleFor(request => request.Code)
                 .NotEmpty().WithMessage(ValidationMessages.Code_Required);
         }
     }
@@ -63,13 +63,13 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public ResetPasswordCommandValidator()
         {
-            RuleFor(request => request.usernameOrEmail)
+            RuleFor(request => request.UsernameOrEmail)
                 .NotEmpty().WithMessage(ValidationMessages.EmailOrUsername_Required);
 
-            RuleFor(request => request.code)
+            RuleFor(request => request.Code)
                 .NotEmpty().WithMessage(ValidationMessages.Code_Required);
 
-            RuleFor(request => request.newPassword)
+            RuleFor(request => request.NewPassword)
                 .NotEmpty().WithMessage(ValidationMessages.NewPassword_Required);
         }
     }
@@ -87,7 +87,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public SendVerificationCodeCommandValidator()
         {
-            RuleFor(request => request.email)
+            RuleFor(request => request.Email)
                 .NotEmpty().WithMessage(ValidationMessages.Email_Required)
                 .EmailAddress().WithMessage(ValidationMessages.Email_Invalid);
         }

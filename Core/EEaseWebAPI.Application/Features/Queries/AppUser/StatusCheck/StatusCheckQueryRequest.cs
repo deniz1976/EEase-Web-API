@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck
 {
     public class StatusCheckQueryRequest : IRequest<StatusCheckQueryResponse>
     {
-        public string? username {  get; set; }
+        public string? Username {  get; set; }
     }
 }

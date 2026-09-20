@@ -10,10 +10,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser
 {
     public class ResetPasswordCommandRequest : IRequest<ResetPasswordCommandResponse>
     {
-        public string? usernameOrEmail { get; set; }
+        public string? UsernameOrEmail { get; set; }
 
-        public string? code { get; set; }
+        public string? Code { get; set; }
 
-        public string? newPassword { get; set; }
+        public string? NewPassword { get; set; }
     }
 }

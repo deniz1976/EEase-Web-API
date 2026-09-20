@@ -80,7 +80,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
         {
-            ChangePasswordCommandRequest request = new ChangePasswordCommandRequest() { username = CurrentUsername,oldPassword = changePasswordDTO.oldpassword, newPassword = changePasswordDTO.newpassword};
+            ChangePasswordCommandRequest request = new ChangePasswordCommandRequest() { Username = CurrentUsername,OldPassword = changePasswordDTO.OldPassword, NewPassword = changePasswordDTO.NewPassword};
             ChangePasswordCommandResponse response = await _mediator.Send(request);
             return Ok(response);
         }

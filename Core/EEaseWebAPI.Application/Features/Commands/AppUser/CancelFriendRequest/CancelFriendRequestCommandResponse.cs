@@ -13,8 +13,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CancelFriendRequest
 
     public class CancelFriendRequestCommandResponseBody
     {
-        public string? message { get; set; }
-        public bool? success { get; set; }
+        public string? Message { get; set; }
+        public bool? Success { get; set; }
     }
 
 }

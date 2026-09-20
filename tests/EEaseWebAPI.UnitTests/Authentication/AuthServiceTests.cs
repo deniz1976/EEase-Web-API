@@ -114,8 +114,8 @@ namespace EEaseWebAPI.UnitTests.Authentication
 
             var body = await _service.LoginAsync("alice", "OldPass1!", 900);
 
-            body.userInfo!.lastSeen.Should().Be(earlier);
-            body.warning.Should().Be("Account is active.");
+            body.UserInfo!.LastSeen.Should().Be(earlier);
+            body.Warning.Should().Be("Account is active.");
             _alice.LastSeen.Should().BeAfter(earlier);
         }
 

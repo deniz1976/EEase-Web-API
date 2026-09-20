@@ -28,14 +28,14 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
 
         public async Task<GetUserInfoByNameQueryResponse> Handle(GetUserInfoByNameQueryRequest request, CancellationToken cancellationToken)
         {
-var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(request.username, request.targetUsername);
+var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(request.Username, request.TargetUsername);
 
             var response = new GetUserInfoByNameQueryResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserInfoRetrievedSuccessfully),
                 Body = new()
                 {
-                    visibilityStatus = visibilityStatus
+                    VisibilityStatus = visibilityStatus
                 }
             };
 
@@ -44,31 +44,31 @@ var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(
             if (visibilityStatus == ProfileVisibilityStatus.BlockedByTarget)
             {
                 response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedByTarget);
-                response.Body.errorMessage = AppMessages.BlockedByTargetProfile;
+                response.Body.ErrorMessage = AppMessages.BlockedByTargetProfile;
                 return response;
             }
             else if (visibilityStatus == ProfileVisibilityStatus.BlockedTarget)
             {
                 response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedTarget);
-                response.Body.errorMessage = AppMessages.BlockedTargetProfile;
-                response.Body.username = userInfo.username;
+                response.Body.ErrorMessage = AppMessages.BlockedTargetProfile;
+                response.Body.Username = userInfo.Username;
                 return response;
             }
 
-            response.Body.username = userInfo.username;
-            response.Body.name = userInfo.name;
-            response.Body.surname = userInfo.surname;
-            response.Body.bio = userInfo.bio;
-            response.Body.photoPath = userInfo.photoPath;
-            response.Body.gender = userInfo.gender;
-            response.Body.country = userInfo.country;
-            response.Body.isFriend = visibilityStatus == ProfileVisibilityStatus.FullAccess &&request.username != request.targetUsername;
-            response.Body.canSendFriendRequest = visibilityStatus == ProfileVisibilityStatus.LimitedAccess;
-            response.Body.FriendRequestStatus = userInfo.friendRequestStatus;
+            response.Body.Username = userInfo.Username;
+            response.Body.Name = userInfo.Name;
+            response.Body.Surname = userInfo.Surname;
+            response.Body.Bio = userInfo.Bio;
+            response.Body.PhotoPath = userInfo.PhotoPath;
+            response.Body.Gender = userInfo.Gender;
+            response.Body.Country = userInfo.Country;
+            response.Body.IsFriend = visibilityStatus == ProfileVisibilityStatus.FullAccess &&request.Username != request.TargetUsername;
+            response.Body.CanSendFriendRequest = visibilityStatus == ProfileVisibilityStatus.LimitedAccess;
+            response.Body.FriendRequestStatus = userInfo.FriendRequestStatus;
 
             if (visibilityStatus == ProfileVisibilityStatus.FullAccess)
             {
-                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.username, request.targetUsername);
+                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.Username, request.TargetUsername);
                 if (preferences != null)
                 {
                     response.Body.PersonalizationPreferences = preferences.PersonalizationPreferences;
@@ -79,7 +79,7 @@ var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByNameAsync(
 
             if (visibilityStatus == ProfileVisibilityStatus.LimitedAccess)
             {
-                response.Body.errorMessage = AppMessages.NotFriendsProfile;
+                response.Body.ErrorMessage = AppMessages.NotFriendsProfile;
             }
 
             return response;

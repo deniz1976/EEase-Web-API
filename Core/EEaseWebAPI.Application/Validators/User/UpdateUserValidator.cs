@@ -34,10 +34,10 @@ namespace EEaseWebAPI.Application.Validators.User
                     .WithMessage(string.Format(ValidationMessages.Surname_TooLong, UserProfileRules.NameMaxLength))
                 .When(request => request.Surname != null);
 
-            RuleFor(request => request.bio)
+            RuleFor(request => request.Bio)
                 .MaximumLength(UserProfileRules.BioMaxLength)
                     .WithMessage(string.Format(ValidationMessages.Bio_TooLong, UserProfileRules.BioMaxLength))
-                .When(request => request.bio != null);
+                .When(request => request.Bio != null);
 
             RuleFor(request => request.Gender)
                 .Must(UserProfileRules.IsKnownGender)

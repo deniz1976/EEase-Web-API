@@ -13,8 +13,8 @@ namespace EEaseWebAPI.Application.MapEntities.CheckEmailIsInUse
     }
     public class CheckEmailIsInUseBody
     {
-        public bool? result { get; set; }
+        public bool? Result { get; set; }
 
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
 }

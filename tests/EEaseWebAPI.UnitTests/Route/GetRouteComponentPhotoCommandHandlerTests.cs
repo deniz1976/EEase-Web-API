@@ -24,18 +24,18 @@ namespace EEaseWebAPI.UnitTests.Route
 
         private static GetRouteComponentPhotoCommandRequest Request(
             string? photoName = PhotoName, int width = 400, int height = 400) =>
-            new() { photoName = photoName, maxWidthPx = width, maxHeightPx = height };
+            new() { PhotoName = photoName, MaxWidthPx = width, MaxHeightPx = height };
 
         [Fact]
         public async Task A_photo_is_asked_for_at_the_requested_size()
         {
             _googlePlaces
                 .GetPlacePhotosAsync(PhotoName, 800, 600, Arg.Any<CancellationToken>())
-                .Returns(new GetRouteComponentPhotoCommandResponseBody { photoUri = "https://example.test/p.jpg" });
+                .Returns(new GetRouteComponentPhotoCommandResponseBody { PhotoUri = "https://example.test/p.jpg" });
 
             var response = await _handler.Handle(Request(width: 800, height: 600), CancellationToken.None);
 
-            response.Body.photoUri.Should().Be("https://example.test/p.jpg");
+            response.Body.PhotoUri.Should().Be("https://example.test/p.jpg");
         }
 
         [Fact]

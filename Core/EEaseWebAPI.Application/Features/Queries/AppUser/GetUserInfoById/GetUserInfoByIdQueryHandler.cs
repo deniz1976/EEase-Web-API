@@ -28,42 +28,42 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById
 
         public async Task<GetUserInfoByIdQueryResponse> Handle(GetUserInfoByIdQueryRequest request, CancellationToken cancellationToken)
         {
-var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByIdAsync(request.username, request.userId);
+var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByIdAsync(request.Username, request.UserId);
 
             var response = new GetUserInfoByIdQueryResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserInfoRetrievedSuccessfully),
                 Body = new()
                 {
-                    visibilityStatus = visibilityStatus
+                    VisibilityStatus = visibilityStatus
                 }
             };
 
             if (visibilityStatus == ProfileVisibilityStatus.BlockedByTarget)
             {
                 response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedByTarget);
-                response.Body.errorMessage = AppMessages.BlockedByTargetProfile;
+                response.Body.ErrorMessage = AppMessages.BlockedByTargetProfile;
                 return response;
             }
             else if (visibilityStatus == ProfileVisibilityStatus.BlockedTarget)
             {
                 response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedTarget);
-                response.Body.errorMessage = AppMessages.BlockedTargetProfile;
-                response.Body.username = userInfo.username;
+                response.Body.ErrorMessage = AppMessages.BlockedTargetProfile;
+                response.Body.Username = userInfo.Username;
                 return response;
             }
 
-            response.Body.username = userInfo.username;
-            response.Body.name = userInfo.name;
-            response.Body.surname = userInfo.surname;
-            response.Body.bio = userInfo.bio;
-            response.Body.photoPath = userInfo.photoPath;
-            response.Body.isFriend = visibilityStatus == ProfileVisibilityStatus.FullAccess && userInfo.username != request.username;
-            response.Body.canSendFriendRequest = visibilityStatus == ProfileVisibilityStatus.LimitedAccess;
+            response.Body.Username = userInfo.Username;
+            response.Body.Name = userInfo.Name;
+            response.Body.Surname = userInfo.Surname;
+            response.Body.Bio = userInfo.Bio;
+            response.Body.PhotoPath = userInfo.PhotoPath;
+            response.Body.IsFriend = visibilityStatus == ProfileVisibilityStatus.FullAccess && userInfo.Username != request.Username;
+            response.Body.CanSendFriendRequest = visibilityStatus == ProfileVisibilityStatus.LimitedAccess;
 
             if (visibilityStatus == ProfileVisibilityStatus.FullAccess)
             {
-                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.username, userInfo.username);
+                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.Username, userInfo.Username);
                 if (preferences != null)
                 {
                     response.Body.PersonalizationPreferences = preferences.PersonalizationPreferences;
@@ -74,7 +74,7 @@ var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByIdAsync(re
 
             if (visibilityStatus == ProfileVisibilityStatus.LimitedAccess)
             {
-                response.Body.errorMessage = AppMessages.NotFriendsProfile;
+                response.Body.ErrorMessage = AppMessages.NotFriendsProfile;
             }
 
             return response;

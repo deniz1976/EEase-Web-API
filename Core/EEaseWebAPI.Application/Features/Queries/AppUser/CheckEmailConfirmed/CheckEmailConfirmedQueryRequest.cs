@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailConfirmed
 {
     public class CheckEmailConfirmedQueryRequest : IRequest<CheckEmailConfirmedQueryResponse>
     {
-        public string emailOrUsername { get; set; }
+        public string EmailOrUsername { get; set; }
     }
 }

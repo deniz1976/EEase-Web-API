@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.JsonConverters;
+using EEaseWebAPI.Application.JsonConverters;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -20,8 +20,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
 
         public DateOnly? BornDate { get; set; }
 
-        public string? user {  get; set; }
+        public string? User {  get; set; }
 
-        public string? bio { get; set; }
+        public string? Bio { get; set; }
     }
 }

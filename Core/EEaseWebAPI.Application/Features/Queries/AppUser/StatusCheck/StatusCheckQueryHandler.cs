@@ -27,7 +27,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck
 return new StatusCheckQueryResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.GetUserStatusSuccessfully),
-                Body = await _accountService.StatusCheck(request.username)
+                Body = await _accountService.StatusCheck(request.Username)
             };
         }
     }

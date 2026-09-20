@@ -150,8 +150,8 @@ namespace EEaseWebAPI.UnitTests.User
 
             var status = await Culture.UseAsync("en", () => _service.StatusCheck("alice"));
 
-            status.status.Should().BeTrue();
-            status.message.Should().Be("User is active");
+            status.Status.Should().BeTrue();
+            status.Message.Should().Be("User is active");
         }
 
         [Fact]
@@ -161,7 +161,7 @@ namespace EEaseWebAPI.UnitTests.User
 
             var status = await Culture.UseAsync("en", () => _service.StatusCheck("alice"));
 
-            status.message.Should().Be("User is passive");
+            status.Message.Should().Be("User is passive");
         }
 
         [Fact]

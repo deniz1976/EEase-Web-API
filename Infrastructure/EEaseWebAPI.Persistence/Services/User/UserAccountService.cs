@@ -128,8 +128,8 @@ namespace EEaseWebAPI.Persistence.Services.User
 
             return new StatusCheckBody
             {
-                status = isActive,
-                message = isActive ? AppMessages.UserActive : AppMessages.UserPassive
+                Status = isActive,
+                Message = isActive ? AppMessages.UserActive : AppMessages.UserPassive
             };
         }
 

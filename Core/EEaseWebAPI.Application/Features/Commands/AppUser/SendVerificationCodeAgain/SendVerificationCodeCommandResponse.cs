@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCode
 
     public class SendVerificationCodeBody
     {
-        public string? message { get; set; }
-        public bool? success { get; set; }
+        public string? Message { get; set; }
+        public bool? Success { get; set; }
     }
 }

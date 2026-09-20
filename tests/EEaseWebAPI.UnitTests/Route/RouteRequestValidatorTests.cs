@@ -23,9 +23,9 @@ namespace EEaseWebAPI.UnitTests.Route
             List<string>? usernames = null) =>
             new()
             {
-                destination = "Lisbon",
-                username = "alice",
-                usernames = usernames,
+                Destination = "Lisbon",
+                Username = "alice",
+                Usernames = usernames,
                 StartDate = start ?? Today.AddDays(1),
                 EndDate = end ?? Today.AddDays(3)
             };
@@ -103,14 +103,14 @@ namespace EEaseWebAPI.UnitTests.Route
 
             _anonymousValidator.Validate(new CreateRouteWithoutLoginCommandRequest
             {
-                destination = "Lisbon",
+                Destination = "Lisbon",
                 StartDate = Today.AddDays(1),
                 EndDate = Today.AddDays(5)
             }).IsValid.Should().BeTrue();
 
             _anonymousValidator.Validate(new CreateRouteWithoutLoginCommandRequest
             {
-                destination = "Lisbon",
+                Destination = "Lisbon",
                 StartDate = Today.AddDays(1),
                 EndDate = Today.AddDays(6)
             }).IsValid.Should().BeFalse();
@@ -120,7 +120,7 @@ namespace EEaseWebAPI.UnitTests.Route
         public void A_missing_destination_is_rejected()
         {
             var request = CustomRequest();
-            request.destination = "  ";
+            request.Destination = "  ";
 
             _customValidator.Validate(request).IsValid.Should().BeFalse();
         }
@@ -130,7 +130,7 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             _anonymousValidator.Validate(new CreateRouteWithoutLoginCommandRequest
             {
-                destination = "Lisbon",
+                Destination = "Lisbon",
                 StartDate = Today.AddYears(1).AddDays(1),
                 EndDate = Today.AddYears(1).AddDays(2)
             }).IsValid.Should().BeFalse();

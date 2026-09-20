@@ -8,6 +8,6 @@ namespace EEaseWebAPI.Application.MapEntities.DeleteUserWithCode
 {
     public class DeleteUserWithCodeBody
     {
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
 }

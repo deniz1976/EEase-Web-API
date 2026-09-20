@@ -87,12 +87,12 @@ namespace EEaseWebAPI.UnitTests.User
             string? surname = null, string? gender = null, string? bio = null, DateOnly? bornDate = null) =>
             new()
             {
-                user = user,
+                User = user,
                 Username = username,
                 Name = name,
                 Surname = surname,
                 Gender = gender,
-                bio = bio,
+                Bio = bio,
                 BornDate = bornDate
             };
 
@@ -108,9 +108,9 @@ namespace EEaseWebAPI.UnitTests.User
         {
             var info = await _service.GetUserInfoQuery("alice");
 
-            info.username.Should().Be("alice");
-            info.email.Should().Be("alice@example.com");
-            info.id.Should().Be("alice-id");
+            info.Username.Should().Be("alice");
+            info.Email.Should().Be("alice@example.com");
+            info.Id.Should().Be("alice-id");
         }
 
         [Fact]
@@ -254,9 +254,9 @@ namespace EEaseWebAPI.UnitTests.User
             var (info, visibility) = await _service.GetUserInfoByNameAsync("bob", "alice");
 
             visibility.Should().Be(ProfileVisibilityStatus.LimitedAccess);
-            info.email.Should().BeNull();
-            info.borndate.Should().BeNull();
-            info.name.Should().Be("Alice");
+            info.Email.Should().BeNull();
+            info.BornDate.Should().BeNull();
+            info.Name.Should().Be("Alice");
         }
 
         [Fact]
@@ -267,8 +267,8 @@ namespace EEaseWebAPI.UnitTests.User
 
             var (info, _) = await _service.GetUserInfoByNameAsync("bob", "alice");
 
-            info.email.Should().Be("alice@example.com");
-            info.borndate.Should().Be(new DateOnly(1990, 1, 1));
+            info.Email.Should().Be("alice@example.com");
+            info.BornDate.Should().Be(new DateOnly(1990, 1, 1));
         }
 
         [Fact]
@@ -276,7 +276,7 @@ namespace EEaseWebAPI.UnitTests.User
         {
             var (info, _) = await _service.GetUserInfoByIdAsync("alice", "bob-id");
 
-            info.username.Should().Be("bob");
+            info.Username.Should().Be("bob");
         }
     }
 }

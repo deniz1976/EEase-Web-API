@@ -23,9 +23,9 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCode
 
         public async Task<SendVerificationCodeCommandResponse> Handle(SendVerificationCodeCommandRequest request, CancellationToken cancellationToken)
         {
-            if (request.email == null) { throw new UserNotFoundException("User Not Found",7); }
+            if (request.Email == null) { throw new UserNotFoundException("User Not Found",7); }
 
-            var result = await _registrationService.SendVerificationEmailAgain(request.email);
+            var result = await _registrationService.SendVerificationEmailAgain(request.Email);
             if (result)
             {
                 return new SendVerificationCodeCommandResponse()
@@ -33,8 +33,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCode
                     Header = _headerService.HeaderCreate(98),
                     Body = new SendVerificationCodeBody()
                     {
-                        message = success,
-                        success = result
+                        Message = success,
+                        Success = result
                     }
                 };
             }

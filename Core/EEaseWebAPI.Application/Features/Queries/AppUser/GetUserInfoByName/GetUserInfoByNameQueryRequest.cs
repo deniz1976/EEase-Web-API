@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoByName
 {
     public class GetUserInfoByNameQueryRequest : IRequest<GetUserInfoByNameQueryResponse>
     {
-        public string? username { get; set; }
-        public string? targetUsername { get; set; }
+        public string? Username { get; set; }
+        public string? TargetUsername { get; set; }
     }
 }

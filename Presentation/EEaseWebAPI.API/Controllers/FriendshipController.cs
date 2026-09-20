@@ -133,8 +133,8 @@ namespace EEaseWebAPI.API.Controllers
         {
             UnblockUserCommandRequest request = new UnblockUserCommandRequest()
             {
-                username = CurrentUsername,
-                targetUsername = targetUsername
+                Username = CurrentUsername,
+                TargetUsername = targetUsername
             };
 
             var response = await _mediator.Send(request);
@@ -161,8 +161,8 @@ namespace EEaseWebAPI.API.Controllers
         {
             CancelFriendRequestCommandRequest request = new CancelFriendRequestCommandRequest
             {
-                username = CurrentUsername,
-                targetUsername = targetUsername
+                Username = CurrentUsername,
+                TargetUsername = targetUsername
             };
 
             CancelFriendRequestCommandResponse response = await _mediator.Send(request);

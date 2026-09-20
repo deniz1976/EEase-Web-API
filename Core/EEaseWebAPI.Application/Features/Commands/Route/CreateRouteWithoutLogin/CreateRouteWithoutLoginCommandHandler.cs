@@ -19,7 +19,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogi
         public async Task<CreateRouteWithoutLoginCommandResponse> Handle(CreateRouteWithoutLoginCommandRequest request, CancellationToken cancellationToken)
         {
             var route = await _customRouteService.CreateRandomRoute(
-                request.destination!,
+                request.Destination!,
                 request.StartDate,
                 request.EndDate,
                 request.PRICE_LEVEL);

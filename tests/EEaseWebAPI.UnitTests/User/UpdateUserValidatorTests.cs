@@ -24,12 +24,12 @@ namespace EEaseWebAPI.UnitTests.User
             DateOnly? bornDate = null) =>
             new()
             {
-                user = "alice",
+                User = "alice",
                 Username = username,
                 Name = name,
                 Surname = surname,
                 Gender = gender,
-                bio = bio,
+                Bio = bio,
                 BornDate = bornDate
             };
 

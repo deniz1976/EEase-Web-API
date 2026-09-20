@@ -23,24 +23,24 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfo
 
         public async Task<GetUserInfoQueryResponse> Handle(GetUserInfoQueryRequest request, CancellationToken cancellationToken)
         {
-DTOs.User.GetUserInfo response = await _profileService.GetUserInfoQuery(request.username);
+DTOs.User.GetUserInfo response = await _profileService.GetUserInfoQuery(request.Username);
 
             return new GetUserInfoQueryResponse()
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.GetUserInfoSuccessfully),
                 Body = new()
                 {
-                    name = response.name,
-                    surname = response.surname,
-                    gender = response.gender,
-                    username = response.username,
-                    email = response.email,
-                    BornDate=response.borndate,
-                    bio = response.bio,
-                    photoPath = response.photoPath,
-                    currency = response.currency,
-                    country = response.country,
-                    id = response.id,
+                    Name = response.Name,
+                    Surname = response.Surname,
+                    Gender = response.Gender,
+                    Username = response.Username,
+                    Email = response.Email,
+                    BornDate=response.BornDate,
+                    Bio = response.Bio,
+                    PhotoPath = response.PhotoPath,
+                    Currency = response.Currency,
+                    Country = response.Country,
+                    Id = response.Id,
 
                 }
             };

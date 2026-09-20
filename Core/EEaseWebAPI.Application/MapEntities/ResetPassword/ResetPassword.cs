@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.MapEntities
 
     public class ResetPasswordBody
     {
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace EEaseWebAPI.Application.MapEntities.CreateUser
 
     public class CreateUserBody
     {
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
 }

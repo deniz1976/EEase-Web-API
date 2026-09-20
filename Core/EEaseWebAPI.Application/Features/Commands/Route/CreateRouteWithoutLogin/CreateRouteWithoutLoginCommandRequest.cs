@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Domain.Entities.Route;
+using EEaseWebAPI.Domain.Entities.Route;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogi
 {
     public class CreateRouteWithoutLoginCommandRequest : IRequest<CreateRouteWithoutLoginCommandResponse>
     {
-        public string? destination {  get; set; }
+        public string? Destination {  get; set; }
 
         public DateOnly? StartDate {  get; set; }
 

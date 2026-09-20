@@ -7,7 +7,7 @@ namespace EEaseWebAPI.Application.Validators.Route
     {
         public CreateRouteWithoutLoginCommandValidator()
         {
-            RouteRequestRules.Destination(RuleFor(request => request.destination));
+            RouteRequestRules.Destination(RuleFor(request => request.Destination));
             RouteRequestRules.DateRange(this, request => request.StartDate, request => request.EndDate);
         }
     }

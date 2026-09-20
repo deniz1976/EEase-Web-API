@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeChec
 {
     public class ResetPasswordCodeCheckQueryRequest : IRequest<ResetPasswordCodeCheckQueryResponse>
     {
-        public string? code {  get; set; }
-        public string? usernameOrEmail { get; set; }
+        public string? Code {  get; set; }
+        public string? UsernameOrEmail { get; set; }
     }
 }

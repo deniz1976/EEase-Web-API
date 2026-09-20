@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCode
 {
     public class SendVerificationCodeCommandRequest : IRequest<SendVerificationCodeCommandResponse>
     {
-        public string? email {  get; set; }
+        public string? Email {  get; set; }
     }
 }

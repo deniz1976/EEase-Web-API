@@ -73,8 +73,8 @@ namespace EEaseWebAPI.API.Controllers
                 Surname = updateUserDTO.Surname,
                 BornDate = updateUserDTO.BornDate,
                 Gender = updateUserDTO.Gender,
-                bio = updateUserDTO.Bio,
-                user = CurrentUsername
+                Bio = updateUserDTO.Bio,
+                User = CurrentUsername
             };
 
             UpdateUserCommandResponse updateUserCommandResponse = await _mediator.Send(updateUserCommandRequest);
@@ -89,7 +89,7 @@ namespace EEaseWebAPI.API.Controllers
         public async Task<IActionResult> GetUserInfo()
         {
             var userName = CurrentUsername;
-            GetUserInfoQueryRequest request = new() { username = userName };
+            GetUserInfoQueryRequest request = new() { Username = userName };
             GetUserInfoQueryResponse response = await _mediator.Send(request);
             return Ok(response);
         }
@@ -122,7 +122,7 @@ namespace EEaseWebAPI.API.Controllers
         {
 
             DeleteUserCommandRequest deleteUserCommandRequest = new DeleteUserCommandRequest()
-            { username=  CurrentUsername };
+            { Username=  CurrentUsername };
             DeleteUserCommandResponse response = await _mediator.Send(deleteUserCommandRequest);
             return Ok(response);
         }
@@ -135,7 +135,7 @@ namespace EEaseWebAPI.API.Controllers
 
         public async Task<IActionResult> DeleteAccountWithCode([FromBody] DeleteAccountWithCode code)
         {
-            DeleteUserWithCodeCommandRequest deleteUserWithCodeCommandRequest = new DeleteUserWithCodeCommandRequest() {username = CurrentUsername,code = code.Code };
+            DeleteUserWithCodeCommandRequest deleteUserWithCodeCommandRequest = new DeleteUserWithCodeCommandRequest() {Username = CurrentUsername,Code = code.Code };
             DeleteUserWithCodeCommandResponse deleteUserWithCodeCommandResponse = await _mediator.Send(deleteUserWithCodeCommandRequest);
             return Ok(deleteUserWithCodeCommandResponse);
 
@@ -148,7 +148,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> StatusCheck()
         {
-            StatusCheckQueryRequest statusCheckQueryRequest = new StatusCheckQueryRequest() { username = CurrentUsername};
+            StatusCheckQueryRequest statusCheckQueryRequest = new StatusCheckQueryRequest() { Username = CurrentUsername};
             StatusCheckQueryResponse statusCheckQueryResponse = await _mediator.Send(statusCheckQueryRequest);
 
             return Ok(statusCheckQueryResponse);
@@ -289,8 +289,8 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserInfoByNameQueryRequest()
             {
-                username = CurrentUsername,
-                targetUsername = TargetUsername
+                Username = CurrentUsername,
+                TargetUsername = TargetUsername
             };
 
             var response = await _mediator.Send(request);
@@ -306,8 +306,8 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserInfoByIdQueryRequest()
             {
-                username = CurrentUsername,
-                userId = UserId
+                Username = CurrentUsername,
+                UserId = UserId
             };
 
             var response = await _mediator.Send(request);
@@ -323,7 +323,7 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserPhotoQueryRequest
             {
-                username = CurrentUsername
+                Username = CurrentUsername
             };
 
             var response = await _mediator.Send(request);
@@ -339,8 +339,8 @@ namespace EEaseWebAPI.API.Controllers
         {
             var request = new GetUserPhotoByNameQueryRequest()
             {
-                username = CurrentUsername,
-                targetUsername = TargetUsername
+                Username = CurrentUsername,
+                TargetUsername = TargetUsername
             };
 
             var response = await _mediator.Send(request);

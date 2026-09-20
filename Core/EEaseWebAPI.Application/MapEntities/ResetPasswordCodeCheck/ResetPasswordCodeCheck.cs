@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.MapEntities.ResetPasswordCodeCheck
 
     public class ResetPasswordCodeCheckQueryBody
     {
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
 }

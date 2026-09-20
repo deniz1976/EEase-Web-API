@@ -21,12 +21,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailConfirmed
         }
         public async Task<CheckEmailConfirmedQueryResponse> Handle(CheckEmailConfirmedQueryRequest request, CancellationToken cancellationToken)
         {
-var result = await _registrationService.CheckEmailConfirmed(request.emailOrUsername);
+var result = await _registrationService.CheckEmailConfirmed(request.EmailOrUsername);
             return new CheckEmailConfirmedQueryResponse
             {
                 Header = _headerService.HeaderCreate(
                     result ? (int)StatusEnum.EmailConfirmed : (int)StatusEnum.EmailNotConfirmed),
-                Body = new CheckEmailBody { result = result }
+                Body = new CheckEmailBody { Result = result }
             };
         }
     }

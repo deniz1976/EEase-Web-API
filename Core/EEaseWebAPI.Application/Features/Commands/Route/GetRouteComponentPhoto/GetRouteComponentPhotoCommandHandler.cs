@@ -28,20 +28,20 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto
             return new GetRouteComponentPhotoCommandResponse
             {
                 Body = await _googlePlacesService.GetPlacePhotosAsync(
-                    request.photoName, request.maxWidthPx, request.maxHeightPx, cancellationToken),
+                    request.PhotoName, request.MaxWidthPx, request.MaxHeightPx, cancellationToken),
                 Header = _headerService.HeaderCreate((int)StatusEnum.RouteComponentPhotoRetrievedSuccessfully)
             };
         }
 
         private static void Validate(GetRouteComponentPhotoCommandRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.photoName))
+            if (string.IsNullOrWhiteSpace(request.PhotoName))
             {
                 throw new ArgumentException("A photo name is required.", nameof(request));
             }
 
-            if (request.maxWidthPx <= 0 || request.maxHeightPx <= 0 ||
-                request.maxWidthPx > MaximumPixels || request.maxHeightPx > MaximumPixels)
+            if (request.MaxWidthPx <= 0 || request.MaxHeightPx <= 0 ||
+                request.MaxWidthPx > MaximumPixels || request.MaxHeightPx > MaximumPixels)
             {
                 throw new RouteComponentRequestOutOfRangeException();
             }

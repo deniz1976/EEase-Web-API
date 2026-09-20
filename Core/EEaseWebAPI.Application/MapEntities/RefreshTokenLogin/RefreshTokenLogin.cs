@@ -12,6 +12,6 @@ namespace EEaseWebAPI.Application.MapEntities.RefreshTokenLogin
     {
         public Token? Token { get; set; }
 
-        public string? warning { get; set; }
+        public string? Warning { get; set; }
     }
 }

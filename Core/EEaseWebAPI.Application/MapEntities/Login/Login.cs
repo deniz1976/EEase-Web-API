@@ -10,33 +10,33 @@ namespace EEaseWebAPI.Application.MapEntities.Login
 
     public class LoginBody
     {
-        public Token? token { get; set; }
+        public Token? Token { get; set; }
 
-        public UserInfo? userInfo { get; set; }
+        public UserInfo? UserInfo { get; set; }
 
-        public string? warning { get; set; }
+        public string? Warning { get; set; }
 
     }
 
     public class UserInfo
     {
-        public string? name { get; set; }
-        public string? surname { get; set; }
-        public string? gender { get; set; }
-        public string? email { get; set; }
-        public string? username { get; set; }
-        public DateOnly? bornDate { get; set; }
-        public DateTime? deleteDate { get; set; }
-        public bool? status { get; set; }
-        public string? country { get; set; }
+        public string? Name { get; set; }
+        public string? Surname { get; set; }
+        public string? Gender { get; set; }
+        public string? Email { get; set; }
+        public string? Username { get; set; }
+        public DateOnly? BornDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
+        public bool? Status { get; set; }
+        public string? Country { get; set; }
 
-        public string? currency {  get; set; }
+        public string? Currency {  get; set; }
 
-        public string? bio { get; set; }
+        public string? Bio { get; set; }
 
-        public string? photoPath { get; set; }
-        public bool? emailConfirmed { get; set; }
-        public DateTime? lastSeen { get; set; }
+        public string? PhotoPath { get; set; }
+        public bool? EmailConfirmed { get; set; }
+        public DateTime? LastSeen { get; set; }
 
     }
 }

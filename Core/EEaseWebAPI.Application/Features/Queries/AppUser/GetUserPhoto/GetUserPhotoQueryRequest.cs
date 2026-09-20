@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
 {
     public class GetUserPhotoQueryRequest : IRequest<GetUserPhotoQueryResponse>
     {
-        public string? username { get; set; }
+        public string? Username { get; set; }
     }
 }

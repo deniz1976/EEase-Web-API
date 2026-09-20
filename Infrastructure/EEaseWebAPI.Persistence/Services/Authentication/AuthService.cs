@@ -122,24 +122,24 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
             return new LoginBody
             {
-                token = token,
-                warning = status.Message,
-                userInfo = new UserInfo
+                Token = token,
+                Warning = status.Message,
+                UserInfo = new UserInfo
                 {
-                    name = user.Name,
-                    surname = user.Surname,
-                    gender = user.Gender,
-                    email = user.Email,
-                    emailConfirmed = user.EmailConfirmed,
-                    country = user.Country,
-                    status = user.Status,
-                    deleteDate = user.DeleteDate,
-                    bornDate = user.BornDate,
-                    username = user.UserName,
-                    bio = user.Bio,
-                    currency = user.Currency,
-                    photoPath = user.PhotoPath,
-                    lastSeen = previousLastSeen
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Gender = user.Gender,
+                    Email = user.Email,
+                    EmailConfirmed = user.EmailConfirmed,
+                    Country = user.Country,
+                    Status = user.Status,
+                    DeleteDate = user.DeleteDate,
+                    BornDate = user.BornDate,
+                    Username = user.UserName,
+                    Bio = user.Bio,
+                    Currency = user.Currency,
+                    PhotoPath = user.PhotoPath,
+                    LastSeen = previousLastSeen
                 }
             };
         }
@@ -159,7 +159,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
             if (status.IsDeleted)
             {
-                return new RefreshTokenLoginBody { Token = null, warning = status.Message };
+                return new RefreshTokenLoginBody { Token = null, Warning = status.Message };
             }
 
             var token = _tokenHandler.CreateAccessToken(RefreshedAccessTokenLifetime, user);
@@ -168,7 +168,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             user.LastSeen = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
 
-            return new RefreshTokenLoginBody { Token = token, warning = status.Message };
+            return new RefreshTokenLoginBody { Token = token, Warning = status.Message };
         }
 
         public async Task<Token> UpdateUserGetNewToken(string newUsername)

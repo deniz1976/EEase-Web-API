@@ -37,9 +37,9 @@ namespace EEaseWebAPI.UnitTests.User
 
         private static GetUserInfo Profile(string username) => new()
         {
-            username = username,
-            name = "Marco",
-            surname = "Rossi"
+            Username = username,
+            Name = "Marco",
+            Surname = "Rossi"
         };
 
         [Fact]
@@ -51,7 +51,7 @@ namespace EEaseWebAPI.UnitTests.User
             var handler = new GetUserInfoByIdQueryHandler(_headers, _profiles, _preferences);
 
             var response = await handler.Handle(
-                new GetUserInfoByIdQueryRequest { username = "viewer", userId = "target-id" },
+                new GetUserInfoByIdQueryRequest { Username = "viewer", UserId = "target-id" },
                 CancellationToken.None);
 
             response.Body!.FoodPreferences.Should().ContainSingle();
@@ -66,7 +66,7 @@ namespace EEaseWebAPI.UnitTests.User
             var handler = new GetUserInfoByNameQueryHandler(_headers, _profiles, _preferences);
 
             var response = await handler.Handle(
-                new GetUserInfoByNameQueryRequest { username = "viewer", targetUsername = "target" },
+                new GetUserInfoByNameQueryRequest { Username = "viewer", TargetUsername = "target" },
                 CancellationToken.None);
 
             response.Body!.FoodPreferences.Should().ContainSingle();
@@ -81,10 +81,10 @@ namespace EEaseWebAPI.UnitTests.User
             var handler = new GetUserInfoByIdQueryHandler(_headers, _profiles, _preferences);
 
             var response = await handler.Handle(
-                new GetUserInfoByIdQueryRequest { username = "viewer", userId = "target-id" },
+                new GetUserInfoByIdQueryRequest { Username = "viewer", UserId = "target-id" },
                 CancellationToken.None);
 
-            response.Body!.errorMessage.Should().NotBeNullOrEmpty();
+            response.Body!.ErrorMessage.Should().NotBeNullOrEmpty();
 
             await _preferences.DidNotReceive().GetDescriptionsForViewerAsync(
                 Arg.Any<string>(), Arg.Any<string>());

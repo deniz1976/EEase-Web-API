@@ -8,17 +8,17 @@ namespace EEaseWebAPI.Application.Validators.Route
     {
         public CreateCustomRouteCommandValidator()
         {
-            RouteRequestRules.Destination(RuleFor(request => request.destination));
+            RouteRequestRules.Destination(RuleFor(request => request.Destination));
             RouteRequestRules.DateRange(this, request => request.StartDate, request => request.EndDate);
 
-            RuleFor(request => request.username)
+            RuleFor(request => request.Username)
                 .NotEmpty().WithMessage(ValidationMessages.Route_UsernameRequired);
 
-            RuleFor(request => request.usernames)
+            RuleFor(request => request.Usernames)
                 .Must(usernames => usernames == null || usernames.Count <= RouteRequestRules.MaximumCompanions)
                 .WithMessage(string.Format(ValidationMessages.Route_TooManyCompanions, RouteRequestRules.MaximumCompanions));
 
-            RuleForEach(request => request.usernames)
+            RuleForEach(request => request.Usernames)
                 .NotEmpty().WithMessage(ValidationMessages.Route_CompanionUsernameEmpty);
         }
     }

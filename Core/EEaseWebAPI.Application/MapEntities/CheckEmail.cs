@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.MapEntities
 
     public class CheckEmailBody
     {
-        public bool? result {  get; set; }
+        public bool? Result {  get; set; }
     }
 }

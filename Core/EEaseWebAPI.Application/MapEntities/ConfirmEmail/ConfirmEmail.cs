@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.MapEntities.ConfirmEmail
 
     public class ConfirmEmailBody
     {
-        public bool? result {  get; set; }
+        public bool? Result {  get; set; }
     }
 }

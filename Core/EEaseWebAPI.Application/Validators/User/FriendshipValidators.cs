@@ -36,7 +36,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public CancelFriendRequestCommandValidator()
         {
-            RuleFor(request => request.targetUsername)
+            RuleFor(request => request.TargetUsername)
                 .NotEmpty().WithMessage(ValidationMessages.TargetUsername_Required);
         }
     }
@@ -63,7 +63,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public UnblockUserCommandValidator()
         {
-            RuleFor(request => request.targetUsername)
+            RuleFor(request => request.TargetUsername)
                 .NotEmpty().WithMessage(ValidationMessages.TargetUsername_Required);
         }
     }

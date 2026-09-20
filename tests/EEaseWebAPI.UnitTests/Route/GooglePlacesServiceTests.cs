@@ -62,7 +62,7 @@ namespace EEaseWebAPI.UnitTests.Route
 
             var photo = await Create(handler).GetPlacePhotosAsync(PhotoName, maxWidth: 800, maxHeight: 600);
 
-            photo.photoUri.Should().Be("https://example.test/photo.jpg");
+            photo.PhotoUri.Should().Be("https://example.test/photo.jpg");
             handler.Requests.Single().Query.Should().Contain("maxHeightPx=600").And.Contain("maxWidthPx=800");
         }
 

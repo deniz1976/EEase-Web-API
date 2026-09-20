@@ -23,7 +23,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
 
         public async Task<DeleteUserCommandResponse> Handle(DeleteUserCommandRequest request, CancellationToken cancellationToken)
         {
-var outcome = await _accountService.RequestDeletionAsync(request.username);
+var outcome = await _accountService.RequestDeletionAsync(request.Username);
 
             return outcome == DeleteRequestOutcome.CodeSent
                 ? CreateResponse((int)StatusEnum.UserDeleteCodeSentSuccessfully, AppMessages.DeleteCodeSent)
@@ -37,7 +37,7 @@ var outcome = await _accountService.RequestDeletionAsync(request.username);
                 Header = _headerService.HeaderCreate(headerCode),
                 Body = new MapEntities.DeleteUser.DeleteUserBody
                 {
-                    message = message
+                    Message = message
                 }
             };
         }

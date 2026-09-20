@@ -39,17 +39,17 @@ namespace EEaseWebAPI.Persistence.Services.User
 
             return new GetUserInfo
             {
-                id = user.Id,
-                username = user.UserName,
-                name = user.Name,
-                surname = user.Surname,
-                email = user.Email,
-                gender = user.Gender,
-                borndate = user.BornDate,
-                bio = user.Bio,
-                currency = user.Currency,
-                photoPath = user.PhotoPath,
-                country = user.Country
+                Id = user.Id,
+                Username = user.UserName,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                Gender = user.Gender,
+                BornDate = user.BornDate,
+                Bio = user.Bio,
+                Currency = user.Currency,
+                PhotoPath = user.PhotoPath,
+                Country = user.Country
             };
         }
 
@@ -62,21 +62,21 @@ namespace EEaseWebAPI.Persistence.Services.User
             var userInfo = new GetUserInfo
             {
                 Id = targetUser.Id,
-                username = targetUser.UserName,
-                name = targetUser.Name,
-                surname = targetUser.Surname,
-                photoPath = targetUser.PhotoPath,
-                gender = targetUser.Gender,
-                country = targetUser.Country,
-                bio = targetUser.Bio,
-                friendRequestStatus = relationship.RequestStatus
+                Username = targetUser.UserName,
+                Name = targetUser.Name,
+                Surname = targetUser.Surname,
+                PhotoPath = targetUser.PhotoPath,
+                Gender = targetUser.Gender,
+                Country = targetUser.Country,
+                Bio = targetUser.Bio,
+                FriendRequestStatus = relationship.RequestStatus
             };
 
             if (relationship.HasFullAccess)
             {
-                userInfo.email = targetUser.Email;
-                userInfo.borndate = targetUser.BornDate;
-                userInfo.currency = targetUser.Currency;
+                userInfo.Email = targetUser.Email;
+                userInfo.BornDate = targetUser.BornDate;
+                userInfo.Currency = targetUser.Currency;
             }
 
             return (userInfo, relationship.Visibility);
@@ -94,12 +94,12 @@ namespace EEaseWebAPI.Persistence.Services.User
 
         public async Task<bool> UpdateUser(UpdateUserCommandRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.user))
+            if (string.IsNullOrWhiteSpace(request.User))
             {
                 throw new UnauthorizedAccessException("User is not authenticated.");
             }
 
-            var user = await FindAsync(request.user);
+            var user = await FindAsync(request.User);
 
             if (request.Username != null && !await IsUsernameAvailable(request.Username, user.Id))
             {
@@ -113,7 +113,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             user.Surname = request.Surname ?? user.Surname;
             user.Gender = request.Gender ?? user.Gender;
             user.BornDate = request.BornDate ?? user.BornDate;
-            user.Bio = request.bio ?? user.Bio;
+            user.Bio = request.Bio ?? user.Bio;
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -230,7 +230,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             ValidateLength(request.Name, nameof(request.Name));
             ValidateLength(request.Surname, nameof(request.Surname));
 
-            if (request.bio != null && request.bio.Length > UserProfileRules.BioMaxLength)
+            if (request.Bio != null && request.Bio.Length > UserProfileRules.BioMaxLength)
             {
                 throw new InvalidUserDataException(
                     $"Bio must be at most {UserProfileRules.BioMaxLength} characters.");

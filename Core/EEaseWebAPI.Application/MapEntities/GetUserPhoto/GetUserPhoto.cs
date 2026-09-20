@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.MapEntities.GetUserPhoto
 
     public class GetUserPhotoBody
     {
-        public string? path {  get; set; }
-        public string? errorMessage { get; set; }
+        public string? Path {  get; set; }
+        public string? ErrorMessage { get; set; }
     }
 }

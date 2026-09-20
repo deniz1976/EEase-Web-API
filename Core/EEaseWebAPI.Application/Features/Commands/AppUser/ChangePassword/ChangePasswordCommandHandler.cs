@@ -22,14 +22,14 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
 
         public async Task<ChangePasswordCommandResponse> Handle(ChangePasswordCommandRequest request, CancellationToken cancellationToken)
         {
-var result = await _passwordService.ChangePasswordAsync(request.username, request.oldPassword,request.newPassword);
+var result = await _passwordService.ChangePasswordAsync(request.Username, request.OldPassword,request.NewPassword);
 
             return new ChangePasswordCommandResponse()
                 {
                     Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
                     Body = new MapEntities.ChangePassword.ChangePasswordBody()
                     {
-                        message = result
+                        Message = result
                     }
                 };
 

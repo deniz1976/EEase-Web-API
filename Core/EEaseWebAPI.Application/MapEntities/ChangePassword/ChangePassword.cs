@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.MapEntities.ChangePassword
 
     public class ChangePasswordBody
     {
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
 }

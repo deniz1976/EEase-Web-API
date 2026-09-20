@@ -26,12 +26,12 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode
 // The service reports a refusal by throwing, with a reason the caller can read;
             // the bare Exception that stood in for "it came back empty" could only ever have
             // reached the caller as a 500 with nothing in it.
-            var message = await _accountService.ConfirmDeletionAsync(request.username, request.code);
+            var message = await _accountService.ConfirmDeletionAsync(request.Username, request.Code);
 
             return new DeleteUserWithCodeCommandResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserDeletedSuccessfully),
-                Body = new MapEntities.DeleteUserWithCode.DeleteUserWithCodeBody { message = message }
+                Body = new MapEntities.DeleteUserWithCode.DeleteUserWithCodeBody { Message = message }
             };
         }
     }

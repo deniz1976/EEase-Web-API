@@ -26,12 +26,12 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute
         public async Task<CreateCustomRouteCommandResponse> Handle(CreateCustomRouteCommandRequest request, CancellationToken cancellationToken)
         {
             var route = await _customRouteService.CreatePrefRoute(
-                request.destination,
+                request.Destination,
                 request.StartDate,
                 request.EndDate,
                 request.PRICE_LEVEL,
-                request.username,
-                request.usernames);
+                request.Username,
+                request.Usernames);
 
             return new CreateCustomRouteCommandResponse
             {

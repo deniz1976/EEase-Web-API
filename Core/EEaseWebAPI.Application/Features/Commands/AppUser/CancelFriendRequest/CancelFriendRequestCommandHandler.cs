@@ -24,14 +24,14 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.CancelFriendRequest
 
         public async Task<CancelFriendRequestCommandResponse> Handle(CancelFriendRequestCommandRequest request, CancellationToken cancellationToken)
         {
-await _friendshipService.CancelRequestAsync(request.username, request.targetUsername);
+await _friendshipService.CancelRequestAsync(request.Username, request.TargetUsername);
 
             return new CancelFriendRequestCommandResponse()
             {
                 Body = new()
                 {
-                    success = true,
-                    message = AppMessages.FriendRequestCancelled
+                    Success = true,
+                    Message = AppMessages.FriendRequestCancelled
                 },
                 Header = _headerService.HeaderCreate(((int)StatusEnum.FriendRequestCancelledSuccessfully))
             };

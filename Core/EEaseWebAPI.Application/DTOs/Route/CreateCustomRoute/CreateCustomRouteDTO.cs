@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Domain.Entities.Route;
+using EEaseWebAPI.Domain.Entities.Route;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,9 @@ namespace EEaseWebAPI.Application.DTOs.Route.CreateCustomRoute
 {
     public class CreateCustomRouteDTO
     {
-        public List<string>? usernames { get; set; } = new List<string>();
+        public List<string>? Usernames { get; set; } = new List<string>();
 
-        public string? destination { get; set; }
+        public string? Destination { get; set; }
 
         public DateOnly? StartDate { get; set; }
 

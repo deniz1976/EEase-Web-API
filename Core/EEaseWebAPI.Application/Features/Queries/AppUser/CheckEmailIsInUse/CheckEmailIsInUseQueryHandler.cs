@@ -23,7 +23,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse
 
         public async Task<CheckEmailIsInUseQueryResponse> Handle(CheckEmailIsInUseQueryRequest request, CancellationToken cancellationToken)
         {
-var isEmailInUse = await _authService.IsEmailInUse(request.email);
+var isEmailInUse = await _authService.IsEmailInUse(request.Email);
             var message = isEmailInUse ? AppMessages.EmailInUse : AppMessages.EmailAvailable;
 
             return new CheckEmailIsInUseQueryResponse()
@@ -31,8 +31,8 @@ var isEmailInUse = await _authService.IsEmailInUse(request.email);
                 Header = _headerService.HeaderCreate(isEmailInUse ? (int)StatusEnum.EmailAlreadyInUse : (int)StatusEnum.SuccessfullyCreated),
                 Body = new MapEntities.CheckEmailIsInUse.CheckEmailIsInUseBody()
                 {
-                    message = message,
-                    result = isEmailInUse
+                    Message = message,
+                    Result = isEmailInUse
                 }
             };
         }

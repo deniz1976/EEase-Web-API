@@ -156,12 +156,12 @@ namespace EEaseWebAPI.API.Controllers
 #pragma warning disable CS8601
             CreateCustomRouteCommandRequest request = new CreateCustomRouteCommandRequest()
             {
-                usernames = createCustomRouteDTO.usernames,
-                username = CurrentUsername,
+                Usernames = createCustomRouteDTO.Usernames,
+                Username = CurrentUsername,
                 PRICE_LEVEL = createCustomRouteDTO.PRICE_LEVEL,
                 StartDate = createCustomRouteDTO.StartDate,
                 EndDate = createCustomRouteDTO.EndDate,
-                destination = createCustomRouteDTO.destination
+                Destination = createCustomRouteDTO.Destination
             };
 #pragma warning restore CS8601
 

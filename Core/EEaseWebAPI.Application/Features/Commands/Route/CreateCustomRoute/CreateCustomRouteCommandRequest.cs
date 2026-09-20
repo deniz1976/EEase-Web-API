@@ -10,8 +10,8 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute
 {
     public class CreateCustomRouteCommandRequest : IRequest<CreateCustomRouteCommandResponse>
     {
-        public List<string>? usernames { get; set; } = new();
-        public string? destination { get; set; }
+        public List<string>? Usernames { get; set; } = new();
+        public string? Destination { get; set; }
 
         public DateOnly? StartDate { get; set; }
 
@@ -19,7 +19,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute
 
         public PRICE_LEVEL? PRICE_LEVEL { get; set; }
 
-        public string username { get; set; }
+        public string Username { get; set; }
 
     }
 }

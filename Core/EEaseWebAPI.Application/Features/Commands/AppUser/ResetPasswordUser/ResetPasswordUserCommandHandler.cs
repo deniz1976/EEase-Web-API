@@ -30,7 +30,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
             return new ResetPasswordUserCommandResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.ResetPasswordCodeSentSuccessfully),
-                Body = new MapEntities.ResetPasswordBody { message = AppMessages.ResetCodeSent }
+                Body = new MapEntities.ResetPasswordBody { Message = AppMessages.ResetCodeSent }
             };
         }
     }

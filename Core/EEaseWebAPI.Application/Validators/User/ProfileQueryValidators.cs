@@ -13,7 +13,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public CheckEmailConfirmedQueryValidator()
         {
-            RuleFor(request => request.emailOrUsername)
+            RuleFor(request => request.EmailOrUsername)
                 .NotEmpty().WithMessage(ValidationMessages.EmailOrUsername_Required);
         }
     }
@@ -22,7 +22,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public CheckEmailIsInUseQueryValidator()
         {
-            RuleFor(request => request.email)
+            RuleFor(request => request.Email)
                 .NotEmpty().WithMessage(ValidationMessages.Email_Required)
                 .EmailAddress().WithMessage(ValidationMessages.Email_Invalid);
         }
@@ -32,7 +32,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public ResetPasswordCodeCheckQueryValidator()
         {
-            RuleFor(request => request.usernameOrEmail)
+            RuleFor(request => request.UsernameOrEmail)
                 .NotEmpty().WithMessage(ValidationMessages.EmailOrUsername_Required);
         }
     }
@@ -41,7 +41,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public GetUserInfoByIdQueryValidator()
         {
-            RuleFor(request => request.userId)
+            RuleFor(request => request.UserId)
                 .NotEmpty().WithMessage(ValidationMessages.UserId_Required);
         }
     }
@@ -50,7 +50,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public GetUserInfoByNameQueryValidator()
         {
-            RuleFor(request => request.targetUsername)
+            RuleFor(request => request.TargetUsername)
                 .NotEmpty().WithMessage(ValidationMessages.TargetUsername_Required);
         }
     }
@@ -59,7 +59,7 @@ namespace EEaseWebAPI.Application.Validators.User
     {
         public GetUserPhotoByNameQueryValidator()
         {
-            RuleFor(request => request.targetUsername)
+            RuleFor(request => request.TargetUsername)
                 .NotEmpty().WithMessage(ValidationMessages.TargetUsername_Required);
         }
     }
