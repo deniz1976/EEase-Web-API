@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Xunit;
 using UserNotFoundException = EEaseWebAPI.Application.Exceptions.Login.UserNotFoundException;
+using EEaseWebAPI.Application;
+using EEaseWebAPI.UnitTests.Localization;
 
 namespace EEaseWebAPI.UnitTests.Route
 {
@@ -65,7 +67,8 @@ namespace EEaseWebAPI.UnitTests.Route
             _feedback.ApplyAsync(Arg.Any<string>(), Arg.Any<BaseEntity>(), Arg.Any<string>(), Arg.Any<bool>())
                 .Returns(new PreferenceFeedbackResult("accommodation", new Dictionary<string, int> { ["Luxury"] = 5 }));
 
-            _service = new RouteInteractionService(_userManager, _context, _accessPolicy, _feedback);
+            _service = new RouteInteractionService(
+                _userManager, _context, _accessPolicy, _feedback, Localizers.For<AppMessages>());
         }
 
         public void Dispose() => _context.Dispose();
@@ -173,13 +176,17 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task Deleting_all_routes_of_a_user_without_any_says_so()
         {
-            (await _service.DeleteAllRoutes("bob")).Should().Be("route count is 0.");
+            var message = await Culture.UseAsync("en", () => _service.DeleteAllRoutes("bob"));
+
+            message.Should().Be("route count is 0.");
         }
 
         [Fact]
         public async Task Deleting_all_routes_removes_them()
         {
-            (await _service.DeleteAllRoutes("alice")).Should().Be("routes deleted successfully.");
+            var message = await Culture.UseAsync("en", () => _service.DeleteAllRoutes("alice"));
+
+            message.Should().Be("routes deleted successfully.");
 
             _context.StandardRoutes.Should().BeEmpty();
         }

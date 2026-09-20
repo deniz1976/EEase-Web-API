@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccountCreated" xml:space="preserve">
+    <value>Hesap oluşturuldu. Kullanmadan önce e-posta adresinizi doğrulamanız gerekir.</value>
+  </data>
+  <data name="VerificationCodeSent" xml:space="preserve">
+    <value>Doğrulama kodu e-posta adresinize gönderildi.</value>
+  </data>
+  <data name="DeleteCodeSent" xml:space="preserve">
+    <value>Hesap silme kodu e-posta adresinize gönderildi.</value>
+  </data>
+  <data name="AccountReactivated" xml:space="preserve">
+    <value>Hesabınız yeniden etkinleştirildi.</value>
+  </data>
+  <data name="ResetCodeSent" xml:space="preserve">
+    <value>Sıfırlama kodu e-posta adresinize gönderildi.</value>
+  </data>
+  <data name="ResetCodeCorrect" xml:space="preserve">
+    <value>Kod doğru.</value>
+  </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Parolanız değiştirildi.</value>
+  </data>
+  <data name="EmailInUse" xml:space="preserve">
+    <value>Bu e-posta adresi kullanımda.</value>
+  </data>
+  <data name="EmailAvailable" xml:space="preserve">
+    <value>Bu e-posta adresi kullanılabilir.</value>
+  </data>
+  <data name="UserActive" xml:space="preserve">
+    <value>Hesap etkin</value>
+  </data>
+  <data name="UserPassive" xml:space="preserve">
+    <value>Hesap devre dışı</value>
+  </data>
+  <data name="UserUpdatedWithNewToken" xml:space="preserve">
+    <value>Bilgileriniz güncellendi ve yeni bir oturum anahtarı oluşturuldu, anahtarınızı değiştirin.</value>
+  </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>Bilgileriniz güncellendi, mevcut oturum anahtarınız geçerli.</value>
+  </data>
+  <data name="CountryUpdated" xml:space="preserve">
+    <value>Ülke tercihiniz güncellendi.</value>
+  </data>
+  <data name="CurrencyUpdated" xml:space="preserve">
+    <value>Para biriminiz güncellendi.</value>
+  </data>
+  <data name="PreferencesUpdated" xml:space="preserve">
+    <value>Tercihleriniz güncellendi.</value>
+  </data>
+  <data name="PreferencesUpdatedWithTopics" xml:space="preserve">
+    <value>Seçilen başlıklara göre tercihleriniz güncellendi.</value>
+  </data>
+  <data name="PreferencesReset" xml:space="preserve">
+    <value>Tercihleriniz sıfırlandı.</value>
+  </data>
+  <data name="PreferencesUpdatedFromFeedback" xml:space="preserve">
+    <value>Tercihleriniz güncellendi.</value>
+  </data>
+  <data name="FriendRequestSent" xml:space="preserve">
+    <value>Arkadaşlık isteği gönderildi.</value>
+  </data>
+  <data name="FriendRequestCancelled" xml:space="preserve">
+    <value>Arkadaşlık isteği iptal edildi.</value>
+  </data>
+  <data name="FriendRequestAnswered" xml:space="preserve">
+    <value>Arkadaşlık isteği yanıtlandı.</value>
+  </data>
+  <data name="FriendRemoved" xml:space="preserve">
+    <value>Arkadaşlıktan çıkarıldı.</value>
+  </data>
+  <data name="UserBlocked" xml:space="preserve">
+    <value>Kullanıcı engellendi.</value>
+  </data>
+  <data name="UserUnblocked" xml:space="preserve">
+    <value>Kullanıcının engeli kaldırıldı.</value>
+  </data>
+  <data name="NoFriendRequest" xml:space="preserve">
+    <value>Henüz bir arkadaşlık isteği yok.</value>
+  </data>
+  <data name="FriendRequestPending" xml:space="preserve">
+    <value>Arkadaşlık isteğiniz yanıt bekliyor.</value>
+  </data>
+  <data name="FriendRequestWaitingForYou" xml:space="preserve">
+    <value>Size bir arkadaşlık isteği var.</value>
+  </data>
+  <data name="AlreadyFriends" xml:space="preserve">
+    <value>Bu kullanıcıyla zaten arkadaşsınız.</value>
+  </data>
+  <data name="UserIsBlocked" xml:space="preserve">
+    <value>Bu kullanıcı engellenmiş.</value>
+  </data>
+  <data name="UnknownFriendRequestStatus" xml:space="preserve">
+    <value>Bilinmeyen durum.</value>
+  </data>
+  <data name="BlockedByTargetProfile" xml:space="preserve">
+    <value>Bu kullanıcı sizi engellemiş. Profilini göremezsiniz.</value>
+  </data>
+  <data name="BlockedTargetProfile" xml:space="preserve">
+    <value>Bu kullanıcıyı engellediniz. Profilini görmek için engeli kaldırın.</value>
+  </data>
+  <data name="NotFriendsProfile" xml:space="preserve">
+    <value>Bu kullanıcıyla arkadaş değilsiniz. Daha fazlasını görmek için arkadaşlık isteği gönderin.</value>
+  </data>
+  <data name="NotFriendsPhoto" xml:space="preserve">
+    <value>Fotoğrafını görmek için bu kullanıcıyla arkadaş olmanız gerekir.</value>
+  </data>
+  <data name="RouteLiked" xml:space="preserve">
+    <value>Bu rotayı beğendiniz</value>
+  </data>
+  <data name="RouteNotLiked" xml:space="preserve">
+    <value>Bu rotayı beğenmediniz</value>
+  </data>
+  <data name="NoRoutesToDelete" xml:space="preserve">
+    <value>Silinecek rota yok.</value>
+  </data>
+  <data name="RoutesDeleted" xml:space="preserve">
+    <value>Rotalarınız silindi.</value>
+  </data>
+  <data name="Mail_HeadlineLine1" xml:space="preserve">
+    <value>SIRADAKİ</value>
+  </data>
+  <data name="Mail_HeadlineLine2" xml:space="preserve">
+    <value>DURAĞINIZ</value>
+  </data>
+  <data name="Mail_HeadlineLine3" xml:space="preserve">
+    <value>SİZİ ÇAĞIRIYOR</value>
+  </data>
+  <data name="Mail_Rights" xml:space="preserve">
+    <value>Tüm hakları saklıdır</value>
+  </data>
+  <data name="Mail_VerificationCodeLabel" xml:space="preserve">
+    <value>Doğrulama Kodunuz</value>
+  </data>
+  <data name="Mail_ResetPasswordLabel" xml:space="preserve">
+    <value>Sıfırlama Kodunuz</value>
+  </data>
+  <data name="Mail_DeleteAccountLabel" xml:space="preserve">
+    <value>Hesap Silme Kodunuz</value>
+  </data>
+  <data name="Mail_VerificationSubject" xml:space="preserve">
+    <value>E-posta Doğrulama</value>
+  </data>
+  <data name="Mail_ResetPasswordSubject" xml:space="preserve">
+    <value>Parola Sıfırlama</value>
+  </data>
+  <data name="Mail_DeleteAccountSubject" xml:space="preserve">
+    <value>Hesap Silme</value>
+  </data>
+</root>

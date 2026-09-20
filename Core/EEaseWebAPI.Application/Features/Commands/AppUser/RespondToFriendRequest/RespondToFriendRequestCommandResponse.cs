@@ -10,6 +10,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendReque
 
     public class RespondToFriendRequestCommandResponseBody
     {
-        public string Message { get; set; } = "Friend request response processed successfully.";
+        public string? Message { get; set; }
     }
 }

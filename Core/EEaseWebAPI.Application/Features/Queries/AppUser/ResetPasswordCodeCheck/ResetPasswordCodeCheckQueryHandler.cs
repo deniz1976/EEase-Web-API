@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeCheck
 {
@@ -16,10 +17,18 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeChec
         private readonly IPasswordService _passwordService;
         private readonly IHeaderService _headerService;
 
-        public ResetPasswordCodeCheckQueryHandler(IPasswordService passwordService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public ResetPasswordCodeCheckQueryHandler(IPasswordService passwordService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _passwordService = passwordService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<ResetPasswordCodeCheckQueryResponse> Handle(ResetPasswordCodeCheckQueryRequest request, CancellationToken cancellationToken)
@@ -36,7 +45,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeChec
                     ResetPasswordCodeCheck = new MapEntities.ResetPasswordCodeCheck.ResetPasswordCodeCheck
                     {
                         Header = _headerService.HeaderCreate((int)StatusEnum.PasswordChangedSuccessfully),
-                        Body = new() { message = "Code is correct." }
+                        Body = new() { message = _messages["ResetCodeCorrect"] }
                     }
                 };
             }

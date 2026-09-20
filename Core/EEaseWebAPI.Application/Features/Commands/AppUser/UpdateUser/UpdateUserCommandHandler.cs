@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
 {
@@ -18,13 +19,21 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
         private readonly IHeaderService _headerService;
         private readonly IAuthService _authService;
 
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
         public UpdateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager,IUserProfileService profileService,IHeaderService headerService,
-            IAuthService authService)
+            IAuthService authService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _userManager = userManager;
             _profileService = profileService;
             _headerService = headerService;
             _authService = authService;
+
+            _messages = messages;
         }
 
         public async Task<UpdateUserCommandResponse> Handle(UpdateUserCommandRequest request, CancellationToken cancellationToken)
@@ -46,7 +55,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
                         Header = _headerService.HeaderCreate((int)StatusEnum.UserUpdatedSuccessfully),
                         Body = new MapEntities.UpdateUser.UpdateUserBody()
                         {
-                            message = "User updated and new token created please change your token.",
+                            message = _messages["UserUpdatedWithNewToken"],
                             newToken = await _authService.UpdateUserGetNewToken(request.Username)
                         }
                     }
@@ -62,7 +71,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
                         Header = _headerService.HeaderCreate((int)StatusEnum.UserUpdatedSuccessfully),
                         Body = new MapEntities.UpdateUser.UpdateUserBody()
                         {
-                            message = "User updated and old token still can be used"
+                            message = _messages["UserUpdated"]
                         }
                     }
                 };

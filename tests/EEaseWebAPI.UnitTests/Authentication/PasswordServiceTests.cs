@@ -8,6 +8,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 using Xunit;
+using EEaseWebAPI.Application;
+using EEaseWebAPI.UnitTests.Localization;
 
 namespace EEaseWebAPI.UnitTests.Authentication
 {
@@ -34,7 +36,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
             _userManager.UpdateAsync(Arg.Any<AppUser>()).Returns(IdentityResult.Success);
             _codes.Generate().Returns("123456");
 
-            _service = new PasswordService(_userManager, _mail, _codes);
+            _service = new PasswordService(_userManager, _mail, _codes, Localizers.For<AppMessages>());
         }
 
         private void WithActiveCode(string code = "123456", int attempts = 0, TimeSpan? age = null)

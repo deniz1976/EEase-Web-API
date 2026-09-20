@@ -181,15 +181,31 @@ Handlers and services throw; nothing catches to translate. A single
 client sees, so there is no `try`/`catch` scaffolding in the request path.
 
 Every error carries an `enumStatusCode` (see `StatusEnum`). That code is the stable
-contract; the `message` next to it is localised from it at the edge, honouring the
-`Accept-Language` header (`en` by default, `tr` supported, translations in
-`Presentation/EEaseWebAPI.API/Resources/ErrorMessages.*.resx`). A code with no
-translation keeps the message the exception was thrown with, which is usually a
-detail no resource file could hold ("No hotel could be found in Rome."). Field level
-validation messages come from FluentValidation and are not localised yet.
+contract; the `message` next to it is localised from it at the edge. A code with no
+translation keeps the message the exception was thrown with, which is usually a detail
+no resource file could hold ("No hotel could be found in Rome.").
 
 `401` means no valid token was presented; `403` means the caller is signed in but the
 route is not theirs to see or change.
+
+## Languages
+
+The API answers in the language of the `Accept-Language` header, `en` by default and
+`tr` supported. Three resource files hold the wording; adding a language means adding a
+`.<culture>.resx` next to each and listing the culture in `AddSupportedCultures`.
+
+| Resources | What it holds |
+|---|---|
+| `Presentation/EEaseWebAPI.API/Resources/ErrorMessages.*.resx` | Error messages, keyed by `StatusEnum` name |
+| `Core/EEaseWebAPI.Application/Resources/ValidationMessages.*.resx` | FluentValidation field messages |
+| `Core/EEaseWebAPI.Application/Resources/AppMessages.*.resx` | Everything a handler or service says back, plus the mail subjects and the wording inside the mail templates |
+
+The mail templates are one set of markup per mail, not one per language: the words come
+out of the resources through `{{Placeholder}}` tokens.
+
+A missing translation is not an error at runtime, the localizer just falls back to
+English, so `TranslationCompletenessTests` fails the build instead when a key exists in
+one language and not the other.
 
 Logging: a MediatR behaviour records every command and query with its duration and
 outcome, and a middleware scopes each request to the caller, so a handler's log, a

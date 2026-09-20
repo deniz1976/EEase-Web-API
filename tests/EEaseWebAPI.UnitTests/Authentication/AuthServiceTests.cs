@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 using Xunit;
+using EEaseWebAPI.Application;
+using EEaseWebAPI.UnitTests.Localization;
 
 namespace EEaseWebAPI.UnitTests.Authentication
 {
@@ -53,7 +55,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
                 new Token { AccessToken = "access", RefreshToken = "refresh", Expiration = DateTime.UtcNow.AddMinutes(15) });
 
             _service = new AuthService(
-                _userManager, _signInManager, _tokenHandler, _mail, _accountService, _deletionPolicy, _codes);
+                _userManager, _signInManager, _tokenHandler, _mail, _accountService, _deletionPolicy, _codes, Localizers.For<AppMessages>());
         }
 
         [Fact]

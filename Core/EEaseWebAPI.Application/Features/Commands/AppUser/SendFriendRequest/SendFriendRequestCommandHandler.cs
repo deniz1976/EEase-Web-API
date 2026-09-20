@@ -4,6 +4,7 @@ using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Friendship;
 using EEaseWebAPI.Domain.Entities.Identity;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendFriendRequest
 {
@@ -12,10 +13,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendFriendRequest
         private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public SendFriendRequestCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public SendFriendRequestCommandHandler(IFriendshipService friendshipService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _friendshipService = friendshipService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<SendFriendRequestCommandResponse> Handle(SendFriendRequestCommandRequest request, CancellationToken cancellationToken)
@@ -25,7 +34,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendFriendRequest
             return new SendFriendRequestCommandResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.FriendRequestSentSuccessfully),
-                Body = new SendFriendRequestCommandResponseBody()
+                Body = new SendFriendRequestCommandResponseBody
+                {
+                    Message = _messages["FriendRequestSent"]
+                }
             };
         }
     }

@@ -8,6 +8,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 using Xunit;
+using EEaseWebAPI.Application;
+using EEaseWebAPI.UnitTests.Localization;
 
 namespace EEaseWebAPI.UnitTests.User
 {
@@ -35,7 +37,7 @@ namespace EEaseWebAPI.UnitTests.User
             _userManager.UpdateAsync(Arg.Any<AppUser>()).Returns(IdentityResult.Success);
             _codes.Generate().Returns("123456");
 
-            _service = new UserAccountService(_userManager, _mail, _codes);
+            _service = new UserAccountService(_userManager, _mail, _codes, Localizers.For<AppMessages>());
         }
 
         private void WithDeleteCode(string code = "123456", TimeSpan? age = null)
@@ -135,7 +137,7 @@ namespace EEaseWebAPI.UnitTests.User
         {
             _alice.Status = null;
 
-            var status = await _service.StatusCheck("alice");
+            var status = await Culture.UseAsync("en", () => _service.StatusCheck("alice"));
 
             status.status.Should().BeTrue();
             status.message.Should().Be("User is active");
@@ -146,7 +148,9 @@ namespace EEaseWebAPI.UnitTests.User
         {
             _alice.Status = false;
 
-            (await _service.StatusCheck("alice")).message.Should().Be("User is passive");
+            var status = await Culture.UseAsync("en", () => _service.StatusCheck("alice"));
+
+            status.message.Should().Be("User is passive");
         }
 
         [Fact]

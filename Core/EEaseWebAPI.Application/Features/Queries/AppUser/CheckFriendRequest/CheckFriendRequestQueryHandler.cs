@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
 {
@@ -15,10 +16,18 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
         private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public CheckFriendRequestQueryHandler(IFriendshipService friendshipService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public CheckFriendRequestQueryHandler(IFriendshipService friendshipService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _friendshipService = friendshipService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<CheckFriendRequestQueryResponse> Handle(CheckFriendRequestQueryRequest request, CancellationToken cancellationToken)
@@ -41,12 +50,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckFriendRequest
         {
             return status switch
             {
-                FriendRequestStatus.NoRequest => "No friend request exists yet.",
-                FriendRequestStatus.Requester => "Your friend request is pending.",
-                FriendRequestStatus.Addressee => "You have a friend request.",
-                FriendRequestStatus.AlreadyFriends => "You are already friends with this user.",
-                FriendRequestStatus.Blocked => "This user is blocked.",
-                _ => "Unknown status."
+                FriendRequestStatus.NoRequest => _messages["NoFriendRequest"],
+                FriendRequestStatus.Requester => _messages["FriendRequestPending"],
+                FriendRequestStatus.Addressee => _messages["FriendRequestWaitingForYou"],
+                FriendRequestStatus.AlreadyFriends => _messages["AlreadyFriends"],
+                FriendRequestStatus.Blocked => _messages["UserIsBlocked"],
+                _ => _messages["UnknownFriendRequestStatus"]
             };
         }
     }

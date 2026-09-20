@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Validators.Route
 {
@@ -7,27 +8,33 @@ namespace EEaseWebAPI.Application.Validators.Route
         public const int MaximumDays = 5;
         public const int MaximumCompanions = 4;
 
-        public static IRuleBuilderOptions<T, string?> Destination<T>(IRuleBuilder<T, string?> rule) =>
-            rule.NotEmpty().WithMessage("A destination is required.")
-                .MaximumLength(100).WithMessage("The destination is too long.");
+        public static IRuleBuilderOptions<T, string?> Destination<T>(
+            IRuleBuilder<T, string?> rule,
+            IStringLocalizer<ValidationMessages> messages) =>
+            rule.NotEmpty().WithMessage(messages["Route_DestinationRequired"])
+                .MaximumLength(100).WithMessage(messages["Route_DestinationTooLong"]);
 
-        public static void DateRange<T>(AbstractValidator<T> validator, Func<T, DateOnly?> start, Func<T, DateOnly?> end)
+        public static void DateRange<T>(
+            AbstractValidator<T> validator,
+            Func<T, DateOnly?> start,
+            Func<T, DateOnly?> end,
+            IStringLocalizer<ValidationMessages> messages)
         {
             validator.RuleFor(request => start(request))
-                .NotNull().WithMessage("A start date is required.");
+                .NotNull().WithMessage(messages["Route_StartDateRequired"]);
 
             validator.RuleFor(request => end(request))
-                .NotNull().WithMessage("An end date is required.");
+                .NotNull().WithMessage(messages["Route_EndDateRequired"]);
 
             validator.RuleFor(request => request)
                 .Must(request => IsNotInThePast(start(request), end(request)))
-                .WithMessage("A route cannot be created for the past.")
+                .WithMessage(messages["Route_DateInThePast"])
                 .Must(request => IsWithinAYear(start(request), end(request)))
-                .WithMessage("Routes cannot be created for dates more than 1 year away.")
+                .WithMessage(messages["Route_DateTooFarAway"])
                 .Must(request => IsOrdered(start(request), end(request)))
-                .WithMessage("The start date cannot be later than the end date.")
+                .WithMessage(messages["Route_DatesOutOfOrder"])
                 .Must(request => IsWithinDayLimit(start(request), end(request)))
-                .WithMessage($"The route can be a maximum of {MaximumDays} days.")
+                .WithMessage(messages["Route_TooManyDays", MaximumDays])
                 .When(request => start(request).HasValue && end(request).HasValue);
         }
 

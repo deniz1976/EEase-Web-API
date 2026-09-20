@@ -4,6 +4,7 @@ using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Friendship;
 using EEaseWebAPI.Domain.Entities.Identity;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
 {
@@ -12,10 +13,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
         private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public BlockFriendCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public BlockFriendCommandHandler(IFriendshipService friendshipService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _friendshipService = friendshipService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<BlockFriendCommandResponse> Handle(BlockFriendCommand request, CancellationToken cancellationToken)
@@ -25,7 +34,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.BlockFriend
             return new BlockFriendCommandResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedSuccessfully),
-                Body = new BlockFriendCommandResponseBody()
+                Body = new BlockFriendCommandResponseBody
+                {
+                    Message = _messages["UserBlocked"]
+                }
             };
         }
     }

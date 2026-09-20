@@ -3,6 +3,7 @@ using EEaseWebAPI.Application.Enums;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreferencesWithTopics
 {
@@ -11,10 +12,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
         private readonly IUserPreferenceService _preferenceService;
         private readonly IHeaderService _headerService;
 
-        public UpdateUserPreferencesWithTopicsCommandHandler(IUserPreferenceService preferenceService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public UpdateUserPreferencesWithTopicsCommandHandler(IUserPreferenceService preferenceService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _preferenceService = preferenceService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<UpdateUserPreferencesWithTopicsCommandResponse> Handle(UpdateUserPreferencesWithTopicsCommandRequest request, CancellationToken cancellationToken)
@@ -26,7 +35,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
                 Header = _headerService.HeaderCreate((int)StatusEnum.PreferencesUpdatedSuccessfully),
                 Body = new UpdateUserPreferencesWithTopicsCommandResponseBody
                 {
-                    Message = "User preferences updated successfully with selected topics"
+                    Message = _messages["PreferencesUpdatedWithTopics"]
                 }
             };
         }

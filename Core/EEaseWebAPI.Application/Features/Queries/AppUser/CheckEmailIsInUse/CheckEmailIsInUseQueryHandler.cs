@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse
 {
@@ -14,10 +15,18 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse
         private readonly IAuthService _authService;
         private readonly IHeaderService _headerService;
 
-        public CheckEmailIsInUseQueryHandler(IAuthService authService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public CheckEmailIsInUseQueryHandler(IAuthService authService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _authService = authService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<CheckEmailIsInUseQueryResponse> Handle(CheckEmailIsInUseQueryRequest request, CancellationToken cancellationToken)
@@ -26,7 +35,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailIsInUse
                 throw new ArgumentNullException(nameof(request));
 
             var isEmailInUse = await _authService.IsEmailInUse(request.email);
-            var message = isEmailInUse ? "Email is in use." : "Email is free.";
+            var message = isEmailInUse ? _messages["EmailInUse"] : _messages["EmailAvailable"];
 
             return new CheckEmailIsInUseQueryResponse()
             {

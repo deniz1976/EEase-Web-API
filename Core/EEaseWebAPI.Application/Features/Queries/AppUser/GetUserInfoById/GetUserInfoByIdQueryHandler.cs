@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById
 {
@@ -15,10 +16,18 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById
         private readonly IUserProfileService _profileService;
         private readonly IUserPreferenceService _preferenceService;
 
-        public GetUserInfoByIdQueryHandler(IHeaderService headerService, IUserProfileService profileService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public GetUserInfoByIdQueryHandler(IHeaderService headerService, IUserProfileService profileService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _headerService = headerService;
             _profileService = profileService;
+
+            _messages = messages;
         }
 
         public async Task<GetUserInfoByIdQueryResponse> Handle(GetUserInfoByIdQueryRequest request, CancellationToken cancellationToken)
@@ -43,13 +52,13 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById
             if (visibilityStatus == ProfileVisibilityStatus.BlockedByTarget)
             {
                 response.response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedByTarget);
-                response.response.Body.errorMessage = "This user has blocked you. You cannot view their profile.";
+                response.response.Body.errorMessage = _messages["BlockedByTargetProfile"];
                 return response;
             }
             else if (visibilityStatus == ProfileVisibilityStatus.BlockedTarget)
             {
                 response.response.Header = _headerService.HeaderCreate((int)StatusEnum.UserBlockedTarget);
-                response.response.Body.errorMessage = "You have blocked this user. Unblock them to view their profile.";
+                response.response.Body.errorMessage = _messages["BlockedTargetProfile"];
                 response.response.Body.username = userInfo.username;
                 return response;
             }
@@ -75,7 +84,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById
 
             if (visibilityStatus == ProfileVisibilityStatus.LimitedAccess)
             {
-                response.response.Body.errorMessage = "You are not friends with this user. Send a friend request to see more details.";
+                response.response.Body.errorMessage = _messages["NotFriendsProfile"];
             }
 
             return response;

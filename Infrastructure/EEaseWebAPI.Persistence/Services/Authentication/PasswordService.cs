@@ -5,6 +5,8 @@ using EEaseWebAPI.Application.Exceptions.ChangePassword;
 using EEaseWebAPI.Application.Exceptions.ResetPassword;
 using EEaseWebAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
+using EEaseWebAPI.Application;
 
 namespace EEaseWebAPI.Persistence.Services.Authentication
 {
@@ -17,14 +19,22 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
         private readonly IMailService _mailService;
         private readonly IVerificationCodeGenerator _codeGenerator;
 
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
         public PasswordService(
             UserManager<AppUser> userManager,
             IMailService mailService,
-            IVerificationCodeGenerator codeGenerator)
+            IVerificationCodeGenerator codeGenerator,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _userManager = userManager;
             _mailService = mailService;
             _codeGenerator = codeGenerator;
+
+            _messages = messages;
         }
 
         public async Task<bool> SendResetCodeAsync(string usernameOrEmail)
@@ -39,7 +49,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
             await UpdateAsync(user, "Failed to store the reset password code.");
 
-            _mailService.SendResetPasswordEmail(user.Email, "Reset Password", code);
+            _mailService.SendResetPasswordEmail(user.Email, _messages["Mail_ResetPasswordSubject"], code);
 
             return true;
         }

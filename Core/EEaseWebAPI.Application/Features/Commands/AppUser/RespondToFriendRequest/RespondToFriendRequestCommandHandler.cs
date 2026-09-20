@@ -3,6 +3,7 @@ using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Friendship;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendRequest
 {
@@ -11,10 +12,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendReque
         private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public RespondToFriendRequestCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public RespondToFriendRequestCommandHandler(IFriendshipService friendshipService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _friendshipService = friendshipService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<RespondToFriendRequestCommandResponse> Handle(RespondToFriendRequestCommand request, CancellationToken cancellationToken)
@@ -29,7 +38,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RespondToFriendReque
             return new RespondToFriendRequestCommandResponse
             {
                 Header = _headerService.HeaderCreate((int)statusCode),
-                Body = new RespondToFriendRequestCommandResponseBody()
+                Body = new RespondToFriendRequestCommandResponseBody
+                {
+                    Message = _messages["FriendRequestAnswered"]
+                }
             };
         }
     }

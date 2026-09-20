@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Name_Required" xml:space="preserve">
+    <value>Ad zorunludur.</value>
+  </data>
+  <data name="Name_TooShort" xml:space="preserve">
+    <value>Ad en az 2 karakter olmalıdır.</value>
+  </data>
+  <data name="Surname_Required" xml:space="preserve">
+    <value>Soyad zorunludur.</value>
+  </data>
+  <data name="Surname_TooShort" xml:space="preserve">
+    <value>Soyad en az 2 karakter olmalıdır.</value>
+  </data>
+  <data name="Email_Required" xml:space="preserve">
+    <value>E-posta zorunludur.</value>
+  </data>
+  <data name="Email_Invalid" xml:space="preserve">
+    <value>Geçerli bir e-posta adresi gereklidir.</value>
+  </data>
+  <data name="Password_Required" xml:space="preserve">
+    <value>Parola zorunludur.</value>
+  </data>
+  <data name="Password_TooShort" xml:space="preserve">
+    <value>Parola en az 8 karakter olmalıdır.</value>
+  </data>
+  <data name="Password_NeedsUppercase" xml:space="preserve">
+    <value>Parola en az bir büyük harf içermelidir.</value>
+  </data>
+  <data name="Password_NeedsLowercase" xml:space="preserve">
+    <value>Parola en az bir küçük harf içermelidir.</value>
+  </data>
+  <data name="Password_NeedsDigit" xml:space="preserve">
+    <value>Parola en az bir rakam içermelidir.</value>
+  </data>
+  <data name="Password_NeedsSpecialCharacter" xml:space="preserve">
+    <value>Parola en az bir özel karakter içermelidir.</value>
+  </data>
+  <data name="Password_DoesNotMatch" xml:space="preserve">
+    <value>Parola ve parola tekrarı aynı olmalıdır.</value>
+  </data>
+  <data name="Gender_Invalid" xml:space="preserve">
+    <value>Cinsiyet 'Male' veya 'Female' olmalıdır.</value>
+  </data>
+  <data name="Username_Required" xml:space="preserve">
+    <value>Kullanıcı adı zorunludur.</value>
+  </data>
+  <data name="Username_TooShort" xml:space="preserve">
+    <value>Kullanıcı adı en az 3 karakter olmalıdır.</value>
+  </data>
+  <data name="Username_InvalidCharacters" xml:space="preserve">
+    <value>Kullanıcı adı yalnızca harf ve rakam içerebilir.</value>
+  </data>
+  <data name="Route_DestinationRequired" xml:space="preserve">
+    <value>Bir varış noktası zorunludur.</value>
+  </data>
+  <data name="Route_DestinationTooLong" xml:space="preserve">
+    <value>Varış noktası çok uzun.</value>
+  </data>
+  <data name="Route_StartDateRequired" xml:space="preserve">
+    <value>Başlangıç tarihi zorunludur.</value>
+  </data>
+  <data name="Route_EndDateRequired" xml:space="preserve">
+    <value>Bitiş tarihi zorunludur.</value>
+  </data>
+  <data name="Route_DateInThePast" xml:space="preserve">
+    <value>Geçmiş bir tarih için rota oluşturulamaz.</value>
+  </data>
+  <data name="Route_DateTooFarAway" xml:space="preserve">
+    <value>1 yıldan uzak tarihler için rota oluşturulamaz.</value>
+  </data>
+  <data name="Route_DatesOutOfOrder" xml:space="preserve">
+    <value>Başlangıç tarihi bitiş tarihinden sonra olamaz.</value>
+  </data>
+  <data name="Route_TooManyDays" xml:space="preserve">
+    <value>Rota en fazla {0} gün olabilir.</value>
+  </data>
+  <data name="Route_UsernameRequired" xml:space="preserve">
+    <value>Kullanıcı adı zorunludur.</value>
+  </data>
+  <data name="Route_TooManyCompanions" xml:space="preserve">
+    <value>Bir rota en fazla {0} kişiyle paylaşılabilir.</value>
+  </data>
+  <data name="Route_CompanionUsernameEmpty" xml:space="preserve">
+    <value>Birlikte seyahat edilen kullanıcı adı boş olamaz.</value>
+  </data>
+</root>

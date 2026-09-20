@@ -1,6 +1,8 @@
 using EEaseWebAPI.Infrastructure.Services;
 using FluentAssertions;
 using Xunit;
+using EEaseWebAPI.Application;
+using EEaseWebAPI.UnitTests.Localization;
 
 namespace EEaseWebAPI.UnitTests.Infrastructure
 {
@@ -12,7 +14,7 @@ namespace EEaseWebAPI.UnitTests.Infrastructure
         [InlineData("DeleteAccount")]
         public void Template_is_read_from_the_embedded_resources(string templateName)
         {
-            var rendered = new MailTemplateProvider().Render(templateName, "123456");
+            var rendered = new MailTemplateProvider(Localizers.For<AppMessages>()).Render(templateName, "123456");
 
             rendered.Should().StartWith("<!DOCTYPE HTML");
             rendered.Should().Contain("</html>");
@@ -24,7 +26,7 @@ namespace EEaseWebAPI.UnitTests.Infrastructure
         [InlineData("DeleteAccount")]
         public void Placeholder_is_replaced_with_the_code(string templateName)
         {
-            var rendered = new MailTemplateProvider().Render(templateName, "987654");
+            var rendered = new MailTemplateProvider(Localizers.For<AppMessages>()).Render(templateName, "987654");
 
             rendered.Should().Contain("987654");
             rendered.Should().NotContain("{{Code}}");
@@ -33,7 +35,7 @@ namespace EEaseWebAPI.UnitTests.Infrastructure
         [Fact]
         public void The_same_template_can_be_rendered_with_different_codes()
         {
-            var provider = new MailTemplateProvider();
+            var provider = new MailTemplateProvider(Localizers.For<AppMessages>());
 
             var first = provider.Render("VerificationCode", "111111");
             var second = provider.Render("VerificationCode", "222222");
@@ -42,10 +44,34 @@ namespace EEaseWebAPI.UnitTests.Infrastructure
             second.Should().Contain("222222").And.NotContain("111111");
         }
 
+        [Theory]
+        [InlineData("VerificationCode")]
+        [InlineData("ResetPassword")]
+        [InlineData("DeleteAccount")]
+        public void Nothing_is_left_unfilled_in_the_rendered_mail(string templateName)
+        {
+            var rendered = new MailTemplateProvider(Localizers.For<AppMessages>()).Render(templateName, "123456");
+
+            rendered.Should().NotContain("{{");
+        }
+
+        [Fact]
+        public void The_mail_is_written_in_the_language_of_the_recipient()
+        {
+            var provider = new MailTemplateProvider(Localizers.For<AppMessages>());
+
+            var english = Culture.Use("en", () => provider.Render("VerificationCode", "123456"));
+            var turkish = Culture.Use("tr", () => provider.Render("VerificationCode", "123456"));
+
+            english.Should().Contain("Your Verification Code");
+            turkish.Should().Contain("Doğrulama Kodunuz");
+            turkish.Should().NotContain("Your Verification Code");
+        }
+
         [Fact]
         public void An_unknown_template_produces_a_clear_error()
         {
-            var act = () => new MailTemplateProvider().Render("NoSuchTemplate", "123456");
+            var act = () => new MailTemplateProvider(Localizers.For<AppMessages>()).Render("NoSuchTemplate", "123456");
 
             act.Should().Throw<InvalidOperationException>()
                 .WithMessage("*NoSuchTemplate*");

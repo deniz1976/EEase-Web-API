@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Domain.Enums;
 using UserNotFoundException = EEaseWebAPI.Application.Exceptions.Login.UserNotFoundException;
+using Microsoft.Extensions.Localization;
+using EEaseWebAPI.Application;
 
 namespace EEaseWebAPI.Persistence.Services.Route
 {
@@ -26,16 +28,24 @@ namespace EEaseWebAPI.Persistence.Services.Route
         private readonly IRouteAccessPolicy _routeAccessPolicy;
         private readonly IPreferenceFeedbackService _preferenceFeedbackService;
 
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
         public RouteInteractionService(
             UserManager<AppUser> userManager,
             EEaseAPIDbContext context,
             IRouteAccessPolicy routeAccessPolicy,
-            IPreferenceFeedbackService preferenceFeedbackService)
+            IPreferenceFeedbackService preferenceFeedbackService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _userManager = userManager;
             _context = context;
             _routeAccessPolicy = routeAccessPolicy;
             _preferenceFeedbackService = preferenceFeedbackService;
+
+            _messages = messages;
         }
 
         public async Task<bool> LikeRoute(string username, Guid routeId)
@@ -100,12 +110,12 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 .ToListAsync();
 
             if (routes.Count == 0)
-                return "route count is 0.";
+                return _messages["NoRoutesToDelete"];
 
             _context.StandardRoutes.RemoveRange(routes);
             await _context.SaveChangesAsync();
 
-            return "routes deleted successfully.";
+            return _messages["RoutesDeleted"];
         }
 
         public async Task<UpdateRouteStatusCommandResponseBody> UpdateRouteStatusAsync(Guid routeId, int status, string username)
@@ -142,7 +152,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return new LikePlaceOrRestaurantCommandResponseBody
             {
                 IsPreferenceUpdated = feedback.HasChanges,
-                Message = $"{feedback.Category} preferences updated: {feedback.Describe()}"
+                Message = _messages["PreferencesUpdatedFromFeedback"]
             };
         }
 

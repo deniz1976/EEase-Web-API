@@ -1,6 +1,8 @@
 using EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute;
 using EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogin;
+using EEaseWebAPI.Application;
 using EEaseWebAPI.Application.Validators.Route;
+using EEaseWebAPI.UnitTests.Localization;
 using FluentAssertions;
 using Xunit;
 
@@ -10,8 +12,10 @@ namespace EEaseWebAPI.UnitTests.Route
     {
         private static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-        private readonly CreateCustomRouteCommandValidator _customValidator = new();
-        private readonly CreateRouteWithoutLoginCommandValidator _anonymousValidator = new();
+        private readonly CreateCustomRouteCommandValidator _customValidator = Culture.Use(
+            "en", () => new CreateCustomRouteCommandValidator(Localizers.For<ValidationMessages>()));
+        private readonly CreateRouteWithoutLoginCommandValidator _anonymousValidator = Culture.Use(
+            "en", () => new CreateRouteWithoutLoginCommandValidator(Localizers.For<ValidationMessages>()));
 
         private static CreateCustomRouteCommandRequest CustomRequest(
             DateOnly? start = null,
@@ -56,6 +60,29 @@ namespace EEaseWebAPI.UnitTests.Route
 
             result.IsValid.Should().BeFalse();
             result.Errors.Should().Contain(error => error.ErrorMessage.Contains("past"));
+        }
+
+        [Fact]
+        public void A_rejection_is_worded_in_the_language_of_the_caller()
+        {
+            var turkish = Culture.Use(
+                "tr", () => new CreateCustomRouteCommandValidator(Localizers.For<ValidationMessages>()));
+
+            var result = turkish.Validate(CustomRequest(Today.AddDays(-1), Today.AddDays(1)));
+
+            result.Errors.Should().Contain(error =>
+                error.ErrorMessage == "Geçmiş bir tarih için rota oluşturulamaz.");
+        }
+
+        [Fact]
+        public void A_limit_that_carries_a_number_keeps_it_in_every_language()
+        {
+            var turkish = Culture.Use(
+                "tr", () => new CreateCustomRouteCommandValidator(Localizers.For<ValidationMessages>()));
+
+            var result = turkish.Validate(CustomRequest(Today, Today.AddDays(10)));
+
+            result.Errors.Should().Contain(error => error.ErrorMessage.Contains("5"));
         }
 
         [Fact]

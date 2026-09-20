@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
 {
@@ -15,10 +16,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
         private readonly IFriendshipService _friendshipService;
         private readonly IHeaderService _headerService;
 
-        public UnblockUserCommandHandler(IFriendshipService friendshipService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public UnblockUserCommandHandler(IFriendshipService friendshipService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _friendshipService = friendshipService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<UnblockUserCommandResponse> Handle(UnblockUserCommandRequest request, CancellationToken cancellationToken)
@@ -35,7 +44,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
                 Header = _headerService.HeaderCreate((int)StatusEnum.UserUnblockedSuccessfully),
                 Body = new UnblockFriendCommandResponseBody()
                 {
-                    Message = "User unblocked successfully."
+                    Message = _messages["UserUnblocked"]
                 }
             };
         }

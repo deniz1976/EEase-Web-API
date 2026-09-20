@@ -8,6 +8,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 using Xunit;
+using EEaseWebAPI.Application;
+using EEaseWebAPI.UnitTests.Localization;
 
 namespace EEaseWebAPI.UnitTests.User
 {
@@ -36,7 +38,8 @@ namespace EEaseWebAPI.UnitTests.User
             _userManager.CreateAsync(Arg.Any<AppUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
             _codes.Generate().Returns("123456");
 
-            _service = new UserRegistrationService(_userManager, _headers, _mail, _cache, _codes);
+            _service = new UserRegistrationService(
+                _userManager, _headers, _mail, _cache, _codes, Localizers.For<AppMessages>());
         }
 
         private static CreateUser Registration(DateOnly? bornDate = null, string name = "deniz", string surname = "mutlu") =>

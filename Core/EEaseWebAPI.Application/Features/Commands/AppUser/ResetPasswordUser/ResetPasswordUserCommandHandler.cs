@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EEaseWebAPI.Application.Enums;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
 {
@@ -14,10 +15,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
         private readonly IHeaderService _headerService;
         private readonly IPasswordService _passwordService;
 
-        public ResetPasswordUserCommandHandler(IHeaderService headerService, IPasswordService passwordService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public ResetPasswordUserCommandHandler(IHeaderService headerService, IPasswordService passwordService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _headerService = headerService;
             _passwordService = passwordService;
+
+            _messages = messages;
         }
 
         public async Task<ResetPasswordUserCommandResponse> Handle(ResetPasswordUserCommandRequest request, CancellationToken cancellationToken)
@@ -36,7 +45,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetPasswordUser
                         Header = _headerService.HeaderCreate((int)StatusEnum.ResetPasswordCodeSentSuccessfully),
                         Body = new MapEntities.ResetPasswordBody()
                         {
-                            message = "Reset code sent to email."
+                            message = _messages["ResetCodeSent"]
                         }
                     }
                 };

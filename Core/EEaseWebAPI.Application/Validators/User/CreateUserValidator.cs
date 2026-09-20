@@ -1,5 +1,6 @@
 using EEaseWebAPI.Application.Features.Commands.AppUser.CreateUser;
 using FluentValidation;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,37 +11,37 @@ namespace EEaseWebAPI.Application.Validators.User
 {
     public class CreateUserValidator : AbstractValidator<CreateUserCommandRequest>
     {
-        public CreateUserValidator()
+        public CreateUserValidator(IStringLocalizer<ValidationMessages> messages)
         {
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("Name is required.")
-                .MinimumLength(2).WithMessage("Name must be at least 2 characters long.");
+                .NotEmpty().WithMessage(messages["Name_Required"])
+                .MinimumLength(2).WithMessage(messages["Name_TooShort"]);
 
             RuleFor(x => x.Surname)
-                .NotEmpty().WithMessage("Surname is required.")
-                .MinimumLength(2).WithMessage("Surname must be at least 2 characters long.");
+                .NotEmpty().WithMessage(messages["Surname_Required"])
+                .MinimumLength(2).WithMessage(messages["Surname_TooShort"]);
 
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("A valid email is required.");
+                .NotEmpty().WithMessage(messages["Email_Required"])
+                .EmailAddress().WithMessage(messages["Email_Invalid"]);
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Password is required.")
-                .MinimumLength(8).WithMessage("Password must be at least 8 characters long.")
-                .Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
-                .Matches(@"[a-z]").WithMessage("Password must contain at least one lowercase letter.")
-                .Matches(@"\d").WithMessage("Password must contain at least one number.")
-                .Matches(@"[^\w\d\s:]").WithMessage("Password must contain at least one special character.")
-                .Equal(x => x.PasswordConfirm).WithMessage("Password and PasswordConfirm must match.");
+                .NotEmpty().WithMessage(messages["Password_Required"])
+                .MinimumLength(8).WithMessage(messages["Password_TooShort"])
+                .Matches(@"[A-Z]").WithMessage(messages["Password_NeedsUppercase"])
+                .Matches(@"[a-z]").WithMessage(messages["Password_NeedsLowercase"])
+                .Matches(@"\d").WithMessage(messages["Password_NeedsDigit"])
+                .Matches(@"[^\w\d\s:]").WithMessage(messages["Password_NeedsSpecialCharacter"])
+                .Equal(x => x.PasswordConfirm).WithMessage(messages["Password_DoesNotMatch"]);
 
             RuleFor(x => x.Gender)
                 .Must(g => g == "Male" || g == "Female")
-                .WithMessage("Gender must be either 'Male' or 'Female'.");
+                .WithMessage(messages["Gender_Invalid"]);
 
             RuleFor(x => x.Username)
-                .NotEmpty().WithMessage("Username is required.")
-                .MinimumLength(3).WithMessage("Username must be at least 3 characters long.")
-                .Matches(@"^[a-zA-Z0-9]+$").WithMessage("Username can only contain letters and numbers.");
+                .NotEmpty().WithMessage(messages["Username_Required"])
+                .MinimumLength(3).WithMessage(messages["Username_TooShort"])
+                .Matches(@"^[a-zA-Z0-9]+$").WithMessage(messages["Username_InvalidCharacters"]);
 
         }
     }

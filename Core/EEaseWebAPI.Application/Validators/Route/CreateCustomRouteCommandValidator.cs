@@ -1,24 +1,25 @@
 using EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute;
 using FluentValidation;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Validators.Route
 {
     public class CreateCustomRouteCommandValidator : AbstractValidator<CreateCustomRouteCommandRequest>
     {
-        public CreateCustomRouteCommandValidator()
+        public CreateCustomRouteCommandValidator(IStringLocalizer<ValidationMessages> messages)
         {
-            RouteRequestRules.Destination(RuleFor(request => request.destination));
-            RouteRequestRules.DateRange(this, request => request.StartDate, request => request.EndDate);
+            RouteRequestRules.Destination(RuleFor(request => request.destination), messages);
+            RouteRequestRules.DateRange(this, request => request.StartDate, request => request.EndDate, messages);
 
             RuleFor(request => request.username)
-                .NotEmpty().WithMessage("A username is required.");
+                .NotEmpty().WithMessage(messages["Route_UsernameRequired"]);
 
             RuleFor(request => request.usernames)
                 .Must(usernames => usernames == null || usernames.Count <= RouteRequestRules.MaximumCompanions)
-                .WithMessage($"A route can be shared with at most {RouteRequestRules.MaximumCompanions} other people.");
+                .WithMessage(messages["Route_TooManyCompanions", RouteRequestRules.MaximumCompanions]);
 
             RuleForEach(request => request.usernames)
-                .NotEmpty().WithMessage("A companion username cannot be empty.");
+                .NotEmpty().WithMessage(messages["Route_CompanionUsernameEmpty"]);
         }
     }
 }

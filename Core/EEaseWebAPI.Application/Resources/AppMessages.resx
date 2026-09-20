@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccountCreated" xml:space="preserve">
+    <value>Account created successfully. You must confirm email before use.</value>
+  </data>
+  <data name="VerificationCodeSent" xml:space="preserve">
+    <value>Code sent to mail successfully.</value>
+  </data>
+  <data name="DeleteCodeSent" xml:space="preserve">
+    <value>Delete code sent to mail.</value>
+  </data>
+  <data name="AccountReactivated" xml:space="preserve">
+    <value>User status set to active.</value>
+  </data>
+  <data name="ResetCodeSent" xml:space="preserve">
+    <value>Reset code sent to email.</value>
+  </data>
+  <data name="ResetCodeCorrect" xml:space="preserve">
+    <value>Code is correct.</value>
+  </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Password changed succesfully.</value>
+  </data>
+  <data name="EmailInUse" xml:space="preserve">
+    <value>Email is in use.</value>
+  </data>
+  <data name="EmailAvailable" xml:space="preserve">
+    <value>Email is free.</value>
+  </data>
+  <data name="UserActive" xml:space="preserve">
+    <value>User is active</value>
+  </data>
+  <data name="UserPassive" xml:space="preserve">
+    <value>User is passive</value>
+  </data>
+  <data name="UserUpdatedWithNewToken" xml:space="preserve">
+    <value>User updated and new token created please change your token.</value>
+  </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>User updated and old token still can be used</value>
+  </data>
+  <data name="CountryUpdated" xml:space="preserve">
+    <value>User country preference updated successfully.</value>
+  </data>
+  <data name="CurrencyUpdated" xml:space="preserve">
+    <value>Currency updated successfully</value>
+  </data>
+  <data name="PreferencesUpdated" xml:space="preserve">
+    <value>User preferences updated successfully</value>
+  </data>
+  <data name="PreferencesUpdatedWithTopics" xml:space="preserve">
+    <value>User preferences updated successfully with selected topics</value>
+  </data>
+  <data name="PreferencesReset" xml:space="preserve">
+    <value>User preferences have been reset successfully</value>
+  </data>
+  <data name="PreferencesUpdatedFromFeedback" xml:space="preserve">
+    <value>Your preferences have been updated.</value>
+  </data>
+  <data name="FriendRequestSent" xml:space="preserve">
+    <value>Friend request sent successfully.</value>
+  </data>
+  <data name="FriendRequestCancelled" xml:space="preserve">
+    <value>Friend request cancelled succesfully.</value>
+  </data>
+  <data name="FriendRequestAnswered" xml:space="preserve">
+    <value>Friend request response processed successfully.</value>
+  </data>
+  <data name="FriendRemoved" xml:space="preserve">
+    <value>Friend removed successfully.</value>
+  </data>
+  <data name="UserBlocked" xml:space="preserve">
+    <value>User blocked successfully.</value>
+  </data>
+  <data name="UserUnblocked" xml:space="preserve">
+    <value>User unblocked successfully.</value>
+  </data>
+  <data name="NoFriendRequest" xml:space="preserve">
+    <value>No friend request exists yet.</value>
+  </data>
+  <data name="FriendRequestPending" xml:space="preserve">
+    <value>Your friend request is pending.</value>
+  </data>
+  <data name="FriendRequestWaitingForYou" xml:space="preserve">
+    <value>You have a friend request.</value>
+  </data>
+  <data name="AlreadyFriends" xml:space="preserve">
+    <value>You are already friends with this user.</value>
+  </data>
+  <data name="UserIsBlocked" xml:space="preserve">
+    <value>This user is blocked.</value>
+  </data>
+  <data name="UnknownFriendRequestStatus" xml:space="preserve">
+    <value>Unknown status.</value>
+  </data>
+  <data name="BlockedByTargetProfile" xml:space="preserve">
+    <value>This user has blocked you. You cannot view their profile.</value>
+  </data>
+  <data name="BlockedTargetProfile" xml:space="preserve">
+    <value>You have blocked this user. Unblock them to view their profile.</value>
+  </data>
+  <data name="NotFriendsProfile" xml:space="preserve">
+    <value>You are not friends with this user. Send a friend request to see more details.</value>
+  </data>
+  <data name="NotFriendsPhoto" xml:space="preserve">
+    <value>You need to be friends with this user to view their photo.</value>
+  </data>
+  <data name="RouteLiked" xml:space="preserve">
+    <value>Route is liked by the user</value>
+  </data>
+  <data name="RouteNotLiked" xml:space="preserve">
+    <value>Route is not liked by the user</value>
+  </data>
+  <data name="NoRoutesToDelete" xml:space="preserve">
+    <value>route count is 0.</value>
+  </data>
+  <data name="RoutesDeleted" xml:space="preserve">
+    <value>routes deleted successfully.</value>
+  </data>
+  <data name="Mail_HeadlineLine1" xml:space="preserve">
+    <value>YOUR NEXT</value>
+  </data>
+  <data name="Mail_HeadlineLine2" xml:space="preserve">
+    <value>DESTINATION</value>
+  </data>
+  <data name="Mail_HeadlineLine3" xml:space="preserve">
+    <value>IS CALLING</value>
+  </data>
+  <data name="Mail_Rights" xml:space="preserve">
+    <value>All rights reserved</value>
+  </data>
+  <data name="Mail_VerificationCodeLabel" xml:space="preserve">
+    <value>Your Verification Code</value>
+  </data>
+  <data name="Mail_ResetPasswordLabel" xml:space="preserve">
+    <value>Your Reset Code</value>
+  </data>
+  <data name="Mail_DeleteAccountLabel" xml:space="preserve">
+    <value>Your Delete Code</value>
+  </data>
+  <data name="Mail_VerificationSubject" xml:space="preserve">
+    <value>Email Confirmation</value>
+  </data>
+  <data name="Mail_ResetPasswordSubject" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="Mail_DeleteAccountSubject" xml:space="preserve">
+    <value>Delete Account</value>
+  </data>
+</root>

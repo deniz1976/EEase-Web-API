@@ -10,6 +10,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
 
     public class UpdateUserCountryCommandResponseBody
     {
-        public string Message { get; set; } = "User country preference updated successfully.";
+        public string? Message { get; set; }
     }
 }

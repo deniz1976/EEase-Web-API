@@ -5,6 +5,7 @@ using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
 {
@@ -13,10 +14,18 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
         private readonly IUserProfileService _profileService;
         private readonly IHeaderService _headerService;
 
-        public UpdateUserCountryCommandHandler(IUserProfileService profileService, IHeaderService headerService)
+        private readonly IStringLocalizer<AppMessages> _messages;
+
+
+        public UpdateUserCountryCommandHandler(IUserProfileService profileService, IHeaderService headerService,
+
+            IStringLocalizer<AppMessages> messages)
+
         {
             _profileService = profileService;
             _headerService = headerService;
+
+            _messages = messages;
         }
 
         public async Task<UpdateUserCountryCommandResponse> Handle(UpdateUserCountryCommandRequest request, CancellationToken cancellationToken)
@@ -26,7 +35,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCountry
             return new UpdateUserCountryCommandResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.UpdateUserCountrySuccess),
-                Body = new UpdateUserCountryCommandResponseBody()
+                Body = new UpdateUserCountryCommandResponseBody
+                {
+                    Message = _messages["CountryUpdated"]
+                }
             };
         }
     }
