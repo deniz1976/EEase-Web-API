@@ -1,5 +1,4 @@
 using EEaseWebAPI.API.Constants;
-using EEaseWebAPI.Application.JsonConverters;
 using Microsoft.OpenApi.Models;
 
 namespace EEaseWebAPI.API.Extensions

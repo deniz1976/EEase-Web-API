@@ -61,14 +61,11 @@ namespace EEaseWebAPI.API.Controllers
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         public async Task<IActionResult> GetAllRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             GetAllRoutesQueryRequest request = new GetAllRoutesQueryRequest()
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                Username = requesterUsername
+                Username = CurrentUsername
             };
 
             GetAllRoutesQueryResponse response = await _mediator.Send(request);
@@ -83,15 +80,12 @@ namespace EEaseWebAPI.API.Controllers
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         public async Task<IActionResult> GetAllRoutes([FromRoute] string userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             GetRoutesByUserIdQueryRequest request = new GetRoutesByUserIdQueryRequest()
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 UserId = userId,
-                RequesterUsername = requesterUsername
+                RequesterUsername = CurrentUsername
             };
 
             GetRoutesByUserIdQueryResponse response = await _mediator.Send(request);
@@ -105,14 +99,11 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetLikedRoutesQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLikedRoutes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             GetLikedRoutesQueryRequest request = new GetLikedRoutesQueryRequest()
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                Username = requesterUsername
+                Username = CurrentUsername
             };
 
             GetLikedRoutesQueryResponse response = await _mediator.Send(request);
@@ -127,13 +118,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(LikeRouteCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> LikeRoute([FromBody] Guid routeId)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             LikeRouteCommandRequest request = new LikeRouteCommandRequest
             {
                 RouteId = routeId,
-                Username = requesterUsername
+                Username = CurrentUsername
             };
 
             LikeRouteCommandResponse response = await _mediator.Send(request);
@@ -147,13 +135,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(DeleteRouteCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteRoute([FromRoute] Guid routeId)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             DeleteRouteCommandRequest request = new DeleteRouteCommandRequest
             {
                 RouteId = routeId,
-                Username = requesterUsername
+                Username = CurrentUsername
             };
 
             DeleteRouteCommandResponse response = await _mediator.Send(request);
@@ -168,14 +153,11 @@ namespace EEaseWebAPI.API.Controllers
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> CreateCustomRoute(CreateCustomRouteDTO createCustomRouteDTO)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
 #pragma warning disable CS8601
             CreateCustomRouteCommandRequest request = new CreateCustomRouteCommandRequest()
             {
                 usernames = createCustomRouteDTO.usernames,
-                username = requesterUsername,
+                username = CurrentUsername,
                 PRICE_LEVEL = createCustomRouteDTO.PRICE_LEVEL,
                 StartDate = createCustomRouteDTO.StartDate,
                 EndDate = createCustomRouteDTO.EndDate,
@@ -195,13 +177,10 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GetRouteByIdQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRouteById([FromRoute] Guid routeId)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             GetRouteByIdQueryRequest request = new GetRouteByIdQueryRequest
             {
                 RouteId = routeId,
-                Username = requesterUsername
+                Username = CurrentUsername
             };
 
             GetRouteByIdQueryResponse response = await _mediator.Send(request);
@@ -215,14 +194,11 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(UpdateRouteStatusCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateRouteStatus([FromRoute] Guid routeId, [FromBody] int status)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             UpdateRouteStatusCommandRequest request = new UpdateRouteStatusCommandRequest
             {
                 RouteId = routeId,
                 Status = status,
-                Username = requesterUsername
+                Username = CurrentUsername
             };
 
             UpdateRouteStatusCommandResponse response = await _mediator.Send(request);
@@ -236,9 +212,6 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(LikePlaceOrRestaurantCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> LikePlaceOrRestaurant([FromBody] LikePlaceOrRestaurantEndpointDTO request)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             if (string.IsNullOrEmpty(request.PlaceType))
                 return BadRequest("PlaceType is required");
 
@@ -249,7 +222,7 @@ namespace EEaseWebAPI.API.Controllers
             {
                 GooglePlaceId = request.GooglePlaceId,
                 PlaceType = request.PlaceType,
-                Username = requesterUsername
+                Username = CurrentUsername
             };
 
             var response = await _mediator.Send(commandRequest);
@@ -265,9 +238,6 @@ namespace EEaseWebAPI.API.Controllers
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> DislikePlaceOrRestaurant([FromBody] DislikePlaceOrRestaurantDTO request)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             if (string.IsNullOrEmpty(request.PlaceType))
                 return BadRequest("PlaceType is required");
 
@@ -281,7 +251,7 @@ namespace EEaseWebAPI.API.Controllers
             {
                 GooglePlaceId = request.GooglePlaceId,
                 PlaceType = request.PlaceType,
-                Username = requesterUsername,
+                Username = CurrentUsername,
                 DislikeType = request.DislikeType,
                 UserFeedback = request.UserFeedback,
                 RouteId = request.RouteId
@@ -298,20 +268,15 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(CheckRouteLikeStatusQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckRouteLikeStatus([FromRoute] Guid routeId)
         {
+            CheckRouteLikeStatusQueryRequest request = new()
+            {
+                RouteId = routeId,
+                Username = CurrentUsername
+            };
 
-                if (!TryGetCurrentUsername(out var requesterUsername))
-                    return Unauthorized();
+            CheckRouteLikeStatusQueryResponse response = await _mediator.Send(request);
 
-                CheckRouteLikeStatusQueryRequest request = new()
-                {
-                    RouteId = routeId,
-                    Username = requesterUsername
-                };
-
-                CheckRouteLikeStatusQueryResponse response = await _mediator.Send(request);
-
-                return Ok(response);
-
+            return Ok(response);
         }
 
         [HttpDelete("[Action]")]
@@ -321,12 +286,9 @@ namespace EEaseWebAPI.API.Controllers
 
         public async Task<IActionResult> DeleteAllRoutes()
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             DeleteAllRoutesCommandRequest request = new DeleteAllRoutesCommandRequest
             {
-                Username = requesterUsername
+                Username = CurrentUsername
             };
 
             DeleteAllRoutesCommandResponse response = await _mediator.Send(request);

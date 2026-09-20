@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace EEaseWebAPI.API.Controllers
@@ -11,28 +10,22 @@ namespace EEaseWebAPI.API.Controllers
     public abstract class ApiControllerBase : ControllerBase
     {
         /// <summary>
-        /// The caller's username taken from the token. Empty when the request carries no
-        /// identity, which cannot happen on an endpoint marked with <c>[Authorize]</c>.
+        /// The caller's username, taken from the token. A token without a name claim cannot
+        /// reach an endpoint marked with <c>[Authorize]</c>, so this refuses rather than
+        /// handing back an empty name and letting the lookup fail further in. Each endpoint
+        /// used to check for that itself and answer an empty 401; the global handler answers
+        /// it now, in the same shape as every other error.
         /// </summary>
-        protected string CurrentUsername =>
-            User.Identity?.Name ?? User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
-
-        /// <summary>
-        /// Use this where the endpoint answers <c>401</c> itself instead of relying on the
-        /// authentication middleware.
-        /// </summary>
-        protected bool TryGetCurrentUsername([NotNullWhen(true)] out string? username)
+        protected string CurrentUsername
         {
-            username = CurrentUsername;
-
-            if (string.IsNullOrEmpty(username))
+            get
             {
-                username = null;
+                var username = User.Identity?.Name ?? User.FindFirst(ClaimTypes.Name)?.Value;
 
-                return false;
+                return string.IsNullOrWhiteSpace(username)
+                    ? throw new UnauthorizedAccessException("The request carries no username.")
+                    : username;
             }
-
-            return true;
         }
     }
 }

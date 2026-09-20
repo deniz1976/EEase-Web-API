@@ -37,12 +37,9 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("SendFriendRequest/{targetUsername}")]
         public async Task<IActionResult> SendFriendRequest(string targetUsername)
         {
-            if (!TryGetCurrentUsername(out var requesterUsername))
-                return Unauthorized();
-
             var request = new SendFriendRequestCommandRequest
             {
-                RequesterUsername = requesterUsername,
+                RequesterUsername = CurrentUsername,
                 AddresseeUsername = targetUsername
             };
 
@@ -57,10 +54,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpGet("[Action]")]
         public async Task<IActionResult> GetPendingRequests()
         {
-            if (!TryGetCurrentUsername(out var username))
-                return Unauthorized();
-
-            var query = new GetPendingFriendRequestsQuery { Username = username };
+            var query = new GetPendingFriendRequestsQuery { Username = CurrentUsername };
             var response = await _mediator.Send(query);
 
             return Ok(response);
@@ -72,10 +66,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpGet("[Action]")]
         public async Task<IActionResult> GetFriends()
         {
-            if (!TryGetCurrentUsername(out var username))
-                return Unauthorized();
-
-            var query = new GetUserFriendsQuery { Username = username };
+            var query = new GetUserFriendsQuery { Username = CurrentUsername };
             var response = await _mediator.Send(query);
 
             return Ok(response);
@@ -85,15 +76,13 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(typeof(GlobalError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("RespondToFriendRequest/{requesterUsername}")]
-        public async Task<IActionResult> RespondToFriendRequest(string requesterUsername, [FromBody] FriendshipStatus response)
+        public async Task<IActionResult> RespondToFriendRequest(
+            string requesterUsername, [FromBody] FriendshipStatus response)
         {
-            if (!TryGetCurrentUsername(out var addresseeUsername))
-                return Unauthorized();
-
             var request = new RespondToFriendRequestCommand
             {
                 RequesterUsername = requesterUsername,
-                AddresseeUsername = addresseeUsername,
+                AddresseeUsername = CurrentUsername,
                 Response = response
             };
 
@@ -108,12 +97,9 @@ namespace EEaseWebAPI.API.Controllers
         [HttpDelete("RemoveFriend/{friendUsername}")]
         public async Task<IActionResult> RemoveFriend(string friendUsername)
         {
-            if (!TryGetCurrentUsername(out var username))
-                return Unauthorized();
-
             var command = new RemoveFriendCommand
             {
-                Username = username,
+                Username = CurrentUsername,
                 FriendUsername = friendUsername
             };
 
@@ -128,12 +114,9 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("BlockUser/{targetUsername}")]
         public async Task<IActionResult> BlockUser(string targetUsername)
         {
-            if (!TryGetCurrentUsername(out var username))
-                return Unauthorized();
-
             var command = new BlockFriendCommand
             {
-                Username = username,
+                Username = CurrentUsername,
                 TargetUsername = targetUsername
             };
 
@@ -148,12 +131,9 @@ namespace EEaseWebAPI.API.Controllers
         [HttpPost("UnblockUser/{targetUsername}")]
         public async Task<IActionResult> UnblockUser(string targetUsername)
         {
-            if (!TryGetCurrentUsername(out var username))
-                return Unauthorized();
-
             UnblockUserCommandRequest request = new UnblockUserCommandRequest()
             {
-                username = username,
+                username = CurrentUsername,
                 targetUsername = targetUsername
             };
 
@@ -167,10 +147,7 @@ namespace EEaseWebAPI.API.Controllers
         [HttpGet("[Action]")]
         public async Task<IActionResult> GetBlockedUsers()
         {
-            if (!TryGetCurrentUsername(out var username))
-                return Unauthorized();
-
-            var query = new GetBlockedUsersQuery { Username = username };
+            var query = new GetBlockedUsersQuery { Username = CurrentUsername };
             var response = await _mediator.Send(query);
 
             return Ok(response);
@@ -182,12 +159,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CancelFriendRequest(string targetUsername)
         {
-            if (!TryGetCurrentUsername(out var username))
-                return Unauthorized();
-
             CancelFriendRequestCommandRequest request = new CancelFriendRequestCommandRequest
             {
-                username = username,
+                username = CurrentUsername,
                 targetUsername = targetUsername
             };
 
@@ -201,12 +175,9 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CheckFriendRequest(string targetUsername)
         {
-            if (!TryGetCurrentUsername(out var username))
-                return Unauthorized();
-
             CheckFriendRequestQueryRequest request = new CheckFriendRequestQueryRequest()
             {
-                Username = username,
+                Username = CurrentUsername,
                 TargetUsername = targetUsername
             };
 
