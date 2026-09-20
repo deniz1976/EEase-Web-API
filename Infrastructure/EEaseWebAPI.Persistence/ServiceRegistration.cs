@@ -92,17 +92,7 @@ namespace EEaseWebAPI.Persistence
 
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
-            services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
-            services.AddScoped<IStandardRouteReadRepository, StandardRouteReadRepository>();
-            services.AddScoped<IStandardRouteWriteRepository, StandardRouteWriteRepository>();
             services.AddScoped<IAllWorldCitiesRepository, AllWorldCitiesRepository>();
-            services.AddScoped<IUserAccommodationPreferencesReadRepository, UserAccommodationPreferencesReadRepository>();
-            services.AddScoped<IUserAccommodationPreferencesWriteRepository, UserAccommodationPreferencesWriteRepository>();
-            services.AddScoped<IUserFoodPreferencesReadRepository, UserFoodPreferencesReadRepository>();
-            services.AddScoped<IUserFoodPreferencesWriteRepository, UserFoodPreferencesWriteRepository>();
-            services.AddScoped<IUserPersonalizationReadRepository, UserPersonalizationReadRepository>();
-            services.AddScoped<IUserPersonalizationWriteRepository, UserPersonalizationWriteRepository>();
 
             return services;
         }
@@ -115,7 +105,6 @@ namespace EEaseWebAPI.Persistence
             services.AddScoped<IFriendshipService, Services.Social.FriendshipService>();
             services.AddScoped<IUserPreferenceService, Services.User.UserPreferenceService>();
             services.AddScoped<IAuthService, Services.Authentication.AuthService>();
-            services.AddScoped<IExternalAuthentication, Services.Authentication.AuthService>();
             services.AddScoped<IInternalAuthentication, Services.Authentication.AuthService>();
             services.AddScoped<IPasswordService, Services.Authentication.PasswordService>();
             services.AddScoped<IAccountDeletionPolicy, Services.Authentication.AccountDeletionPolicy>();

@@ -43,7 +43,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             await UpdateAsync(user, "Failed to store the reset password code.");
 
             var sent = await _mailService.SendResetPasswordEmailAsync(
-                user.Email, AppMessages.Mail_ResetPasswordSubject, code);
+                user.Email!, AppMessages.Mail_ResetPasswordSubject, code);
 
             if (!sent)
             {

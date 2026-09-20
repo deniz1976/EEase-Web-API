@@ -6,17 +6,17 @@ namespace EEaseWebAPI.Domain.Entities.Identity
 {
     public class UserFriendship : BaseEntity
     {
-        public string RequesterId { get; set; }
+        public string RequesterId { get; set; } = null!;
         [ForeignKey("RequesterId")]
-        public AppUser Requester { get; set; }
+        public AppUser Requester { get; set; } = null!;
 
-        public string AddresseeId { get; set; }
+        public string AddresseeId { get; set; } = null!;
         [ForeignKey("AddresseeId")]
-        public AppUser Addressee { get; set; }
+        public AppUser Addressee { get; set; } = null!;
 
-        public string UserAId { get; set; }
+        public string UserAId { get; set; } = null!;
 
-        public string UserBId { get; set; }
+        public string UserBId { get; set; } = null!;
 
         public FriendshipStatus Status { get; set; }
         public DateTime RequestDate { get; set; }

@@ -5,13 +5,13 @@ namespace EEaseWebAPI.Domain.Entities.Identity
 {
     public class UserBlock : BaseEntity
     {
-        public string BlockerId { get; set; }
+        public string BlockerId { get; set; } = null!;
         [ForeignKey("BlockerId")]
-        public AppUser Blocker { get; set; }
+        public AppUser Blocker { get; set; } = null!;
 
-        public string BlockedId { get; set; }
+        public string BlockedId { get; set; } = null!;
         [ForeignKey("BlockedId")]
-        public AppUser Blocked { get; set; }
+        public AppUser Blocked { get; set; } = null!;
 
         public DateTime BlockedDate { get; set; }
     }

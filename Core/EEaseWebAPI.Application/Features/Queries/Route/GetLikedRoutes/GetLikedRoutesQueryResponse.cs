@@ -14,7 +14,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes
 
     public class GetLikedRoutesQueryResponseBody
     {
-        public List<StandardRouteDTO> Routes { get; set; }
+        public List<StandardRouteDTO> Routes { get; set; } = new();
         public int TotalCount { get; set; }
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }

@@ -19,7 +19,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute
 
         public PRICE_LEVEL? PRICE_LEVEL { get; set; }
 
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
     }
 }

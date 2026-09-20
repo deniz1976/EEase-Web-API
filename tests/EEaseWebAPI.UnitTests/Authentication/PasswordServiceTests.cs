@@ -63,7 +63,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
             _alice.ResetPasswordCode.Should().Be("123456");
             _alice.ResetPasswordCodeExpiration.Should().BeAfter(DateTime.UtcNow);
             await _mail.Received(1).SendResetPasswordEmailAsync(
-                _alice.Email, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
+                _alice.Email!, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
         }
 
         [Fact]

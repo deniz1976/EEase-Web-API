@@ -100,10 +100,10 @@ namespace EEaseWebAPI.UnitTests.Route
         public void Dispose() => _context.Dispose();
 
         private DislikePlaceOrRestaurantCommandRequest Request(
-            string? username = "alice",
+            string username = "alice",
             string? routeId = null,
-            string? googlePlaceId = "dinner-1",
-            string? placeType = "dinner") =>
+            string googlePlaceId = "dinner-1",
+            string placeType = "dinner") =>
             new()
             {
                 Username = username,
@@ -179,7 +179,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_google_id_that_was_not_given_is_rejected()
         {
-            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(googlePlaceId: null)))
+            await _service.Invoking(service => service.DislikePlaceOrRestaurant(Request(googlePlaceId: string.Empty)))
                 .Should().ThrowAsync<InvalidPlaceTypeException>();
         }
 

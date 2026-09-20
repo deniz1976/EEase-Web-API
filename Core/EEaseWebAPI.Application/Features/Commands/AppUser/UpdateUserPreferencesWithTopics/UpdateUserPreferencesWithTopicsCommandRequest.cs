@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
 {
     public class UpdateUserPreferencesWithTopicsCommandRequest : IRequest<UpdateUserPreferencesWithTopicsCommandResponse>
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
         public List<string> Topics { get; set; } = new List<string>();
     }
 }

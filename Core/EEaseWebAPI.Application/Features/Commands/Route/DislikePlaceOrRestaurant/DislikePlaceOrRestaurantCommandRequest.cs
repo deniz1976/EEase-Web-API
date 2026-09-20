@@ -9,10 +9,10 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.DislikePlaceOrRestaura
 {
     public class DislikePlaceOrRestaurantCommandRequest :IRequest<DislikePlaceOrRestaurantCommandResponse>
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
         public string? RouteId { get; set; }
-        public string? GooglePlaceId { get; set; }
-        public string? PlaceType { get; set; }
+        public string GooglePlaceId { get; set; } = string.Empty;
+        public string PlaceType { get; set; } = string.Empty;
         public string? UserFeedback { get; set; }
         public int? DislikeType { get; set; }
     }

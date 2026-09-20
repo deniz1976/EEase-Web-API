@@ -46,43 +46,6 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             _codeGenerator = codeGenerator;
         }
 
-        public async Task<Token> CreateUserExternalAsync(
-            AppUser user, string email, string name, UserLoginInfo info,
-            int accessTokenLifetime, string surname, string username, string gender)
-        {
-            user ??= await _userManager.FindByEmailAsync(email);
-
-            if (user == null)
-            {
-                user = new AppUser
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Email = email,
-                    Name = name,
-                    UserName = username,
-                    Gender = gender,
-                    Surname = surname
-                };
-
-                var creation = await _userManager.CreateAsync(user);
-
-                if (!creation.Succeeded)
-                {
-                    throw new Application.Exceptions.CreateUser.CreateUserFailedException(
-                        "Invalid external authentication.", (int)StatusEnum.CreateUserFailed);
-                }
-            }
-
-            await _userManager.AddLoginAsync(user, info);
-
-            return _tokenHandler.CreateAccessToken(accessTokenLifetime, user);
-        }
-
-        public Task<Token> GoogleLoginAsync(string idToken, int accessTokenLifeTime)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<LoginBody> LoginAsync(string usernameOrEmail, string password, int accessTokenLifetime)
         {
             var user = await _userManager.FindByNameAsync(usernameOrEmail)
@@ -197,7 +160,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             // A login that needs confirming is answered the same way whether or not the mail
             // went out; the caller can ask for the code again.
             await _mailService.SendVerificationEmailAsync(
-                user.Email, AppMessages.Mail_VerificationSubject, user.VerificationCode);
+                user.Email!, AppMessages.Mail_VerificationSubject, user.VerificationCode);
         }
     }
 }

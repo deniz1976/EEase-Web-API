@@ -9,8 +9,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUserWithCode
 {
     public class DeleteUserWithCodeCommandRequest : IRequest<DeleteUserWithCodeCommandResponse>
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
-        public string? Code { get; set; }
+        public string Code { get; set; } = string.Empty;
     }
 }

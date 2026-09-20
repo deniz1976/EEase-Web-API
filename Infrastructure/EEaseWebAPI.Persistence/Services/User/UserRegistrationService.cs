@@ -109,7 +109,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             }
 
             var sent = await _mailService.SendVerificationEmailAsync(
-                user.Email, AppMessages.Mail_VerificationSubject, user.VerificationCode);
+                user.Email!, AppMessages.Mail_VerificationSubject, user.VerificationCode);
 
             if (!sent)
             {

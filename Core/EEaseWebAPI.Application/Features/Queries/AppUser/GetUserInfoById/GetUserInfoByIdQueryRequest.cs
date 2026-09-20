@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfoById
 {
     public class GetUserInfoByIdQueryRequest : IRequest<GetUserInfoByIdQueryResponse>
     {
-        public string? Username { get; set; }
-        public string? UserId { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
     }
 }

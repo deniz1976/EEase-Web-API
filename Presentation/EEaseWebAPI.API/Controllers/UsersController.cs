@@ -372,14 +372,7 @@ namespace EEaseWebAPI.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SearchUsers([FromQuery] string searchTerm)
         {
-            var request = new SearchUsersQueryRequest
-            {
-                Header = new Header(),
-                Body = new SearchUsersQueryRequestBody
-                {
-                    SearchTerm = searchTerm
-                }
-            };
+            var request = new SearchUsersQueryRequest { SearchTerm = searchTerm };
 
             var response = await _mediator.Send(request);
             return Ok(response);

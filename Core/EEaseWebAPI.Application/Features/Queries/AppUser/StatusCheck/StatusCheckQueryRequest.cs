@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.StatusCheck
 {
     public class StatusCheckQueryRequest : IRequest<StatusCheckQueryResponse>
     {
-        public string? Username {  get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

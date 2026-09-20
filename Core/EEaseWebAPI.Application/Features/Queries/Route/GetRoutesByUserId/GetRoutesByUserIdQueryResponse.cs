@@ -16,7 +16,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId
 
     public class GetRoutesByUserIdQueryResponseBody
     {
-        public List<StandardRouteDTO> Routes { get; set; }
+        public List<StandardRouteDTO> Routes { get; set; } = new();
         public int TotalCount { get; set; }
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }

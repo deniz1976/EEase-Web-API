@@ -6,25 +6,25 @@ namespace EEaseWebAPI.Application.DTOs.GooglePlaces
     public class PlaceDetailsResponse
     {
         [JsonPropertyName("result")]
-        public PlaceDetail Result { get; set; }
+        public PlaceDetail? Result { get; set; }
 
         [JsonPropertyName("status")]
-        public string Status { get; set; }
+        public string? Status { get; set; }
     }
 
     public class PlaceDetail
     {
         [JsonPropertyName("place_id")]
-        public string PlaceId { get; set; }
+        public string? PlaceId { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [JsonPropertyName("formatted_address")]
-        public string FormattedAddress { get; set; }
+        public string? FormattedAddress { get; set; }
 
         [JsonPropertyName("geometry")]
-        public Geometry Geometry { get; set; }
+        public Geometry? Geometry { get; set; }
 
         [JsonPropertyName("rating")]
         public double? Rating { get; set; }
@@ -42,7 +42,7 @@ namespace EEaseWebAPI.Application.DTOs.GooglePlaces
     public class Geometry
     {
         [JsonPropertyName("location")]
-        public Location Location { get; set; }
+        public Location? Location { get; set; }
     }
 
     public class Location
@@ -57,7 +57,7 @@ namespace EEaseWebAPI.Application.DTOs.GooglePlaces
     public class Photo
     {
         [JsonPropertyName("photo_reference")]
-        public string PhotoReference { get; set; }
+        public string? PhotoReference { get; set; }
 
         [JsonPropertyName("height")]
         public int Height { get; set; }

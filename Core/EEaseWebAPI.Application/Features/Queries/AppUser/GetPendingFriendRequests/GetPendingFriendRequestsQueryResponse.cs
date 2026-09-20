@@ -13,9 +13,12 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
 
     public class PendingFriendRequestDto
     {
-        public string RequesterUsername { get; set; }
-        public string RequesterName { get; set; }
-        public string RequesterSurname { get; set; }
+        public string? RequesterUsername { get; set; }
+
+        public string? RequesterName { get; set; }
+
+        public string? RequesterSurname { get; set; }
+
         public DateTime RequestDate { get; set; }
     }
 }

@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
     public class CheckRouteLikeStatusQueryResponseBody
     {
         public bool IsLiked { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 }

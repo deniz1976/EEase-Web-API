@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPhoto
 {
     public class GetUserPhotoQueryRequest : IRequest<GetUserPhotoQueryResponse>
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

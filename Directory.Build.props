@@ -11,6 +11,9 @@
     <!-- A field that is never assigned is always null: a dependency that was declared and
          then forgotten in the constructor took an endpoint down this way. -->
     <WarningsAsErrors>$(WarningsAsErrors);CS0649</WarningsAsErrors>
+    <!-- The nullable warnings were ignored until there were a hundred and fifty of them,
+         and the ones that meant something were lost in the pile. -->
+    <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 

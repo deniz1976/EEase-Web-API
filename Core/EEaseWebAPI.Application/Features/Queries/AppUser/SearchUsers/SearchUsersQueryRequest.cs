@@ -1,16 +1,13 @@
-using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 
 namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
 {
+    /// <summary>
+    /// A query, not an answer: it used to carry a Header and a Body of its own, which the
+    /// controller filled in with an empty header nobody read.
+    /// </summary>
     public class SearchUsersQueryRequest : IRequest<SearchUsersQueryResponse>
     {
-        public Header Header { get; set; }
-        public SearchUsersQueryRequestBody Body { get; set; }
-    }
-
-    public class SearchUsersQueryRequestBody
-    {
-        public string SearchTerm { get; set; }
+        public string SearchTerm { get; set; } = string.Empty;
     }
 }

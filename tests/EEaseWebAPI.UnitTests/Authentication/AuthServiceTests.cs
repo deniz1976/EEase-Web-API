@@ -101,7 +101,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
 
             _alice.VerificationCode.Should().Be("123456");
             await _mail.Received(1).SendVerificationEmailAsync(
-                _alice.Email, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
+                _alice.Email!, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -155,31 +155,5 @@ namespace EEaseWebAPI.UnitTests.Authentication
             (await _service.IsEmailInUse("free@example.com")).Should().BeFalse();
         }
 
-        [Fact]
-        public async Task An_existing_external_user_is_linked_instead_of_recreated()
-        {
-            _userManager.FindByEmailAsync("alice@example.com").Returns(_alice);
-            _userManager.AddLoginAsync(_alice, Arg.Any<UserLoginInfo>()).Returns(IdentityResult.Success);
-
-            var token = await _service.CreateUserExternalAsync(
-                null!, "alice@example.com", "Alice", new UserLoginInfo("google", "key", "Google"),
-                900, "Doe", "alice", "female");
-
-            token.AccessToken.Should().Be("access");
-            await _userManager.DidNotReceiveWithAnyArgs().CreateAsync(default!);
-            await _userManager.Received(1).AddLoginAsync(_alice, Arg.Any<UserLoginInfo>());
-        }
-
-        [Fact]
-        public async Task A_failed_external_creation_is_reported()
-        {
-            _userManager.CreateAsync(Arg.Any<AppUser>())
-                .Returns(IdentityResult.Failed(new IdentityError { Description = "Taken." }));
-
-            await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.CreateUser.CreateUserFailedException>(
-                () => _service.CreateUserExternalAsync(
-                    null!, "new@example.com", "New", new UserLoginInfo("google", "key", "Google"),
-                    900, "User", "new", "male"));
-        }
     }
 }

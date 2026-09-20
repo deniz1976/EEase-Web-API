@@ -10,6 +10,6 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikePlaceOrRestaurant
     public class LikePlaceOrRestaurantCommandResponseBody
     {
         public bool IsPreferenceUpdated { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 }

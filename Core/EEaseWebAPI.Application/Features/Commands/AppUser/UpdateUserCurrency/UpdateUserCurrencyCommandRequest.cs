@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserCurrency
 {
     public class UpdateUserCurrencyCommandRequest : IRequest<UpdateUserCurrencyCommandResponse>
     {
-        public string? Username { get; set; }
-        public string? CurrencyCode { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string CurrencyCode { get; set; } = string.Empty;
     }
 }

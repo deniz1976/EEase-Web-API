@@ -9,10 +9,10 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ChangePassword
 {
     public class ChangePasswordCommandRequest :IRequest<ChangePasswordCommandResponse>
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
-        public string? OldPassword { get; set; }
+        public string OldPassword { get; set; } = string.Empty;
 
-        public string? NewPassword { get; set; }
+        public string NewPassword { get; set; } = string.Empty;
     }
 }

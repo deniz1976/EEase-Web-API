@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.ResetPasswordCodeChec
 {
     public class ResetPasswordCodeCheckQueryRequest : IRequest<ResetPasswordCodeCheckQueryResponse>
     {
-        public string? Code {  get; set; }
-        public string? UsernameOrEmail { get; set; }
+        public string Code { get; set; } = string.Empty;
+        public string UsernameOrEmail { get; set; } = string.Empty;
     }
 }

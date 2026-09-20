@@ -55,6 +55,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
             if (!access.IsAccessible)
                 throw new ForbiddenException(access.Message!, StatusEnum.UnauthorizedToViewRoute);
 
+            route.LikedUsers ??= new List<AppUser>();
+
             var wasLiked = route.LikedUsers.Any(liker => liker.Id == user.Id);
 
             if (wasLiked)

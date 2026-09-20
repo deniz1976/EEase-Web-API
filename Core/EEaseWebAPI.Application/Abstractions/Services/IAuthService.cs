@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
 {
-    public interface IAuthService : IExternalAuthentication, IInternalAuthentication
+    public interface IAuthService : IInternalAuthentication
     {
 
     }

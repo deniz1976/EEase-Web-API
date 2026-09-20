@@ -67,7 +67,7 @@ namespace EEaseWebAPI.Persistence.Services.User
             await _userManager.UpdateAsync(user);
 
             var sent = await _mailService.SendDeleteCodeEmailAsync(
-                user.Email, AppMessages.Mail_DeleteAccountSubject, user.DeleteCode);
+                user.Email!, AppMessages.Mail_DeleteAccountSubject, user.DeleteCode);
 
             if (!sent)
             {

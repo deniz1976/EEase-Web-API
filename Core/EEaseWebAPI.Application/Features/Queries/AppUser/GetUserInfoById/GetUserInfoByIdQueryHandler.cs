@@ -63,7 +63,7 @@ var (userInfo, visibilityStatus) = await _profileService.GetUserInfoByIdAsync(re
 
             if (visibilityStatus == ProfileVisibilityStatus.FullAccess)
             {
-                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.Username, userInfo.Username);
+                var preferences = await _preferenceService.GetDescriptionsForViewerAsync(request.Username, userInfo.Username!);
                 if (preferences != null)
                 {
                     response.Body.PersonalizationPreferences = preferences.PersonalizationPreferences;

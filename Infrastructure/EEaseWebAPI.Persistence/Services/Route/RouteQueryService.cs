@@ -134,7 +134,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             if (!access.IsAccessible)
                 throw new ForbiddenException(access.Message!, StatusEnum.UnauthorizedToViewRoute);
 
-            return route.LikedUsers.Any(liker => liker.Id == user.Id);
+            return route.LikedUsers?.Any(liker => liker.Id == user.Id) == true;
         }
 
         private async Task<AppUser> RequireUserAsync(string username) =>

@@ -4,6 +4,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ResetUserPreferences
 {
     public class ResetUserPreferencesCommandRequest : IRequest<ResetUserPreferencesCommandResponse>
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

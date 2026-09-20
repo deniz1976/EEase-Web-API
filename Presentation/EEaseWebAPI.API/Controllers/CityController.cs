@@ -30,7 +30,6 @@ namespace EEaseWebAPI.API.Controllers
                 SearchTerm = searchTerm,
                 PageSize = pageSize,
                 PageNumber = pageNumber,
-                Username = null
             });
 
             return Ok(response);

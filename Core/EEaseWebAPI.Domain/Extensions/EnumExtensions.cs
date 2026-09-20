@@ -7,11 +7,10 @@ namespace EEaseWebAPI.Domain.Extensions
     {
         public static string GetDescription(this Enum value)
         {
-            FieldInfo field = value.GetType().GetField(value.ToString());
-            if (field == null) return value.ToString();
+            var field = value.GetType().GetField(value.ToString());
+            var description = field?.GetCustomAttribute<DescriptionAttribute>()?.Description;
 
-            DescriptionAttribute attribute = field.GetCustomAttribute<DescriptionAttribute>();
-            return attribute == null ? value.ToString() : attribute.Description;
+            return description ?? value.ToString();
         }
     }
 }

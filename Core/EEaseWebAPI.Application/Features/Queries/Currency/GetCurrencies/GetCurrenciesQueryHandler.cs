@@ -2,12 +2,6 @@ using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Common.Models.Pagination;
 using EEaseWebAPI.Application.Enums;
 using MediatR;
-using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies
 {
@@ -15,56 +9,35 @@ namespace EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies
     {
         private readonly ICurrencyService _currencyService;
         private readonly IHeaderService _headerService;
-        private readonly IMemoryCache _cache;
 
-        public GetCurrenciesQueryHandler(ICurrencyService currenciesService, IHeaderService headerService, IMemoryCache cache)
+        public GetCurrenciesQueryHandler(ICurrencyService currencyService, IHeaderService headerService)
         {
-            _currencyService = currenciesService;
+            _currencyService = currencyService;
             _headerService = headerService;
-            _cache = cache;
         }
 
-        public async Task<GetCurrenciesQueryResponse> Handle(GetCurrenciesQueryRequest request, CancellationToken cancellationToken)
+        public async Task<GetCurrenciesQueryResponse> Handle(
+            GetCurrenciesQueryRequest request, CancellationToken cancellationToken)
         {
-var currencies = await GetCurrenciesFromCache();
+            // The service already keeps the list in memory. Caching it again here, under a
+            // second key with a lifetime of its own, only made it possible for the two
+            // copies to disagree.
+            var currencies = await _currencyService.GetCurrenciesAsync();
 
-            var paginatedCurrencies = currencies
+            var page = currencies
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .ToList();
-
-            var paginatedResult = new PaginatedList<Domain.Entities.Currency.AllWorldCurrencies>(
-                paginatedCurrencies,
-                currencies.Count,
-                request.PageNumber,
-                request.PageSize);
 
             return new GetCurrenciesQueryResponse
             {
                 Header = _headerService.HeaderCreate((int)StatusEnum.GetCurrenciesSuccessfully),
                 Body = new()
                 {
-                    Currencies = paginatedResult
+                    Currencies = new PaginatedList<Domain.Entities.Currency.AllWorldCurrencies>(
+                        page, currencies.Count, request.PageNumber, request.PageSize)
                 }
             };
-        }
-
-        private async Task<List<Domain.Entities.Currency.AllWorldCurrencies>> GetCurrenciesFromCache()
-        {
-            const string cacheKey = "AllCurrencies";
-
-            if (!_cache.TryGetValue(cacheKey, out List<Domain.Entities.Currency.AllWorldCurrencies> currencies))
-            {
-                currencies = await _currencyService.GetCurrenciesAsync();
-
-                var cacheOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromHours(1))
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(24));
-
-                _cache.Set(cacheKey, currencies, cacheOptions);
-            }
-
-            return currencies;
         }
     }
 }

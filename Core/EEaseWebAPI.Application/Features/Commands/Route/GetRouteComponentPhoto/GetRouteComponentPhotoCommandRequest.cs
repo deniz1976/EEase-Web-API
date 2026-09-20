@@ -11,6 +11,6 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.GetRouteComponentPhoto
     {
         public int MaxHeightPx { get; set; } = 1080;
         public int MaxWidthPx { get; set; } = 1920;
-        public string? PhotoName { get; set; }
+        public string PhotoName { get; set; } = string.Empty;
     }
 }

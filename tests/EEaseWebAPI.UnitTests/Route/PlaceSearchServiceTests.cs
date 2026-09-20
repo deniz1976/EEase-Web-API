@@ -60,7 +60,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task An_empty_provider_response_yields_an_empty_list()
         {
-            _googlePlaces.SearchPlacesAsync("nothing").Returns((PlaceSearchResponse?)null);
+            _googlePlaces.SearchPlacesAsync("nothing").Returns(Task.FromResult<PlaceSearchResponse>(null!));
 
             (await _service.SearchAsync("nothing")).Should().BeEmpty();
             (await _service.SearchAsync("  ")).Should().BeEmpty();

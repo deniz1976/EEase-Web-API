@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.CheckEmailConfirmed
 {
     public class CheckEmailConfirmedQueryRequest : IRequest<CheckEmailConfirmedQueryResponse>
     {
-        public string EmailOrUsername { get; set; }
+        public string EmailOrUsername { get; set; } = string.Empty;
     }
 }

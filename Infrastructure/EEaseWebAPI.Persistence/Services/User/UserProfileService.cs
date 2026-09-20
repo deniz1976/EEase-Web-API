@@ -89,7 +89,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                 ?? throw new Application.Exceptions.Login.UserNotFoundException(
                     "User Not Found", (int)StatusEnum.UserNotFound);
 
-            return await GetUserInfoByNameAsync(username, targetUser.UserName);
+            return await GetUserInfoByNameAsync(username, targetUser.UserName!);
         }
 
         public async Task<bool> UpdateUser(UpdateUserCommandRequest request)
@@ -186,7 +186,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                     "The user has no currency set.", (int)StatusEnum.UserUpdateFailed);
         }
 
-        public async Task<string> GetUserPhotoAsync(string username) =>
+        public async Task<string?> GetUserPhotoAsync(string username) =>
             (await FindAsync(username)).PhotoPath;
 
         public async Task<bool> SetUserPhoto(string username, string photoPath)

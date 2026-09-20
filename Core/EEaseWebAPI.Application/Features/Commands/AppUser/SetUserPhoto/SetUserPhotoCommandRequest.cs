@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto
 {
     public class SetUserPhotoCommandRequest : IRequest<SetUserPhotoCommandResponse>
     {
-        public string? Username { get; set; }
-        public string? PhotoUrl { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string PhotoUrl { get; set; } = string.Empty;
     }
 }

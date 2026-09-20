@@ -63,7 +63,7 @@ namespace EEaseWebAPI.UnitTests.User
             outcome.Should().Be(DeleteRequestOutcome.CodeSent);
             _alice.DeleteCodeExpiration.Should().BeAfter(DateTime.UtcNow);
             await _mail.Received(1).SendDeleteCodeEmailAsync(
-                _alice.Email, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
+                _alice.Email!, Arg.Any<string>(), "123456", Arg.Any<CancellationToken>());
         }
 
         [Fact]

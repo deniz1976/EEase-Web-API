@@ -4,7 +4,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUserPreference
 {
     public class UpdateUserPreferencesCommandRequest : IRequest<UpdateUserPreferencesCommandResponse>
     {
-        public string? Message { get; set; }
-        public string? Username { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
     }
 }

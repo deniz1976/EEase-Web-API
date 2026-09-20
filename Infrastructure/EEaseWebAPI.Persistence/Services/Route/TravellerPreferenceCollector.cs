@@ -28,16 +28,16 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var travellerIds = await ResolveTravellerIdsAsync(user, friendUsernames);
 
             var accommodation = await _context.Set<UserAccommodationPreferences>()
-                .Where(preference => travellerIds.Contains(preference.UserId))
-                .ToDictionaryAsync(preference => preference.UserId, cancellationToken);
+                .Where(preference => preference.UserId != null && travellerIds.Contains(preference.UserId))
+                .ToDictionaryAsync(preference => preference.UserId!, cancellationToken);
 
             var food = await _context.Set<UserFoodPreferences>()
-                .Where(preference => travellerIds.Contains(preference.UserId))
-                .ToDictionaryAsync(preference => preference.UserId, cancellationToken);
+                .Where(preference => preference.UserId != null && travellerIds.Contains(preference.UserId))
+                .ToDictionaryAsync(preference => preference.UserId!, cancellationToken);
 
             var personalization = await _context.Set<UserPersonalization>()
-                .Where(preference => travellerIds.Contains(preference.UserId))
-                .ToDictionaryAsync(preference => preference.UserId, cancellationToken);
+                .Where(preference => preference.UserId != null && travellerIds.Contains(preference.UserId))
+                .ToDictionaryAsync(preference => preference.UserId!, cancellationToken);
 
             var collected = new List<(UserAccommodationPreferences?, UserFoodPreferences?, UserPersonalization?)>();
 

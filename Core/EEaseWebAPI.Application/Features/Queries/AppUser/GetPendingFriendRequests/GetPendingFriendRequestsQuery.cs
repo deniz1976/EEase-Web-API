@@ -4,6 +4,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetPendingFriendReque
 {
     public class GetPendingFriendRequestsQuery : IRequest<GetPendingFriendRequestsQueryResponse>
     {
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

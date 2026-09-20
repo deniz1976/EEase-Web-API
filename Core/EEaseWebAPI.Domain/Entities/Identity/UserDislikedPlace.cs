@@ -5,14 +5,14 @@ namespace EEaseWebAPI.Domain.Entities.Identity
 {
     public class UserDislikedPlace : BaseEntity
     {
-        public string UserId { get; set; }
+        public string UserId { get; set; } = null!;
 
         [ForeignKey("UserId")]
-        public AppUser User { get; set; }
+        public AppUser User { get; set; } = null!;
 
-        public string GoogleId { get; set; }
+        public string GoogleId { get; set; } = null!;
 
-        public string PlaceType { get; set; }
+        public string PlaceType { get; set; } = null!;
 
         public DateTime DislikedDate { get; set; }
 

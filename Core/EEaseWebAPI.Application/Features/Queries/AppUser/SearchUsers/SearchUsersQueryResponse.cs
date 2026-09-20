@@ -10,6 +10,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
 
     public class SearchUsersQueryResponseBody
     {
-        public List<UserSearchDTO> Users { get; set; }
+        public List<UserSearchDTO> Users { get; set; } = new();
     }
 }

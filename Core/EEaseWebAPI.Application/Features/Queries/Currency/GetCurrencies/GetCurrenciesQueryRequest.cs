@@ -10,6 +10,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Currency.GetCurrencies
 {
     public class GetCurrenciesQueryRequest : PaginationRequest, IRequest<GetCurrenciesQueryResponse>
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

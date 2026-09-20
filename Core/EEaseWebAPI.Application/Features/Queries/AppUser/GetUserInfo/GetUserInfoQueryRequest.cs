@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserInfo
 {
     public class GetUserInfoQueryRequest : IRequest<GetUserInfoQueryResponse>
     {
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

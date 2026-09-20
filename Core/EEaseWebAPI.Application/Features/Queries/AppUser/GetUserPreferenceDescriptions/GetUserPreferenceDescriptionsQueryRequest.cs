@@ -4,6 +4,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserPreferenceDesc
 {
     public class GetUserPreferenceDescriptionsQueryRequest : IRequest<GetUserPreferenceDescriptionsQueryResponse>
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

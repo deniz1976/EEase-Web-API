@@ -9,8 +9,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmailUser
 {
     public class ConfirmEmailUserCommandRequest : IRequest<ConfirmEmailUserCommandResponse>
     {
-        public string EmailOrUsername {  get; set; }
-        public string Code { get; set; }
+        public string EmailOrUsername { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
 
     }
 }

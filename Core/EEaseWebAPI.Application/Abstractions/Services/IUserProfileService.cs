@@ -22,7 +22,7 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task<string> GetUserCurrencyAsync(string username);
 
-        Task<string> GetUserPhotoAsync(string username);
+        Task<string?> GetUserPhotoAsync(string username);
 
         Task<bool> SetUserPhoto(string username, string photoPath);
     }

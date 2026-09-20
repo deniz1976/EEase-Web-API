@@ -9,7 +9,7 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UnblockUser
 {
     public class UnblockUserCommandRequest : IRequest<UnblockUserCommandResponse>
     {
-        public string? Username { get; set; }
-        public string? TargetUsername { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string TargetUsername { get; set; } = string.Empty;
     }
 }

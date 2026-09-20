@@ -23,7 +23,7 @@ namespace EEaseWebAPI.UnitTests.Route
         }
 
         private static GetRouteComponentPhotoCommandRequest Request(
-            string? photoName = PhotoName, int width = 400, int height = 400) =>
+            string photoName = PhotoName, int width = 400, int height = 400) =>
             new() { PhotoName = photoName, MaxWidthPx = width, MaxHeightPx = height };
 
         [Fact]
@@ -35,7 +35,7 @@ namespace EEaseWebAPI.UnitTests.Route
 
             var response = await _handler.Handle(Request(width: 800, height: 600), CancellationToken.None);
 
-            response.Body.PhotoUri.Should().Be("https://example.test/p.jpg");
+            response.Body!.PhotoUri.Should().Be("https://example.test/p.jpg");
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             // It used to leave with a bare Exception, which the caller read as a 500.
             await Assert.ThrowsAsync<ArgumentException>(
-                () => _handler.Handle(Request(photoName: null), CancellationToken.None));
+                () => _handler.Handle(Request(photoName: string.Empty), CancellationToken.None));
         }
 
         [Theory]

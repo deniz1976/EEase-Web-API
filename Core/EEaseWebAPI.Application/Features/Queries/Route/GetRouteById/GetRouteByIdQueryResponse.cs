@@ -10,6 +10,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
 
     public class GetRouteByIdQueryResponseBody
     {
-        public EEaseWebAPI.Application.DTOs.Route.StandardRouteDTO Route { get; set; }
+        public EEaseWebAPI.Application.DTOs.Route.StandardRouteDTO Route { get; set; } = null!;
     }
 }

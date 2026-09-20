@@ -6,6 +6,6 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
     {
         public Guid RouteId { get; set; }
         public int Status { get; set; }
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
     }
 }

@@ -9,6 +9,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SendVerificationCode
 {
     public class SendVerificationCodeCommandRequest : IRequest<SendVerificationCodeCommandResponse>
     {
-        public string? Email {  get; set; }
+        public string Email { get; set; } = string.Empty;
     }
 }
