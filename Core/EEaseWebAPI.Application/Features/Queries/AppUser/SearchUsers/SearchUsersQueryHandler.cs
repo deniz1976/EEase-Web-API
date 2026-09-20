@@ -19,7 +19,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.SearchUsers
 
         public async Task<SearchUsersQueryResponse> Handle(SearchUsersQueryRequest request, CancellationToken cancellationToken)
         {
-            var users = await _userCacheService.SearchUsersAsync(request.SearchTerm);
+            var users = await _userCacheService.SearchUsersAsync(request.SearchTerm, cancellationToken);
 
             return new SearchUsersQueryResponse
             {

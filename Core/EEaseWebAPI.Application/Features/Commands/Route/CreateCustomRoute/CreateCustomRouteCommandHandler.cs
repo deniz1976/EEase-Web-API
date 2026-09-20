@@ -31,7 +31,8 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateCustomRoute
                 request.EndDate,
                 request.PRICE_LEVEL,
                 request.Username,
-                request.Usernames);
+                request.Usernames,
+                cancellationToken);
 
             return new CreateCustomRouteCommandResponse
             {

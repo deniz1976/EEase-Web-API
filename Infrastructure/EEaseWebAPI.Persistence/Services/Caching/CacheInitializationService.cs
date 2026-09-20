@@ -24,15 +24,18 @@ namespace EEaseWebAPI.Persistence.Services.Caching
 
             await WarmUpAsync(
                 "user",
-                () => scope.ServiceProvider.GetRequiredService<IUserCacheService>().LoadUsersToCache());
+                () => scope.ServiceProvider.GetRequiredService<IUserCacheService>()
+                    .LoadUsersToCache(stoppingToken));
 
             await WarmUpAsync(
                 "city",
-                () => scope.ServiceProvider.GetRequiredService<ICityService>().InitializeCacheAsync());
+                () => scope.ServiceProvider.GetRequiredService<ICityService>()
+                    .InitializeCacheAsync(stoppingToken));
 
             await WarmUpAsync(
                 "currency",
-                () => scope.ServiceProvider.GetRequiredService<ICurrencyService>().InitializeCacheAsync());
+                () => scope.ServiceProvider.GetRequiredService<ICurrencyService>()
+                    .InitializeCacheAsync(stoppingToken));
         }
 
         private async Task WarmUpAsync(string cacheName, Func<Task> load)

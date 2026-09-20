@@ -34,15 +34,16 @@ namespace EEaseWebAPI.Persistence.Services.Caching
             _options = options.Value;
         }
 
-        public async Task LoadUsersToCache()
+        public async Task LoadUsersToCache(CancellationToken cancellationToken = default)
         {
             if (Cached() is null)
             {
-                Publish(await ReadUsersAsync());
+                Publish(await ReadUsersAsync(cancellationToken));
             }
         }
 
-        public async Task<List<UserSearchDTO>> SearchUsersAsync(string searchTerm)
+        public async Task<List<UserSearchDTO>> SearchUsersAsync(
+            string searchTerm, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -53,7 +54,7 @@ namespace EEaseWebAPI.Persistence.Services.Caching
 
             if (users is null)
             {
-                users = await ReadUsersAsync();
+                users = await ReadUsersAsync(cancellationToken);
                 Publish(users);
             }
 
@@ -142,7 +143,7 @@ namespace EEaseWebAPI.Persistence.Services.Caching
             _memoryCache.Set(_options.UsersCacheKey, users, new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromHours(_options.UserLifetimeHours)));
 
-        private Task<List<UserSearchDTO>> ReadUsersAsync() =>
+        private Task<List<UserSearchDTO>> ReadUsersAsync(CancellationToken cancellationToken) =>
             _context.Users
                 .AsNoTracking()
                 .Where(user => user.EmailConfirmed)
@@ -155,7 +156,7 @@ namespace EEaseWebAPI.Persistence.Services.Caching
                     PhotoUrl = user.PhotoPath ?? string.Empty,
                     Gender = user.Gender ?? string.Empty
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
         private static UserSearchDTO ToSearchResult(AppUser user) => new()
         {

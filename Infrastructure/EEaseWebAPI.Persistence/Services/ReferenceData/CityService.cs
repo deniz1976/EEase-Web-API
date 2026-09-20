@@ -27,37 +27,48 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
             _userManager = userManager;
         }
 
-        public Task<List<string>> GetAllCityNames() =>
-            _cache.GetOrLoadAsync(_cache.Keys.CityNamesCacheKey, async () =>
-                CitySearch.NamesOf(await GetAllCitiesAsync()));
+        public Task<List<string>> GetAllCityNames(CancellationToken cancellationToken = default) =>
+            _cache.GetOrLoadAsync(
+                _cache.Keys.CityNamesCacheKey,
+                async token => CitySearch.NamesOf(await GetAllCitiesAsync(token)),
+                cancellationToken);
 
-        public Task<List<string>> GetAllCountries() =>
-            _cache.GetOrLoadAsync(_cache.Keys.AllCountriesCacheKey, async () =>
-                CitySearch.CountriesOf(await GetAllCitiesAsync()));
+        public Task<List<string>> GetAllCountries(CancellationToken cancellationToken = default) =>
+            _cache.GetOrLoadAsync(
+                _cache.Keys.AllCountriesCacheKey,
+                async token => CitySearch.CountriesOf(await GetAllCitiesAsync(token)),
+                cancellationToken);
 
         public async Task<(List<CityDto> Cities, int TotalCount)> GetCitiesBySearchAsync(
-            string searchTerm, int pageSize, int pageNumber, string? username)
+            string searchTerm,
+            int pageSize,
+            int pageNumber,
+            string? username,
+            CancellationToken cancellationToken = default)
         {
-            var cities = await GetAllCitiesAsync();
+            var cities = await GetAllCitiesAsync(cancellationToken);
             var homeCountry = await HomeCountryOfAsync(username);
 
             return CitySearch.Search(cities, searchTerm, homeCountry, pageSize, pageNumber);
         }
 
-        public async Task InitializeCacheAsync()
+        public async Task InitializeCacheAsync(CancellationToken cancellationToken = default)
         {
-            await GetAllCitiesAsync();
-            await GetAllCityNames();
-            await GetAllCountries();
+            await GetAllCitiesAsync(cancellationToken);
+            await GetAllCityNames(cancellationToken);
+            await GetAllCountries(cancellationToken);
         }
 
         /// <summary>
         /// The whole table, ordered once so that every search starts from the biggest and
         /// most important places, and then kept in memory.
         /// </summary>
-        private Task<List<AllWorldCities>> GetAllCitiesAsync() =>
-            _cache.GetOrLoadAsync(_cache.Keys.AllCitiesCacheKey, async () =>
-                CitySearch.Rank(await _context.AllWorldCities.AsNoTracking().ToListAsync()));
+        private Task<List<AllWorldCities>> GetAllCitiesAsync(CancellationToken cancellationToken) =>
+            _cache.GetOrLoadAsync(
+                _cache.Keys.AllCitiesCacheKey,
+                async token => CitySearch.Rank(
+                    await _context.AllWorldCities.AsNoTracking().ToListAsync(token)),
+                cancellationToken);
 
         private async Task<string> HomeCountryOfAsync(string? username)
         {

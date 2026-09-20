@@ -6,12 +6,17 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface ICityService
     {
-        Task<List<string>> GetAllCityNames();
+        Task<List<string>> GetAllCityNames(CancellationToken cancellationToken = default);
 
-        Task<List<string>> GetAllCountries();
+        Task<List<string>> GetAllCountries(CancellationToken cancellationToken = default);
 
-        Task<(List<CityDto> Cities, int TotalCount)> GetCitiesBySearchAsync(string searchTerm, int pageSize, int pageNumber, string? username);
+        Task<(List<CityDto> Cities, int TotalCount)> GetCitiesBySearchAsync(
+            string searchTerm,
+            int pageSize,
+            int pageNumber,
+            string? username,
+            CancellationToken cancellationToken = default);
 
-        Task InitializeCacheAsync();
+        Task InitializeCacheAsync(CancellationToken cancellationToken = default);
     }
 }

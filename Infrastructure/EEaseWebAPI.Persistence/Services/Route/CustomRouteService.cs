@@ -29,31 +29,37 @@ namespace EEaseWebAPI.Persistence.Services.Route
             string destination,
             DateOnly? startDate,
             DateOnly? endDate,
-            PRICE_LEVEL? _PRICE_LEVEL)
+            PRICE_LEVEL? priceLevel,
+            CancellationToken cancellationToken = default)
         {
-            var route = await _randomRouteBuilder.BuildAsync(destination, startDate, endDate, _PRICE_LEVEL);
+            var route = await _randomRouteBuilder.BuildAsync(
+                destination, startDate, endDate, priceLevel, cancellationToken);
 
-            return await SaveAsync(route);
+            return await SaveAsync(route, cancellationToken);
         }
 
         public async Task<StandardRoute> CreatePrefRoute(
             string? destination,
             DateOnly? startDate,
             DateOnly? endDate,
-            PRICE_LEVEL? price_level,
+            PRICE_LEVEL? priceLevel,
             string? username,
-            List<string>? friends)
+            List<string>? friends,
+            CancellationToken cancellationToken = default)
         {
             var route = await _preferenceRouteBuilder.BuildAsync(
-                destination, startDate, endDate, price_level, username, friends);
+                destination, startDate, endDate, priceLevel, username, friends, cancellationToken);
 
-            return await SaveAsync(route);
+            return await SaveAsync(route, cancellationToken);
         }
 
-        private async Task<StandardRoute> SaveAsync(StandardRoute route)
+        private async Task<StandardRoute> SaveAsync(StandardRoute route, CancellationToken cancellationToken)
         {
-            await _context.StandardRoutes.AddAsync(route);
-            await _context.SaveChangesAsync();
+            // Building a route takes minutes of calls to Gemini and Google. A caller who
+            // gave up used to pay for all of them: the builders took a cancellation token
+            // and nobody passed one in.
+            await _context.StandardRoutes.AddAsync(route, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
             // The owner is already known to the caller and would only bloat the response.
             route.User = null;

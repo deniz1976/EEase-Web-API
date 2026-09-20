@@ -21,14 +21,15 @@ namespace EEaseWebAPI.Persistence.Services.Caching
 
         public CacheOptions Keys => _options;
 
-        public async Task<T> GetOrLoadAsync<T>(string key, Func<Task<T>> load)
+        public async Task<T> GetOrLoadAsync<T>(
+            string key, Func<CancellationToken, Task<T>> load, CancellationToken cancellationToken = default)
         {
             if (_memoryCache.TryGetValue(key, out T? cached) && cached is not null)
             {
                 return cached;
             }
 
-            var loaded = await load();
+            var loaded = await load(cancellationToken);
 
             _memoryCache.Set(key, loaded, new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromHours(_options.ReferenceDataLifetimeHours)));

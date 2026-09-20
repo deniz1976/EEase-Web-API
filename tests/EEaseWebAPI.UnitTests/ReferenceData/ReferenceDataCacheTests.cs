@@ -18,7 +18,7 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
         {
             var reads = 0;
 
-            Task<List<string>> Load() => Task.FromResult(new List<string> { $"read {++reads}" });
+            Task<List<string>> Load(CancellationToken _) => Task.FromResult(new List<string> { $"read {++reads}" });
 
             (await _cache.GetOrLoadAsync("cities", Load)).Should().Equal("read 1");
             (await _cache.GetOrLoadAsync("cities", Load)).Should().Equal("read 1");
@@ -32,13 +32,13 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
             var cityReads = 0;
             var countryReads = 0;
 
-            await _cache.GetOrLoadAsync("cities", () =>
+            await _cache.GetOrLoadAsync("cities", _ =>
             {
                 cityReads++;
                 return Task.FromResult(new List<City> { new("Rome") });
             });
 
-            await _cache.GetOrLoadAsync("countries", () =>
+            await _cache.GetOrLoadAsync("countries", _ =>
             {
                 countryReads++;
                 return Task.FromResult(new List<string> { "Italy" });
@@ -46,13 +46,13 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
 
             // Reading them again must not go back to the database: the two used to share a
             // key, and each read replaced the other because the shapes did not match.
-            await _cache.GetOrLoadAsync("cities", () =>
+            await _cache.GetOrLoadAsync("cities", _ =>
             {
                 cityReads++;
                 return Task.FromResult(new List<City> { new("Rome") });
             });
 
-            await _cache.GetOrLoadAsync("countries", () =>
+            await _cache.GetOrLoadAsync("countries", _ =>
             {
                 countryReads++;
                 return Task.FromResult(new List<string> { "Italy" });
@@ -67,7 +67,7 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
         {
             _cache.IsLoaded("cities").Should().BeFalse();
 
-            await _cache.GetOrLoadAsync("cities", () => Task.FromResult(new List<string> { "Rome" }));
+            await _cache.GetOrLoadAsync("cities", _ => Task.FromResult(new List<string> { "Rome" }));
 
             _cache.IsLoaded("cities").Should().BeTrue();
         }

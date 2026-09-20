@@ -22,7 +22,8 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogi
                 request.Destination!,
                 request.StartDate,
                 request.EndDate,
-                request.PRICE_LEVEL);
+                request.PRICE_LEVEL,
+                cancellationToken);
 
             return new CreateRouteWithoutLoginCommandResponse
             {

@@ -23,14 +23,12 @@ namespace EEaseWebAPI.Application.Features.Queries.Cities.GetCitiesBySearch
 
         public async Task<GetCitiesBySearchQueryResponse> Handle(GetCitiesBySearchQueryRequest request, CancellationToken cancellationToken)
         {
-            if (request == null || string.IsNullOrEmpty(request.SearchTerm) || request.SearchTerm.Length < 2)
-                throw new InvalidSearchTermException();
-
             (List<CityDto> cities, int totalCount) = await _cityService.GetCitiesBySearchAsync(
                 request.SearchTerm,
                 request.PageSize,
                 request.PageNumber,
-                request.Username);
+                request.Username,
+                cancellationToken);
 
             int totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
 

@@ -17,11 +17,13 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
             _cache = cache;
         }
 
-        public Task<List<AllWorldCurrencies>> GetCurrenciesAsync() =>
+        public Task<List<AllWorldCurrencies>> GetCurrenciesAsync(CancellationToken cancellationToken = default) =>
             _cache.GetOrLoadAsync(
                 _cache.Keys.AllCurrenciesCacheKey,
-                () => _context.Currencies.ToListAsync());
+                token => _context.Currencies.ToListAsync(token),
+                cancellationToken);
 
-        public Task InitializeCacheAsync() => GetCurrenciesAsync();
+        public Task InitializeCacheAsync(CancellationToken cancellationToken = default) =>
+            GetCurrenciesAsync(cancellationToken);
     }
 }

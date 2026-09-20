@@ -22,7 +22,7 @@ namespace EEaseWebAPI.Application.Features.Queries.AllWorldCities.GetAllCountrie
 
         public async Task<GetAllCountriesQueryResponse> Handle(GetAllCountriesQueryRequest request, CancellationToken cancellationToken)
         {
-            var countries = await _cityService.GetAllCountries();
+            var countries = await _cityService.GetAllCountries(cancellationToken);
 
             return new GetAllCountriesQueryResponse
             {
