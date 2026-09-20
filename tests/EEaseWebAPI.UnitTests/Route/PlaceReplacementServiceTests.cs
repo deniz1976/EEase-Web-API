@@ -189,6 +189,47 @@ namespace EEaseWebAPI.UnitTests.Route
         }
 
         [Fact]
+        public async Task An_after_dinner_slot_is_searched_for_in_four_different_ways()
+        {
+            // The queries are picked at random, so the builder is stood in for: it used to be
+            // asked for an alternative twice, and two equal answers were deduplicated into
+            // one, leaving three ways to search instead of four.
+            var queryBuilder = Substitute.For<IPlaceQueryBuilder>();
+            queryBuilder.AfterDinner(Arg.Any<IReadOnlyList<PreferenceItem>?>(), Arg.Any<PRICE_LEVEL?>())
+                .Returns(call => call.Arg<IReadOnlyList<PreferenceItem>?>() is null
+                    ? "Evening spots"
+                    : "Jazz bars");
+            queryBuilder.AlternativeAfterDinner(Arg.Any<PRICE_LEVEL?>()).Returns("Dessert places");
+
+            var service = new PlaceReplacementService(
+                _search, _selection, queryBuilder,
+                NullLogger<PlaceReplacementService>.Instance, new Random(1));
+
+            _selection.MaterializeAsync<PlaceAfterDinner>(
+                    Arg.Any<string>(), Arg.Any<PRICE_LEVEL?>(), Arg.Any<CancellationToken>())
+                .Returns(call => new PlaceAfterDinner { Id = Guid.NewGuid(), GoogleId = call.Arg<string>() });
+
+            IEnumerable<string>? queries = null;
+
+            _search.CollectPlaceIdsAsync(
+                    Arg.Any<IEnumerable<string>>(), Arg.Any<int>(),
+                    Arg.Any<IEnumerable<string>?>(), Arg.Any<CancellationToken>())
+                .Returns(call =>
+                {
+                    queries = (IEnumerable<string>)call[0];
+                    return (IReadOnlyList<string>)new List<string> { "after-7" };
+                });
+
+            var route = Route();
+            route.TravelDays[0].PlaceAfterDinner = new PlaceAfterDinner { GoogleId = "after-1" };
+
+            await service.ReplaceAsync(
+                route, PreferenceProfile.Empty, "after-1", "placeafterdinner", Array.Empty<string>());
+
+            queries!.Should().HaveCount(4).And.OnlyHaveUniqueItems();
+        }
+
+        [Fact]
         public async Task The_search_widens_across_several_queries()
         {
             IEnumerable<string>? queries = null;

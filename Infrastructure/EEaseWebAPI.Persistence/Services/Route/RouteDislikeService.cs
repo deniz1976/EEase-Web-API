@@ -73,7 +73,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 throw new ForbiddenException(
                     "You do not have permission to modify this route", StatusEnum.UnauthorizedToModifyRoute);
 
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
             try
             {
@@ -100,7 +100,9 @@ namespace EEaseWebAPI.Persistence.Services.Route
             }
             catch
             {
-                await transaction.RollbackAsync();
+                // Deliberately not the request's token: a caller who gave up half way is the
+                // reason we are here, and the rollback still has to happen.
+                await transaction.RollbackAsync(CancellationToken.None);
                 throw;
             }
         }
