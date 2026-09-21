@@ -1,6 +1,6 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
-using EEaseWebAPI.Application.Exceptions.GetCitiesBySearch;
+using EEaseWebAPI.Application.Exceptions.Cities;
 using EEaseWebAPI.Application.MapEntities.Cities;
 using MediatR;
 using System;

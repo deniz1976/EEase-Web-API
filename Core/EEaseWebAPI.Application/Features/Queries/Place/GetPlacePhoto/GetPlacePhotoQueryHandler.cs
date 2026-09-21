@@ -1,6 +1,6 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
-using EEaseWebAPI.Application.Exceptions.GetRouteComponent;
+using EEaseWebAPI.Application.Exceptions.Place;
 using MediatR;
 
 namespace EEaseWebAPI.Application.Features.Queries.Place.GetPlacePhoto
@@ -43,7 +43,7 @@ namespace EEaseWebAPI.Application.Features.Queries.Place.GetPlacePhoto
             if (request.MaxWidthPx <= 0 || request.MaxHeightPx <= 0 ||
                 request.MaxWidthPx > MaximumPixels || request.MaxHeightPx > MaximumPixels)
             {
-                throw new RouteComponentRequestOutOfRangeException();
+                throw new PlacePhotoSizeOutOfRangeException();
             }
         }
     }

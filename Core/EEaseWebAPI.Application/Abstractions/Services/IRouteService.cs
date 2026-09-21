@@ -45,7 +45,7 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         Task<string> DeleteAllRoutes(string username, CancellationToken cancellationToken = default);
 
         Task<StandardRoute> DislikePlaceAsync(
-            DislikePlaceCommandRequest dislikePlaceOrRestaurantDTO,
+            DislikePlaceCommandRequest request,
             CancellationToken cancellationToken = default);
     }
 }

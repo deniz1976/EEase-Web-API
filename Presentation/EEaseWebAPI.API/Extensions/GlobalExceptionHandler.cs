@@ -1,7 +1,7 @@
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Exceptions.Friendship;
-using EEaseWebAPI.Application.Exceptions.GetCitiesBySearch;
+using EEaseWebAPI.Application.Exceptions.Cities;
 using EEaseWebAPI.Application.Exceptions.Route;
 using EEaseWebAPI.Application.MapEntities;
 using Microsoft.AspNetCore.Diagnostics;

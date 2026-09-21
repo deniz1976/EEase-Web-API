@@ -1,5 +1,5 @@
 using EEaseWebAPI.Application.Abstractions.Services;
-using EEaseWebAPI.Application.Exceptions.GetRouteComponent;
+using EEaseWebAPI.Application.Exceptions.Place;
 using EEaseWebAPI.Application.Features.Queries.Place.GetPlacePhoto;
 using EEaseWebAPI.Application.MapEntities;
 using FluentAssertions;
@@ -53,7 +53,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [InlineData(400, 4801)]
         public async Task A_size_outside_the_limits_is_refused(int width, int height)
         {
-            await Assert.ThrowsAsync<RouteComponentRequestOutOfRangeException>(
+            await Assert.ThrowsAsync<PlacePhotoSizeOutOfRangeException>(
                 () => _handler.Handle(Request(width: width, height: height), CancellationToken.None));
         }
 

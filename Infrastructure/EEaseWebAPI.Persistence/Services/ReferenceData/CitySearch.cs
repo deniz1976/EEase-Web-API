@@ -1,4 +1,4 @@
-using EEaseWebAPI.Application.Exceptions.GetCitiesBySearch;
+using EEaseWebAPI.Application.Exceptions.Cities;
 using EEaseWebAPI.Application.MapEntities.Cities;
 using EEaseWebAPI.Domain.Entities.AllWorldCities;
 

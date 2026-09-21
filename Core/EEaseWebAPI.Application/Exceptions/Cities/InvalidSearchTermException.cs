@@ -2,7 +2,7 @@ using System;
 using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Exceptions;
 
-namespace EEaseWebAPI.Application.Exceptions.GetCitiesBySearch
+namespace EEaseWebAPI.Application.Exceptions.Cities
 {
     public class InvalidSearchTermException : BaseException
     {
