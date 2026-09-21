@@ -7,6 +7,7 @@ using EEaseWebAPI.Domain.Entities.Identity;
 using EEaseWebAPI.Persistence.Services.Authentication;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Xunit;
 using EEaseWebAPI.Application;
@@ -38,7 +39,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
             _codes.Generate().Returns("123456");
             _mail.SendResetPasswordEmailAsync(default!, default!, default!).ReturnsForAnyArgs(true);
 
-            _service = new PasswordService(_userManager, _mail, _codes);
+            _service = new PasswordService(_userManager, _mail, _codes, NullLogger<PasswordService>.Instance);
         }
 
         private void WithActiveCode(string code = "123456", int attempts = 0, TimeSpan? age = null)
@@ -72,11 +73,16 @@ namespace EEaseWebAPI.UnitTests.Authentication
         }
 
         [Fact]
-        public async Task A_reset_code_that_never_left_is_not_reported_as_sent()
+        public async Task A_code_that_could_not_be_mailed_is_still_answered_the_same_way()
         {
             _mail.SendResetPasswordEmailAsync(default!, default!, default!).ReturnsForAnyArgs(false);
 
-            await Assert.ThrowsAsync<MailDeliveryException>(() => _service.SendResetCodeAsync("alice"));
+            var asking = () => _service.SendResetCodeAsync("alice");
+
+            await asking.Should().NotThrowAsync(
+                "answering differently is how a stranger learns the name is registered");
+
+            _alice.ResetPasswordCode.Should().Be("123456", "the code is there when they ask again");
         }
 
         [Fact]

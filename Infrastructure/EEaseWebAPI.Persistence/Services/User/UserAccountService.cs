@@ -1,3 +1,4 @@
+using EEaseWebAPI.Application.Security;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Enums;
@@ -105,7 +106,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                     "Delete code has expired. Please request a new one.", (int)StatusEnum.DeleteCodeExpired);
             }
 
-            if (user.DeleteCode != code)
+            if (!SecretCode.Matches(user.DeleteCode, code))
             {
                 throw new DeleteUserCodeNotCorrectException(
                     "Delete user code is wrong.", (int)StatusEnum.InvalidDeleteCode);

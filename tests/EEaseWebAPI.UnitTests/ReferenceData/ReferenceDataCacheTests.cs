@@ -97,5 +97,47 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
         }
 
         private sealed record City(string Name);
+
+        [Fact]
+        public async Task A_cold_cache_under_load_is_read_once_rather_than_once_per_caller()
+        {
+            var reads = 0;
+            using var gate = new SemaphoreSlim(0);
+
+            async Task<List<string>> Load(CancellationToken _)
+            {
+                Interlocked.Increment(ref reads);
+                await gate.WaitAsync(CancellationToken.None);
+                return new List<string> { "the whole table" };
+            }
+
+            var callers = Enumerable.Range(0, 20)
+                .Select(_ => _cache.GetOrLoadAsync("cities", Load))
+                .ToList();
+
+            // Nothing may finish until every caller has had its chance to start a read.
+            gate.Release(20);
+
+            var answers = await Task.WhenAll(callers);
+
+            reads.Should().Be(1, "twenty callers meeting a cold cache is still one table");
+            answers.Should().OnlyContain(answer => answer.Count == 1);
+        }
+
+        [Fact]
+        public async Task A_read_that_failed_is_not_remembered_as_an_answer()
+        {
+            var reads = 0;
+
+            Task<List<string>> Load(CancellationToken _) =>
+                ++reads == 1
+                    ? Task.FromException<List<string>>(new InvalidOperationException("the database is down"))
+                    : Task.FromResult(new List<string> { "Rome" });
+
+            await _cache.Invoking(cache => cache.GetOrLoadAsync("cities", Load))
+                .Should().ThrowAsync<InvalidOperationException>();
+
+            (await _cache.GetOrLoadAsync("cities", Load)).Should().Equal("Rome");
+        }
     }
 }

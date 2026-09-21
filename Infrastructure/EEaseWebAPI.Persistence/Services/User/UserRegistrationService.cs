@@ -1,3 +1,4 @@
+using EEaseWebAPI.Application.Security;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.DTOs.User;
@@ -130,7 +131,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                     "Email is already confirmed", (int)StatusEnum.EmailConfirmed);
             }
 
-            if (user.VerificationCode == null || user.VerificationCode != code)
+            if (!SecretCode.Matches(user.VerificationCode, code))
             {
                 throw new Application.Exceptions.EmailConfirmException(
                     "Code is not correct", (int)StatusEnum.InvalidEmailConfirmationCode);

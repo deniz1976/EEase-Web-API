@@ -1,3 +1,4 @@
+using EEaseWebAPI.Application.Security;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Enums;
@@ -6,6 +7,7 @@ using EEaseWebAPI.Application.Exceptions.ChangePassword;
 using EEaseWebAPI.Application.Exceptions.ResetPassword;
 using EEaseWebAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using EEaseWebAPI.Application;
 using EEaseWebAPI.Application.Resources;
 
@@ -19,15 +21,18 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
         private readonly UserManager<AppUser> _userManager;
         private readonly IMailService _mailService;
         private readonly IVerificationCodeGenerator _codeGenerator;
+        private readonly ILogger<PasswordService> _logger;
 
         public PasswordService(
             UserManager<AppUser> userManager,
             IMailService mailService,
-            IVerificationCodeGenerator codeGenerator)
+            IVerificationCodeGenerator codeGenerator,
+            ILogger<PasswordService> logger)
         {
             _userManager = userManager;
             _mailService = mailService;
             _codeGenerator = codeGenerator;
+            _logger = logger;
         }
 
         public async Task<bool> SendResetCodeAsync(string usernameOrEmail, CancellationToken cancellationToken = default)
@@ -50,13 +55,18 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             await UpdateAsync(user, "Failed to store the reset password code.");
 
             var sent = await _mailService.SendResetPasswordEmailAsync(
-                user.Email!, AppMessages.Mail_ResetPasswordSubject, code);
+                user.Email!, AppMessages.Mail_ResetPasswordSubject, code, cancellationToken);
 
             if (!sent)
             {
-                throw new MailDeliveryException(
-                    "The reset password code could not be sent.",
-                    (int)StatusEnum.ResetPasswordCodeSendFailed);
+                // Reporting the failure here would answer differently for a name that exists
+                // and one that does not, which is the hole this endpoint is usually found
+                // with. The caller is told the same thing either way and can ask again; the
+                // operator is the one who needs to know, and is told here.
+                _logger.LogError(
+                    "A reset code was stored for {UserId} but could not be mailed. " +
+                    "The caller was answered as though it went out.",
+                    user.Id);
             }
 
             return true;
@@ -145,7 +155,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
                     (int)StatusEnum.ResetPasswordCodeExpired);
             }
 
-            if (user.ResetPasswordCode != code)
+            if (!SecretCode.Matches(user.ResetPasswordCode, code))
             {
                 user.ResetPasswordCodeAttempts++;
                 await UpdateAsync(user, "Failed to record the reset password attempt.");
