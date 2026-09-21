@@ -5,12 +5,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.User
 {
-    /// <summary>
-    /// The groups are a hand written table of property names that are applied by reflection.
-    /// A name nobody owns is not a compiler error and not a runtime error either: the topic
-    /// simply stores nothing, and the traveller gets a route built on preferences they
-    /// thought they had picked. This is what notices.
-    /// </summary>
     public class TravelPreferenceGroupsTests
     {
         private static readonly Type[] PreferenceRows =

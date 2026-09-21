@@ -21,7 +21,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserFriends
 
         public async Task<GetUserFriendsQueryResponse> Handle(GetUserFriendsQuery request, CancellationToken cancellationToken)
         {
-
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
                 throw new UserNotFoundException();

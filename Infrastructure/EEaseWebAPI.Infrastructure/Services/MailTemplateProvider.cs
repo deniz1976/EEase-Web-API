@@ -19,10 +19,6 @@ namespace EEaseWebAPI.Infrastructure.Services
 
         private readonly ConcurrentDictionary<MailTemplate, string> _cache = new();
 
-        /// <summary>
-        /// Fills a template with the code and the wording for the recipient's language.
-        /// The markup is shared by every language; only the words come from the resources.
-        /// </summary>
         public string Render(MailTemplate template, string code)
         {
             var markup = _cache.GetOrAdd(template, Load);

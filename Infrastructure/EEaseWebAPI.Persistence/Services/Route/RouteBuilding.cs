@@ -2,10 +2,6 @@ using EEaseWebAPI.Domain.Entities.Route;
 
 namespace EEaseWebAPI.Persistence.Services.Route
 {
-    /// <summary>
-    /// The pieces both route builders share: argument checks, day arithmetic and the
-    /// empty route skeleton they fill in.
-    /// </summary>
     internal static class RouteBuilding
     {
         public const int TouristicPlacesPerDay = 3;
@@ -60,10 +56,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return standardRoute;
         }
 
-        /// <summary>
-        /// Every day of a route stays at the same hotel, but each day owns its own row,
-        /// so the selected hotel is copied per day.
-        /// </summary>
         public static TravelAccomodation CopyAccommodation(TravelAccomodation source, PRICE_LEVEL? priceLevel) =>
             new()
             {

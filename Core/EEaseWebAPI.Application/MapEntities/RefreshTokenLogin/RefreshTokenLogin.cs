@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.RefreshTokenLogin
 {
-
     public class RefreshTokenLoginBody
     {
         public Token? Token { get; set; }

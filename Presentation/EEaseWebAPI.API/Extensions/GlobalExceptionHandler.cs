@@ -116,12 +116,6 @@ namespace EEaseWebAPI.API.Extensions
             _ => StatusCodes.Status500InternalServerError
         };
 
-        /// <summary>
-        /// The message the caller reads. Exceptions carry a status code rather than a
-        /// sentence, so the code is looked up in the caller's language; an exception whose
-        /// code has no translation keeps the message it was thrown with, which is often a
-        /// detail no resource file could hold ("no hotel could be found in Rome").
-        /// </summary>
         private string ResolveMessage(Exception exception, int? carriedCode, int statusCode)
         {
             // An exception that carries a code is one we chose to throw, so the caller is

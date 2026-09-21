@@ -86,14 +86,6 @@ namespace EEaseWebAPI.API.Extensions
             return services;
         }
 
-        /// <summary>
-        /// Who the limit is counted against: the signed in user, or the address the request
-        /// came from. Behind a reverse proxy every address would be the proxy's own, and the
-        /// anonymous callers would share one bucket. The fix is UseForwardedHeaders with the
-        /// proxy's address in KnownProxies - not without it, since a caller who is trusted to
-        /// set X-Forwarded-For can give themselves a new bucket per request and pass through
-        /// any limit at all. There is no proxy yet, so there is nothing to trust yet.
-        /// </summary>
         private static string ResolveClientKey(HttpContext context)
         {
             var userName = context.User?.Identity?.IsAuthenticated == true

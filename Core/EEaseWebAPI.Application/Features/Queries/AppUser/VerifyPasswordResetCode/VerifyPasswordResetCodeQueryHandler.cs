@@ -13,7 +13,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.VerifyPasswordResetCo
 {
     public class VerifyPasswordResetCodeQueryHandler : IRequestHandler<VerifyPasswordResetCodeQueryRequest, VerifyPasswordResetCodeQueryResponse>
     {
-
         private readonly IPasswordService _passwordService;
         private readonly IHeaderService _headerService;
 

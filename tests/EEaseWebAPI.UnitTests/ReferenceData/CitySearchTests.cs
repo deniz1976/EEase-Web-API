@@ -7,11 +7,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.ReferenceData
 {
-    /// <summary>
-    /// The city table has no primary key, so no test can put a row into it; the rules that
-    /// act on the rows live apart from the reading of them, and this is where they are
-    /// checked. <see cref="CityService"/> reads the table and hands the rows here.
-    /// </summary>
     public class CitySearchTests
     {
         private const string Turkey = "Turkey";

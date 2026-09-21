@@ -5,7 +5,6 @@ namespace EEaseWebAPI.Persistence.Services.Gemini
 {
     public static class GeminiPrompts
     {
-
         public const string EntityDescription = @"
 You need to analyze the user's message and extract preferences according to these entity structures.
 All preferences are scored on a scale of 0-100
@@ -115,7 +114,6 @@ CRITICAL RULES FOR DIETARY RESTRICTIONS:
             "accommodationPreferences, foodPreferences, and personalization. For each section, " +
             "include ONLY the relevant fields with scores from 0-100 based on the user's preferences. " +
             "Exclude any fields that cannot be confidently scored based on the message.";
-
 
         public static string PlacePreferences(string placeName, string placeType, string placeDescription, List<string> availablePreferences) =>
             $@"Analyze this place and determine which user preferences should be updated based on its characteristics.

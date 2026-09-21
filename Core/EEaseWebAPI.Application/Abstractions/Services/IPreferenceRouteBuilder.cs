@@ -2,11 +2,6 @@ using EEaseWebAPI.Domain.Entities.Route;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
 {
-    /// <summary>
-    /// Builds a route from the merged preferences of the requesting user and the friends
-    /// travelling with them, skipping places that user has disliked before.
-    /// The returned route is not persisted.
-    /// </summary>
     public interface IPreferenceRouteBuilder
     {
         Task<StandardRoute> BuildAsync(

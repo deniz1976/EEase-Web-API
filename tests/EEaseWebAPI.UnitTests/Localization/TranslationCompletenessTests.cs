@@ -9,11 +9,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Localization
 {
-    /// <summary>
-    /// A missing translation does not fail anything at runtime: the localizer quietly falls
-    /// back to English, and nobody notices until a Turkish user reads an English sentence.
-    /// These tests are the thing that notices.
-    /// </summary>
     public class TranslationCompletenessTests
     {
         public static TheoryData<string, string> ResourceFiles => new()

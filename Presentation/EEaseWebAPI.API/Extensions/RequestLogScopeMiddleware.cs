@@ -2,11 +2,6 @@ using System.Diagnostics;
 
 namespace EEaseWebAPI.API.Extensions
 {
-    /// <summary>
-    /// Puts the caller and the trace id on every log line written while the request runs,
-    /// so a handler's log, a warning from a service and the error the global handler
-    /// records can all be tied back to the same request and the same user.
-    /// </summary>
     public sealed class RequestLogScopeMiddleware : IMiddleware
     {
         private readonly ILogger<RequestLogScopeMiddleware> _logger;

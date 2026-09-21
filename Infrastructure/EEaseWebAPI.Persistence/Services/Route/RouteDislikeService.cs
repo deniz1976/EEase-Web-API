@@ -137,9 +137,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 route.TravelDays.LastOrDefault()?.Breakfast?.Weather?.Date);
         }
 
-        /// <summary>
-        /// Finds the place inside the route by its Google id, whichever slot it sits in.
-        /// </summary>
         private static BaseEntity LocatePlace(StandardRoute route, string googlePlaceId, string placeType)
         {
             foreach (var day in route.TravelDays)

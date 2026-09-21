@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.DeleteUser
 {
-
     public class DeleteUserBody
     {
         public string? Message { get; set; }

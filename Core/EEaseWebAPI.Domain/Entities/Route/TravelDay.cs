@@ -10,7 +10,6 @@ namespace EEaseWebAPI.Domain.Entities.Route
 {
     public class TravelDay : BaseEntity
     {
-
         public string? DayDescription { get; set; }
         public AppUser? User { get; set; }
         public TravelAccomodation? Accomodation { get; set; }

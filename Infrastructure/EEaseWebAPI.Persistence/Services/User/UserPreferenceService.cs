@@ -199,12 +199,6 @@ namespace EEaseWebAPI.Persistence.Services.User
             }
         }
 
-        /// <summary>
-        /// A topic crosses the three rows: "Waterfront Getaways" is an accommodation topic
-        /// that also says something about the places the traveller likes. Each name goes to
-        /// the row that owns it, rather than to the group the topic was listed under, which
-        /// used to drop every name that lived elsewhere without a word.
-        /// </summary>
         private static void Score(
             IEnumerable<string> propertyNames,
             UserAccommodationPreferences accommodation,

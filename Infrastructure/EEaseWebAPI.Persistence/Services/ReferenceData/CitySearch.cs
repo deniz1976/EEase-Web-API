@@ -4,19 +4,11 @@ using EEaseWebAPI.Domain.Entities.AllWorldCities;
 
 namespace EEaseWebAPI.Persistence.Services.ReferenceData
 {
-    /// <summary>
-    /// What the city list is asked for, once it has been read. It takes the rows and gives
-    /// back the answer, so the part with all the rules can be tested without a database:
-    /// the table has no primary key, which means no test can put a row into it.
-    /// </summary>
     public static class CitySearch
     {
         public const string CapitalCity = "primary";
         public const int MinimumSearchTermLength = 2;
 
-        /// <summary>
-        /// The order every search starts from: capitals first, then the biggest places.
-        /// </summary>
         public static List<AllWorldCities> Rank(IEnumerable<AllWorldCities> cities) =>
             cities
                 .OrderByDescending(city => city.Capital == CapitalCity)

@@ -30,10 +30,6 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    /// <summary>
-    /// Travellers. Everything the caller owns hangs off <c>me</c>: a literal segment beats
-    /// <c>{username}</c> in routing, so a traveller who registers as "me" cannot shadow it.
-    /// </summary>
     [Route("api/users")]
     [ApiController]
     public class UsersController : ApiControllerBase
@@ -67,7 +63,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Whether an address can still be registered with.</summary>
         [HttpGet("email-availability")]
         [ProducesResponseType(typeof(CheckEmailIsInUseQueryResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
@@ -78,7 +73,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Sends another verification code to an address that has not confirmed yet.</summary>
         [HttpPost("email-verifications")]
         [ProducesResponseType(typeof(ResendVerificationCodeCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
@@ -120,10 +114,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>
-        /// Changes the fields that were sent and leaves the rest alone, which is what every
-        /// rule behind it already allowed for.
-        /// </summary>
         [HttpPatch("me")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(UpdateUserCommandResponse), StatusCodes.Status200OK)]
@@ -145,10 +135,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>
-        /// Asks for the account to be closed, which sends a code rather than closing it.
-        /// Asking again while one is pending calls the deletion off.
-        /// </summary>
         [HttpPost("me/deletion-request")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(DeleteUserCommandResponse), StatusCodes.Status200OK)]
@@ -270,7 +256,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Sets the preferences from a sentence the traveller wrote about themselves.</summary>
         [HttpPut("me/preferences")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(UpdateUserPreferencesCommandResponse), StatusCodes.Status200OK)]
@@ -298,7 +283,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Sets the same preferences by naming topics instead of writing a sentence.</summary>
         [HttpPut("me/preferences/topics")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(UpdateUserPreferencesWithTopicsCommandResponse), StatusCodes.Status200OK)]
@@ -347,10 +331,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>
-        /// The same traveller, found by the id the database gave them rather than the name
-        /// they chose. The extra segment keeps it out of the way of a username.
-        /// </summary>
         [HttpGet("by-id/{userId}")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(GetUserInfoByIdQueryResponse), StatusCodes.Status200OK)]

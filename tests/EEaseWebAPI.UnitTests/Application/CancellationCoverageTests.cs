@@ -6,14 +6,8 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Application
 {
-    /// <summary>
-    /// Work that a caller has walked away from should stop. A service method that cannot be
-    /// handed a token is a place where it cannot, and the token then stops at whoever calls
-    /// it, so the rule is checked rather than remembered.
-    /// </summary>
     public class CancellationCoverageTests
     {
-        /// <summary>Nothing to cancel: these build or format a value in memory.</summary>
         private static readonly HashSet<string> NothingToCancel = new()
         {
             "IHeaderService",

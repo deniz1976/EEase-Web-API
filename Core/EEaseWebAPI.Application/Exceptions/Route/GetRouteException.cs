@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,6 @@ namespace EEaseWebAPI.Application.Exceptions.Route
 {
     public class GetRouteException : BaseException
     {
-
         public GetRouteException() : base("Unauthorized to view route", (int)StatusEnum.UnauthorizedToViewRoute)
         {
         }

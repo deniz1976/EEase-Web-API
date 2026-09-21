@@ -1,9 +1,5 @@
 namespace EEaseWebAPI.Persistence.Services.Route
 {
-    /// <summary>
-    /// The plain text catalogues the route builders feed into Google Places.
-    /// They hold no logic, so keeping them apart from the builders keeps those readable.
-    /// </summary>
     internal static class RouteSearchQueries
     {
         public const string Breakfast = "Breakfast restaurant ";

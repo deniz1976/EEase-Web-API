@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.GetUserInfoById
 {
-
     public class GetUserInfoByIdBody
     {
         public string? Username { get; set; }

@@ -10,11 +10,6 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    /// <summary>
-    /// Hotels, restaurants and sights. They used to live under routes and be called route
-    /// components, which is a name for where they are shown rather than what they are: a
-    /// photo and an opinion both outlive the route they were first seen in.
-    /// </summary>
     [Route("api/places")]
     [ApiController]
     public class PlacesController : ApiControllerBase
@@ -35,10 +30,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>
-        /// Records that the caller liked a place, which shifts the preferences behind their
-        /// next route. It is not tied to a route, so no route is named.
-        /// </summary>
         [HttpPost("likes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(LikePlaceCommandResponse), StatusCodes.Status200OK)]
@@ -56,10 +47,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>
-        /// Records that the caller disliked a place and swaps it out of the route it was
-        /// found in, which is why this one does name a route.
-        /// </summary>
         [HttpPost("dislikes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(DislikePlaceCommandResponse), StatusCodes.Status200OK)]

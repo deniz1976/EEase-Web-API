@@ -4,10 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    /// <summary>
-    /// The topics a traveller may pick their preferences from. They belong to nobody, so
-    /// they do not hang off a user.
-    /// </summary>
     [Route("api/preference-topics")]
     [ApiController]
     public class PreferenceTopicsController : ApiControllerBase

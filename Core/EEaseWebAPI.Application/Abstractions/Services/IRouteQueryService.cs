@@ -3,10 +3,6 @@ using EEaseWebAPI.Domain.Entities.Route;
 
 namespace EEaseWebAPI.Application.Abstractions.Services
 {
-    /// <summary>
-    /// Reads routes back out. Every method applies the visibility rules of
-    /// <see cref="IRouteAccessPolicy"/> before returning anything.
-    /// </summary>
     public interface IRouteQueryService
     {
         Task<(List<StandardRoute> Routes, int TotalCount)> GetAllRoutes(

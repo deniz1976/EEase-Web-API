@@ -10,10 +10,6 @@ using FluentValidation;
 
 namespace EEaseWebAPI.Application.Validators.User
 {
-    /// <summary>
-    /// Each of these names the other user. The caller's own name comes from the token, so
-    /// there is nothing to validate about it.
-    /// </summary>
     public class SendFriendRequestCommandValidator : AbstractValidator<SendFriendRequestCommandRequest>
     {
         public SendFriendRequestCommandValidator()

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.GetUserPhoto
 {
-
     public class GetUserPhotoBody
     {
         public string? Path {  get; set; }

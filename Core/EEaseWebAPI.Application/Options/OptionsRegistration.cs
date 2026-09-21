@@ -23,11 +23,6 @@ namespace EEaseWebAPI.Application.Options
             return services;
         }
 
-        /// <summary>
-        /// Every section is checked while the application starts. Only the token section
-        /// used to be: a bad mail port or cache lifetime was found by the first request that
-        /// needed it, which answered a 500 to whoever happened to make it.
-        /// </summary>
         private static IServiceCollection Register<TOptions>(
             this IServiceCollection services, IConfiguration configuration, string sectionName)
             where TOptions : class

@@ -6,12 +6,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Api
 {
-    /// <summary>
-    /// Every service and handler takes a cancellation token, but the chain is only worth
-    /// anything if it starts at the door: ASP.NET Core binds a token parameter on an action
-    /// to the request being aborted, and without one the browser can hang up while the
-    /// server keeps searching, saving and paying for it.
-    /// </summary>
     public class ControllerCancellationTests
     {
         public static TheoryData<string, string> EveryAction()

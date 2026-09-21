@@ -6,10 +6,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.User
 {
-    /// <summary>
-    /// An update carries only the fields that changed, so every rule has to stay quiet about
-    /// the ones that were left out.
-    /// </summary>
     public class UpdateUserValidatorTests
     {
         private static UpdateUserValidator Build(string culture = "en") =>

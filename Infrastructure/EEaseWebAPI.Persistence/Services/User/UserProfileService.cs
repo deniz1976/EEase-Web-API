@@ -208,11 +208,6 @@ namespace EEaseWebAPI.Persistence.Services.User
             return true;
         }
 
-        /// <summary>
-        /// Identity treats usernames as case insensitive, so "Alice" is not free while
-        /// "alice" exists; comparing the raw name let that through and the save failed later
-        /// with a duplicate error nobody could act on.
-        /// </summary>
         private Task<bool> IsUsernameAvailable(
             string username, string userId, CancellationToken cancellationToken)
         {
@@ -222,11 +217,6 @@ namespace EEaseWebAPI.Persistence.Services.User
                 candidate.NormalizedUserName != normalizedUserName || candidate.Id == userId, cancellationToken);
         }
 
-        /// <summary>
-        /// <see cref="UpdateUserValidator"/> already answered the caller with the offending
-        /// field named; this catches a call that never went through the pipeline, so the
-        /// message is a sentence rather than a field map.
-        /// </summary>
         private static void Validate(UpdateUserCommandRequest request)
         {
             ValidateLength(request.Name, nameof(request.Name));

@@ -2,11 +2,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EEaseWebAPI.Domain.Entities.AllWorldCities
 {
-    /// <summary>
-    /// The world cities table, loaded from a published dataset whose columns are named the
-    /// way that dataset names them. The properties read like the rest of the code and each
-    /// one says which column it comes from, so the table does not have to be renamed.
-    /// </summary>
     public class AllWorldCities
     {
         [Column("city")]

@@ -32,10 +32,6 @@ namespace EEaseWebAPI.Application.Options
         [Range(0, 10)]
         public int MaxRetryCount { get; init; } = 3;
 
-        /// <summary>
-        /// How long a request waits for a key to free up before giving up. Without a limit
-        /// an exhausted pool leaves the request hanging instead of answering.
-        /// </summary>
         [Range(1, 300)]
         public int KeyWaitTimeoutSeconds { get; init; } = 30;
 

@@ -12,7 +12,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetAllTopics
 {
     public class GetAllTopicsQueryHandler : IRequestHandler<GetAllTopicsQueryRequest, GetAllTopicsQueryResponse>
     {
-
         private readonly IUserPreferenceService _preferenceService;
         private readonly IHeaderService _headerService;
 

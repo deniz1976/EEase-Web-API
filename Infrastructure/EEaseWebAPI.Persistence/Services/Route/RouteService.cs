@@ -7,11 +7,6 @@ using EEaseWebAPI.Domain.Entities.Route;
 
 namespace EEaseWebAPI.Persistence.Services.Route
 {
-    /// <summary>
-    /// The single entry point the route handlers talk to. It owns no logic of its own:
-    /// reads go to <see cref="IRouteQueryService"/>, writes to
-    /// <see cref="IRouteInteractionService"/> and dislikes to <see cref="IRouteDislikeService"/>.
-    /// </summary>
     public sealed class RouteService : IRouteService
     {
         private readonly IRouteQueryService _routeQueryService;

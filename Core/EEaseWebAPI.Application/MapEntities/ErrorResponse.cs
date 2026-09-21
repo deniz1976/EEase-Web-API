@@ -2,11 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace EEaseWebAPI.Application.MapEntities
 {
-    /// <summary>
-    /// A failure is answered in the same envelope as a success, so a caller reads one shape
-    /// whatever happened: the header says it failed and carries the status code, the body
-    /// says what went wrong.
-    /// </summary>
     public sealed class ErrorResponse : ApiResponse<ErrorBody>
     {
     }
@@ -19,7 +14,6 @@ namespace EEaseWebAPI.Application.MapEntities
 
         public string? Message { get; set; }
 
-        /// <summary>Set only when a request failed validation, keyed by field.</summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public IReadOnlyDictionary<string, string[]>? Errors { get; set; }
     }

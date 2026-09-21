@@ -5,7 +5,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
     public class GetRouteByIdQueryResponse : ApiResponse<GetRouteByIdQueryResponseBody>
 
     {
-
     }
 
     public class GetRouteByIdQueryResponseBody

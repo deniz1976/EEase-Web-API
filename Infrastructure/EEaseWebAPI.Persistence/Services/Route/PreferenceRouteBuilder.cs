@@ -333,10 +333,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return new MealCandidates(mealType, foodQuery, candidates);
         }
 
-        /// <summary>
-        /// Takes one place out of what the meal was searched for and marks it as spoken for,
-        /// so the rest of the trip cannot sit down at the same table.
-        /// </summary>
         private async Task<string> ClaimMealAsync(
             MealCandidates candidates,
             string destination,
@@ -384,10 +380,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return selectedGoogleId;
         }
 
-        /// <summary>
-        /// What a meal may be chosen from. The search behind it depends on the meal and the
-        /// city, never on the day, so every day of the trip picks out of the same list.
-        /// </summary>
         private sealed class MealCandidates
         {
             public MealCandidates(
@@ -406,10 +398,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             public IReadOnlyList<Application.DTOs.GooglePlaces.Place> Places { get; }
 
-            /// <summary>
-            /// Searched for the first time a day finds every candidate already taken, and
-            /// kept for the days after it.
-            /// </summary>
             public IReadOnlyList<Application.DTOs.GooglePlaces.Place>? Alternatives { get; set; }
         }
 
@@ -506,10 +494,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 cancellationToken: cancellationToken));
         }
 
-        /// <summary>
-        /// Turns the preference the query was built around into the human readable label
-        /// stored on the hotel, so the user can see why it was picked.
-        /// </summary>
         private string DescribeAccommodationPreference(IReadOnlyList<PreferenceItem>? preferences)
         {
             if (preferences is null || preferences.Count == 0)

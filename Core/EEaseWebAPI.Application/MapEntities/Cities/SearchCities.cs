@@ -1,6 +1,5 @@
 namespace EEaseWebAPI.Application.MapEntities.Cities
 {
-
     public class SearchCitiesBody
     {
         public List<CityDto> Cities { get; set; } = new();

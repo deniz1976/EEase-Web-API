@@ -15,11 +15,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Api
 {
-    /// <summary>
-    /// A dependency that is declared but never registered does not fail when the
-    /// application starts: the first request that needs it does, with a 500. Building the
-    /// real container with validation turned on moves that to the build.
-    /// </summary>
     public class ServiceRegistrationTests
     {
         private static ServiceProvider BuildContainer()

@@ -59,10 +59,6 @@ namespace EEaseWebAPI.Persistence.Services.ReferenceData
             await GetAllCountries(cancellationToken);
         }
 
-        /// <summary>
-        /// The whole table, ordered once so that every search starts from the biggest and
-        /// most important places, and then kept in memory.
-        /// </summary>
         private Task<List<AllWorldCities>> GetAllCitiesAsync(CancellationToken cancellationToken) =>
             _cache.GetOrLoadAsync(
                 _cache.Keys.AllCitiesCacheKey,

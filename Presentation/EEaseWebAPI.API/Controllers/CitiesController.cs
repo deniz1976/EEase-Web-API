@@ -36,7 +36,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>The same search, ordered by what the caller has said they like.</summary>
         [HttpGet("recommended")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(SearchCitiesQueryResponse), StatusCodes.Status200OK)]

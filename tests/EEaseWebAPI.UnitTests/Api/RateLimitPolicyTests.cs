@@ -12,11 +12,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Api
 {
-    /// <summary>
-    /// Naming a rate limiting policy that was never registered does not fail at startup: the
-    /// endpoint throws on the first request instead, and answers 500 from then on. One
-    /// controller shipped like that, so the names are checked here.
-    /// </summary>
     public class RateLimitPolicyTests
     {
         public static TheoryData<string, string> NamedPolicies()
@@ -108,10 +103,6 @@ namespace EEaseWebAPI.UnitTests.Api
             PolicyNames(action).Should().Contain(RateLimitPolicies.Sensitive);
         }
 
-        /// <summary>
-        /// The registered policies are not exposed publicly, so they are read off the
-        /// options the same way the framework stores them.
-        /// </summary>
         private static IEnumerable<string> RegisteredPolicies(RateLimiterOptions options)
         {
             var map = typeof(RateLimiterOptions)

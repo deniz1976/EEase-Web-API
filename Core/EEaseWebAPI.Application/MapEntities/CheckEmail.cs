@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities
 {
-
     public class CheckEmailBody
     {
         public bool? Result {  get; set; }

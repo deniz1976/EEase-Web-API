@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.GetAccountStatus
 {
-
     public class GetAccountStatusBody
     {
         public bool? Status {  get; set; }

@@ -19,10 +19,6 @@ namespace EEaseWebAPI.Persistence.Services.GooglePlaces
             "servesVegetarianFood,servesBrunch,reservable,takeout,delivery,curbsidePickup," +
             "servesBeer,servesWine,servesCocktails,internationalPhoneNumber";
 
-        /// <summary>
-        /// The photo name comes from the caller and is pasted into the outbound URL, which
-        /// carries our API key. Only the shape Google hands out gets through.
-        /// </summary>
         private static readonly Regex PhotoName =
             new(@"^places/[A-Za-z0-9_.\-]+/photos/[A-Za-z0-9_.\-]+$", RegexOptions.Compiled);
 

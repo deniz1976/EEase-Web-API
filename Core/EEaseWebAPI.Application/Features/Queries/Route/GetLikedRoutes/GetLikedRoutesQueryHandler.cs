@@ -12,7 +12,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes
 {
     public class GetLikedRoutesQueryHandler : IRequestHandler<GetLikedRoutesQueryRequest, GetLikedRoutesQueryResponse>
     {
-
         private readonly IHeaderService _headerService;
         private readonly IRouteService _routeService;
 
@@ -31,7 +30,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes
 
             return new GetLikedRoutesQueryResponse
             {
-
                 Body = new GetLikedRoutesQueryResponseBody
                 {
                     Routes = routes,

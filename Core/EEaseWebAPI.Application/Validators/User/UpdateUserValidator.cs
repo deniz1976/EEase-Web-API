@@ -4,11 +4,6 @@ using FluentValidation;
 
 namespace EEaseWebAPI.Application.Validators.User
 {
-    /// <summary>
-    /// Every field is optional here: an update carries only what changed, so each rule runs
-    /// only when its field was sent. Without this the service was the first thing to
-    /// complain, and it complained with an untranslated sentence and no field name.
-    /// </summary>
     public class UpdateUserValidator : AbstractValidator<UpdateUserCommandRequest>
     {
         public UpdateUserValidator()

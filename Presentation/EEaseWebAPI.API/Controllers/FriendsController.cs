@@ -16,11 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    /// <summary>
-    /// The people the caller has already become friends with. One controller used to hold
-    /// friends, requests and blocks together, which meant one path prefix for three
-    /// different things.
-    /// </summary>
     [Route("api/friends")]
     [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
     [ApiController]
@@ -59,10 +54,6 @@ namespace EEaseWebAPI.API.Controllers
         }
     }
 
-    /// <summary>
-    /// The request standing between the caller and one other person. The same path answers
-    /// what it is, accepts or refuses it, and withdraws it.
-    /// </summary>
     [Route("api/friend-requests")]
     [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
     [ApiController]
@@ -75,7 +66,6 @@ namespace EEaseWebAPI.API.Controllers
             _mediator = mediator;
         }
 
-        /// <summary>Everything waiting for the caller to answer.</summary>
         [HttpGet]
         [ProducesResponseType(typeof(GetPendingFriendRequestsQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPendingRequests(CancellationToken cancellationToken)
@@ -101,7 +91,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Where the caller stands with this person: none, pending, friends, blocked.</summary>
         [HttpGet("{username}")]
         [ProducesResponseType(typeof(CheckFriendRequestQueryResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFriendRequestStatus(
@@ -117,7 +106,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Answers a request this person sent to the caller.</summary>
         [HttpPut("{username}")]
         [ProducesResponseType(typeof(RespondToFriendRequestCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> RespondToFriendRequest(
@@ -136,7 +124,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(result);
         }
 
-        /// <summary>Withdraws a request the caller sent to this person.</summary>
         [HttpDelete("{username}")]
         [ProducesResponseType(typeof(CancelFriendRequestCommandResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CancelFriendRequest(

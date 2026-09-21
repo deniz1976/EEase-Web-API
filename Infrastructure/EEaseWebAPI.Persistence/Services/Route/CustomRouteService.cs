@@ -4,11 +4,6 @@ using EEaseWebAPI.Persistence.Contexts;
 
 namespace EEaseWebAPI.Persistence.Services.Route
 {
-    /// <summary>
-    /// Runs one of the two route builders and persists what it produced.
-    /// The building itself lives in <see cref="IRandomRouteBuilder"/> and
-    /// <see cref="IPreferenceRouteBuilder"/>.
-    /// </summary>
     public sealed class CustomRouteService : ICustomRouteService
     {
         private readonly IRandomRouteBuilder _randomRouteBuilder;

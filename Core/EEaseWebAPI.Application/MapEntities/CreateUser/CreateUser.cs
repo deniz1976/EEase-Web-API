@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.CreateUser
 {
-
     public class CreateUserBody
     {
         public string? Message { get; set; }

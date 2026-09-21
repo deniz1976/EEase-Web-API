@@ -12,11 +12,6 @@ using FluentValidation;
 
 namespace EEaseWebAPI.Application.Validators.User
 {
-    /// <summary>
-    /// What a caller has to send to reach these handlers. The handlers used to check it
-    /// themselves and answer "Value cannot be null. (Parameter 'request')", which named
-    /// nothing the caller could fix and was never translated.
-    /// </summary>
     public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommandRequest>
     {
         public ChangePasswordCommandValidator()

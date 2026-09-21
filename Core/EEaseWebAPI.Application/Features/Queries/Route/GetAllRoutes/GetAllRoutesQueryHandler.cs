@@ -29,7 +29,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetAllRoutes
 
             return new GetAllRoutesQueryResponse
             {
-
                 Body = new GetAllRoutesQueryResponseBody
                 {
                     Routes = routes,

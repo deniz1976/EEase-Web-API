@@ -13,12 +13,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Api
 {
-    /// <summary>
-    /// Every failure this API answers with is an ErrorResponse, and the document has to say
-    /// so or a generated client has no shape for the error it meets most often. The answers
-    /// are derived rather than typed out above each action, so what is checked here is that
-    /// the deriving is right.
-    /// </summary>
     public class ErrorResponseDocumentationTests
     {
         private readonly ErrorResponseOperationFilter _filter = new();
@@ -61,10 +55,6 @@ namespace EEaseWebAPI.UnitTests.Api
                 .Should().NotBeNull();
         }
 
-        /// <summary>
-        /// Reading a route somebody has not shared answers 200 with an empty plan and a
-        /// reason on it, so the endpoints that really do refuse are the few named here.
-        /// </summary>
         [Fact]
         public void Only_the_endpoints_that_refuse_say_they_can()
         {

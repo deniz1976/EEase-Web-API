@@ -15,10 +15,6 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    /// <summary>
-    /// Signing in and getting back in. These are the one place in the API where a path
-    /// names an act rather than a thing: there is no useful noun for "prove who you are".
-    /// </summary>
     [Route("api/auth")]
     [ApiController]
     public class AuthController : ApiControllerBase
@@ -50,7 +46,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Changing a password you still know, which needs the old one.</summary>
         [HttpPut("password")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(ChangePasswordCommandResponse), StatusCodes.Status200OK)]
@@ -69,7 +64,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Starts a reset for a password nobody remembers, by sending a code.</summary>
         [HttpPost("password-resets")]
         [ProducesResponseType(typeof(RequestPasswordResetCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]

@@ -9,10 +9,6 @@ namespace EEaseWebAPI.Application.Abstractions.Services
     {
         Task LoadUsersToCache(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Loads the list when it is not cached, so a search never comes back empty just
-        /// because the entry expired.
-        /// </summary>
         Task<List<UserSearchDTO>> SearchUsersAsync(
             string searchTerm, CancellationToken cancellationToken = default);
 

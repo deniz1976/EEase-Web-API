@@ -3,11 +3,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace EEaseWebAPI.Infrastructure.Filters
 {
-    /// <summary>
-    /// Turns a model binding failure into the same exception FluentValidation raises, so a
-    /// missing field and a field that breaks a rule are reported in one shape rather than
-    /// two: the global handler writes both.
-    /// </summary>
     public sealed class ValidationFilter : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

@@ -6,14 +6,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Application
 {
-    /// <summary>
-    /// A request with no validator is answered by whatever the handler happens to check,
-    /// which used to be a null check that said "Value cannot be null. (Parameter 'request')"
-    /// in English. Requests that genuinely have nothing to validate - the ones whose only
-    /// input is the caller's own name, taken from the token - are listed here, so adding a
-    /// request without a validator is a decision somebody writes down rather than an
-    /// oversight.
-    /// </summary>
     public class ValidatorCoverageTests
     {
         private static readonly HashSet<string> CarryNothingToValidate = new()

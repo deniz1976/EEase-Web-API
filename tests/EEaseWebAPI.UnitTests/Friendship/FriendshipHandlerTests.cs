@@ -14,10 +14,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Friendship
 {
-    /// <summary>
-    /// These three decide something: which of the two people in a friendship is the friend,
-    /// which of them asked, and what a request status means in words.
-    /// </summary>
     public class FriendshipHandlerTests
     {
         private readonly IFriendshipService _friendship = Substitute.For<IFriendshipService>();

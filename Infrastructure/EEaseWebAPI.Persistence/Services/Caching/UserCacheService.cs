@@ -9,11 +9,6 @@ using Microsoft.Extensions.Options;
 
 namespace EEaseWebAPI.Persistence.Services.Caching
 {
-    /// <summary>
-    /// Keeps the confirmed users in memory so that search does not hit the database on every
-    /// keystroke. The cached list is never edited in place: a change publishes a new list, so
-    /// a request reading it cannot see a half finished update.
-    /// </summary>
     public sealed class UserCacheService : IUserCacheService
     {
         private const int MaxResults = 10;

@@ -194,10 +194,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
             };
         }
 
-        /// <summary>
-        /// Takes an unused place out of the pool. Running out is what the attempt loop is
-        /// there for, so it says so the same way the selection service did.
-        /// </summary>
         private static string Claim(PlacePicker picker, IReadOnlyList<string> pool, string slot) =>
             picker.Take(pool)
             ?? throw new InvalidOperationException(
@@ -323,10 +319,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
             }
         }
 
-        /// <summary>
-        /// When a price level yields too few results the search is repeated one step cheaper.
-        /// The cheapest level has nowhere lower to go, so it widens upwards instead.
-        /// </summary>
         private static PRICE_LEVEL NextPriceLevelDown(PRICE_LEVEL? currentLevel) =>
             currentLevel switch
             {

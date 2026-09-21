@@ -8,22 +8,8 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Api
 {
-    /// <summary>
-    /// The API used to route by action name, so a C# method name was the URL and every
-    /// endpoint read "api/Users/GetUserInfo": the verb said twice, the resource said twice,
-    /// and the casing whatever the method happened to use. Paths are written out now, and
-    /// these are the rules they are written to.
-    /// </summary>
     public class EndpointConventionTests
     {
-        /// <summary>
-        /// A path names things, and the HTTP method says what is being done to them. These
-        /// are the segments that are not a thing, each one a decision somebody wrote down:
-        /// the four under auth, because there is no noun for proving who you are; the two
-        /// that describe which part of a collection is wanted; and the four that really
-        /// are nouns while reading like verbs. Adding one is meant to be a decision, which
-        /// is why they are written here rather than inferred.
-        /// </summary>
         private static readonly HashSet<string> NotNouns = new()
         {
             "login",
@@ -161,10 +147,6 @@ namespace EEaseWebAPI.UnitTests.Api
                 .OfType<HttpMethodAttribute>()
                 .SelectMany(attribute => attribute.HttpMethods);
 
-        /// <summary>
-        /// The full paths an action answers on: the controller's prefix and the action's
-        /// own template, unless the action's template starts with a slash and stands alone.
-        /// </summary>
         private static IEnumerable<string> Paths(string controllerName, string actionName)
         {
             var entry = Actions()

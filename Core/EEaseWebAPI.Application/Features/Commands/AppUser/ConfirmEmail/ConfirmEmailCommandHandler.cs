@@ -12,7 +12,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.ConfirmEmail
 {
     public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommandRequest, ConfirmEmailCommandResponse>
     {
-
         private readonly IUserRegistrationService _registrationService;
         private readonly IHeaderService _headerService;
 

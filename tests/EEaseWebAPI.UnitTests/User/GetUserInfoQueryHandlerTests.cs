@@ -11,12 +11,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.User
 {
-    /// <summary>
-    /// Both handlers read a profile and, when the viewer is allowed to see it, the owner's
-    /// preferences. The preference service was declared but never injected, so that second
-    /// step threw a NullReferenceException and the endpoint answered 500 for every profile
-    /// the viewer was actually allowed to read.
-    /// </summary>
     public class GetUserInfoQueryHandlerTests
     {
         private readonly IHeaderService _headers = Substitute.For<IHeaderService>();

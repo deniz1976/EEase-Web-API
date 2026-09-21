@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities
 {
-
     public class RequestPasswordResetBody
     {
         public string? Message { get; set; }

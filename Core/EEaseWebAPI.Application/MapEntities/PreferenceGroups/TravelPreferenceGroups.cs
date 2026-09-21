@@ -5,11 +5,6 @@ namespace EEaseWebAPI.Application.MapEntities.PreferenceGroups
 {
     public static class TravelPreferenceGroups
     {
-        /// <summary>
-        /// Every topic in one place. A topic names preferences that can live on any of the
-        /// three preference rows, so the caller applies each name to whichever row owns it
-        /// rather than to the group it was listed under.
-        /// </summary>
         private static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> AllGroups =
             new[] { AccommodationGroups.Groups, FoodGroups.Groups, TravelGroups.Groups }
                 .SelectMany(group => group)

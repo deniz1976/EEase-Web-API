@@ -5,11 +5,6 @@ using FluentValidation;
 
 namespace EEaseWebAPI.Application.Validators.Place
 {
-    /// <summary>
-    /// Both of these say what the traveller thought of one place. The controller used to
-    /// check the same fields by hand and answer a bare string, which is the one shape of
-    /// error the rest of the API does not speak.
-    /// </summary>
     public class LikePlaceCommandValidator : AbstractValidator<LikePlaceCommandRequest>
     {
         public LikePlaceCommandValidator()

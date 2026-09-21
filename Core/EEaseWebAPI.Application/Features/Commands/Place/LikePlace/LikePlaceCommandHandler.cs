@@ -19,7 +19,6 @@ namespace EEaseWebAPI.Application.Features.Commands.Place.LikePlace
 
         public async Task<LikePlaceCommandResponse> Handle(LikePlaceCommandRequest request, CancellationToken cancellationToken)
         {
-
                 var result = await _routeService.LikePlaceAsync(
                     request.Username,
                     request.GooglePlaceId,

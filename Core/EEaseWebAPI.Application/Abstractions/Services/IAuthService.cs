@@ -9,6 +9,5 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface IAuthService : IInternalAuthentication
     {
-
     }
 }

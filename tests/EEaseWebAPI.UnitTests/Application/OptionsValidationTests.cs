@@ -7,10 +7,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Application
 {
-    /// <summary>
-    /// A setting that is out of range should stop the application from starting, not wait
-    /// for the first request that reads it and answer that one with a 500.
-    /// </summary>
     public class OptionsValidationTests
     {
         private static IStartupValidator StartupValidatorFor(params (string Key, string Value)[] settings)

@@ -1,4 +1,4 @@
-﻿using EEaseWebAPI.Application.Enums;
+using EEaseWebAPI.Application.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,6 @@ namespace EEaseWebAPI.Application.Exceptions.Friendship
 {
     public class UserUnblockedException : FriendshipException
     {
-
         public UserUnblockedException(string message)
             : base(message, StatusEnum.UserUnblockedFailed)
         {

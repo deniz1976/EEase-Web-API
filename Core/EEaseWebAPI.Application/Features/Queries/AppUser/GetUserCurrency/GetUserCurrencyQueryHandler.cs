@@ -21,7 +21,6 @@ namespace EEaseWebAPI.Application.Features.Queries.AppUser.GetUserCurrency
 
             return new GetUserCurrencyQueryResponse
             {
-
                     Header = _headerService.HeaderCreate((int)StatusEnum.UserCurrencyReceivedSuccessfully),
                     Body = new GetUserCurrencyBody
                     {

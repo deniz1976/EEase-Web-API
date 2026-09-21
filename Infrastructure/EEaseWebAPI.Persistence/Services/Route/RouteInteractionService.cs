@@ -154,10 +154,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
             };
         }
 
-        /// <summary>
-        /// A place lives in a different table depending on the slot it fills, so the slot
-        /// name decides where to look it up.
-        /// </summary>
         private async Task<BaseEntity?> FindPlaceAsync(
             string googlePlaceId, string placeType, CancellationToken cancellationToken)
         {

@@ -19,10 +19,6 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace EEaseWebAPI.API.Controllers
 {
-    /// <summary>
-    /// Travel plans. A route id is always a guid, which is what keeps <c>{routeId}</c> from
-    /// swallowing the named collections next to it.
-    /// </summary>
     [Route("api/routes")]
     [ApiController]
     public class RoutesController : ApiControllerBase
@@ -55,7 +51,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>The same plan for somebody who has not signed in, so nothing is kept.</summary>
         [HttpPost("guest")]
         [ProducesResponseType(typeof(CreateRouteWithoutLoginCommandResponse), StatusCodes.Status200OK)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
@@ -147,10 +142,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>
-        /// Adds the caller's like, or takes it away if it is already there. It toggles, so
-        /// it is a POST rather than the PUT and DELETE pair a plain like would be.
-        /// </summary>
         [HttpPost("{routeId:guid}/likes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -168,7 +159,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>Whether the caller's like is one of the ones on this route.</summary>
         [HttpGet("{routeId:guid}/likes/me")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -206,10 +196,6 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>
-        /// Somebody else's routes, as much of them as they let the caller see. It hangs off
-        /// the traveller rather than off the routes, because that is whose they are.
-        /// </summary>
         [HttpGet("/api/users/by-id/{userId}/routes")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(typeof(GetRoutesByUserIdQueryResponse), StatusCodes.Status200OK)]

@@ -9,13 +9,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
 {
     public sealed class PlaceSelectionService : IPlaceSelectionService
     {
-        /// <summary>
-        /// What Google said about a place, for as long as this request lasts. A place is
-        /// asked about more than once: the same hotel is copied onto every day, a rejected
-        /// plan is built again from the same pool, and the details of a place do not change
-        /// between those calls. The task is stored rather than the answer, so two slots
-        /// asking at the same time make one call between them.
-        /// </summary>
         private readonly ConcurrentDictionary<string, Task<string>> _details = new();
 
         private readonly IGooglePlacesService _googlePlacesService;

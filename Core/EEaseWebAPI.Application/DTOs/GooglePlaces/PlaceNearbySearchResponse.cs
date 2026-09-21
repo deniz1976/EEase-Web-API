@@ -5,6 +5,5 @@ namespace EEaseWebAPI.Application.DTOs.GooglePlaces
 {
     public class PlaceNearbySearchResponse
     {
-
     }
 }

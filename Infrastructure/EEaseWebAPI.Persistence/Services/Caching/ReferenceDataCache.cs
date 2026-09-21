@@ -4,10 +4,6 @@ using Microsoft.Extensions.Options;
 
 namespace EEaseWebAPI.Persistence.Services.Caching
 {
-    /// <summary>
-    /// Cities, countries and currencies change about once a year, so they are read once and
-    /// kept in memory for as long as the configuration says.
-    /// </summary>
     public sealed class ReferenceDataCache
     {
         private readonly IMemoryCache _memoryCache;

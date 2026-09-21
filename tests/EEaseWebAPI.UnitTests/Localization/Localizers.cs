@@ -4,10 +4,6 @@ using Microsoft.Extensions.Options;
 
 namespace EEaseWebAPI.UnitTests.Localization
 {
-    /// <summary>
-    /// Builds the real localizers over the real .resx files, so a test that reads a
-    /// message fails when the translation is missing rather than quietly falling back.
-    /// </summary>
     internal static class Localizers
     {
         private static readonly IStringLocalizerFactory Factory =

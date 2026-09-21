@@ -1,10 +1,5 @@
 namespace EEaseWebAPI.Application.DTOs.Route
 {
-    /// <summary>
-    /// Hands out places and remembers what it handed out, so no two slots of a route get the
-    /// same one. The searches around it run side by side now, so it guards itself: a place
-    /// handed to two slots at once would be a duplicate nobody asked for.
-    /// </summary>
     public sealed class PlacePicker
     {
         private readonly HashSet<string> _usedGoogleIds = new();

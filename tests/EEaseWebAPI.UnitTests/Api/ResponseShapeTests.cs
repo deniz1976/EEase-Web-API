@@ -6,12 +6,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.Api
 {
-    /// <summary>
-    /// Every endpoint answers with a header and a body. Endpoints used to invent their own
-    /// shape, so a caller had to know whether the payload sat under "login", "response",
-    /// "userInfo" or straight at the top. Nothing stops the next handler from doing that
-    /// again except this.
-    /// </summary>
     public class ResponseShapeTests
     {
         public static TheoryData<Type> EveryResponseType()

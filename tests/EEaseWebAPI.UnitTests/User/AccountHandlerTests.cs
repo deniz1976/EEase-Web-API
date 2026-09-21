@@ -11,9 +11,6 @@ using Xunit;
 
 namespace EEaseWebAPI.UnitTests.User
 {
-    /// <summary>
-    /// Handlers that answer differently depending on what the service came back with.
-    /// </summary>
     public class AccountHandlerTests
     {
         private readonly IHeaderService _headers = Substitute.For<IHeaderService>();

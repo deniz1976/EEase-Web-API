@@ -1,10 +1,5 @@
 namespace EEaseWebAPI.Application.Validators.User
 {
-    /// <summary>
-    /// The rules a profile has to satisfy, in one place: the validator answers the caller
-    /// with them and the service checks them again for calls that never went through the
-    /// pipeline. Two copies of "16" would drift apart; one constant cannot.
-    /// </summary>
     public static class UserProfileRules
     {
         public const int NameMinLength = 2;

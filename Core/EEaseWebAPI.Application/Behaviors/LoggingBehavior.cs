@@ -4,11 +4,6 @@ using Microsoft.Extensions.Logging;
 
 namespace EEaseWebAPI.Application.Behaviors
 {
-    /// <summary>
-    /// Logs one line for every command and query that runs: which one, how long it took and
-    /// whether it succeeded. Requests carry passwords, reset codes and e-mail addresses, so
-    /// the request itself is never written to the log, only its type name.
-    /// </summary>
     public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : notnull
     {

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace EEaseWebAPI.Application.MapEntities.UpdateUserPreferences
 {
-
     public class UpdateUserPreferencesBody
     {
         public string? Message { get; set; }
