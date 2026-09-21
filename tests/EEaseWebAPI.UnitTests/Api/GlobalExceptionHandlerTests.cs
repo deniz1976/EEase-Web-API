@@ -48,8 +48,6 @@ namespace EEaseWebAPI.UnitTests.Api
 
                 using var document = await JsonDocument.ParseAsync(context.Response.Body);
 
-                // Errors travel in the same envelope as everything else, so what a test
-                // wants to read sits under "body", with the enum code in "header".
                 var root = document.RootElement.Clone();
                 var payload = root.GetProperty("body").Clone();
                 var enumStatusCode = root.GetProperty("header").GetProperty("enumStatusCode");
@@ -135,8 +133,6 @@ namespace EEaseWebAPI.UnitTests.Api
         [Fact]
         public async Task An_exception_that_carries_no_code_keeps_its_own_message()
         {
-            // Reading the missing code as UnknownError turned every plain rejection into
-            // "an unexpected error occurred", which tells the caller nothing.
             var (statusCode, body, enumStatusCode) = await HandleAsync(new ArgumentException("Username must be unique."), "tr");
 
             statusCode.Should().Be(StatusCodes.Status400BadRequest);

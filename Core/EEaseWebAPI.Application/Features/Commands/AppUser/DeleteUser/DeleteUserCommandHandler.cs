@@ -25,10 +25,8 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.DeleteUser
         {
             var outcome = await _accountService.RequestDeletionAsync(request.Username, cancellationToken);
 
-            // Asking to delete an account that is already on its way out cancels the
-            // deletion. That is an outcome of its own, not the failure it used to be
-            // reported as, which read as "deletion failed" over a message saying the
-            // account had been brought back.
+            // Asking again while a deletion is pending calls it off, which is an outcome of its
+            // own rather than a failure.
             return outcome == DeleteRequestOutcome.CodeSent
                 ? CreateResponse((int)StatusEnum.UserDeleteCodeSentSuccessfully, AppMessages.DeleteCodeSent)
                 : CreateResponse((int)StatusEnum.AccountReactivated, AppMessages.AccountReactivated);

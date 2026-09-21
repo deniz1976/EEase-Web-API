@@ -23,8 +23,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.RequestPasswordReset
 
         public async Task<RequestPasswordResetCommandResponse> Handle(RequestPasswordResetCommandRequest request, CancellationToken cancellationToken)
         {
-            // A code that could not be sent is reported by the service; reaching here means
-            // it went out.
             await _passwordService.SendResetCodeAsync(request.EmailOrUsername, cancellationToken);
 
             return new RequestPasswordResetCommandResponse

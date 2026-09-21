@@ -22,9 +22,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.SetUserPhoto
 
         public async Task<SetUserPhotoCommandResponse> Handle(SetUserPhotoCommandRequest request, CancellationToken cancellationToken)
         {
-            // The service throws with a reason of its own when the save fails, so reaching
-            // here means it worked; the bare Exception that used to stand in for the false
-            // case read as a 500 with nothing in it.
             await _profileService.SetUserPhoto(request.Username, request.PhotoUrl, cancellationToken);
 
             return new SetUserPhotoCommandResponse

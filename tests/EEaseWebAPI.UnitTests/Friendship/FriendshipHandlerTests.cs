@@ -59,7 +59,6 @@ namespace EEaseWebAPI.UnitTests.Friendship
         [Fact]
         public async Task The_friend_is_whichever_of_the_two_is_not_the_caller()
         {
-            // Alice asked Bob in one, Bob asked Alice in the other; both are Alice's friends.
             _friendship.GetFriendsAsync("alice").Returns(new[]
             {
                 Accepted(_alice, _bob),

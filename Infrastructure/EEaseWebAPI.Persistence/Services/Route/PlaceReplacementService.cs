@@ -169,10 +169,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
                 case PlaceSlot.AfterDinner:
                     var afterDinner = _placeQueryBuilder.AfterDinner(profile.Personalization, priceLevel);
 
-                    // The same ladder as a meal: what they asked for, the same thing without
-                    // their preferences, something else of that kind, then anything. Asking
-                    // for an alternative twice was a slip, and the two could come back the
-                    // same and be deduplicated into one.
                     return (afterDinner, In(destination,
                         afterDinner,
                         _placeQueryBuilder.AfterDinner(null, priceLevel),

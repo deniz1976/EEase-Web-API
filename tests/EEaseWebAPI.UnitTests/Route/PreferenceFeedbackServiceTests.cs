@@ -181,8 +181,6 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_caller_who_gave_up_stops_the_lookup()
         {
-            // The token used to stop at the method signature: the query that reads the
-            // preferences was started without it.
             await SeedFoodAsync(streetFood: 20);
             GeminiPicks("StreetFoodPreference");
 

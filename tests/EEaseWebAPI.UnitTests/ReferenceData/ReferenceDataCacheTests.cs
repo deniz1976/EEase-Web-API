@@ -44,8 +44,7 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
                 return Task.FromResult(new List<string> { "Italy" });
             });
 
-            // Reading them again must not go back to the database: the two used to share a
-            // key, and each read replaced the other because the shapes did not match.
+            // Reading them again must not go back to the database.
             await _cache.GetOrLoadAsync("cities", _ =>
             {
                 cityReads++;
@@ -75,9 +74,6 @@ namespace EEaseWebAPI.UnitTests.ReferenceData
         [Fact]
         public void Every_kind_of_reference_data_has_a_key_of_its_own()
         {
-            // The city list, the city names and the countries shared one key once, so
-            // warming them up left only the last one cached and the other two read from the
-            // database on every request.
             var keys = new CacheOptions();
 
             new[]

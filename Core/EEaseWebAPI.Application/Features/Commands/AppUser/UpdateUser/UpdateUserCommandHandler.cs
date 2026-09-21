@@ -33,8 +33,6 @@ namespace EEaseWebAPI.Application.Features.Commands.AppUser.UpdateUser
             if (request.User == null)
                 throw new UserNotFoundException("User not found",(int)StatusEnum.UserNotFound);
 
-            // An update that did not happen leaves the service by throwing, so there is no
-            // third outcome to answer with an empty 500.
             await _profileService.UpdateUser(request, cancellationToken);
 
             // A new username means the old token names somebody who no longer exists.

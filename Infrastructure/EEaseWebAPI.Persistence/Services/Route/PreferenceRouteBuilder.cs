@@ -90,11 +90,9 @@ namespace EEaseWebAPI.Persistence.Services.Route
             var touristicQuery = _placeQueryBuilder.Touristic(profile.Personalization);
             var afterDinnerQuery = _placeQueryBuilder.AfterDinner(profile.Personalization, priceLevel);
 
-            // The hotel, the sights and the evening venues are three searches that know
-            // nothing of each other, and the meals are searched for while they are still in
-            // the air. The pools only read what the picker has already handed out, so a pool
-            // that was collected a moment earlier costs nothing: a place that has since been
-            // taken is skipped when it is picked, not when it is collected.
+            // A pool only reads what the picker has already handed out, so collecting one while
+            // the meals are still being chosen is safe: a place taken since is skipped when it
+            // is picked, not when it is collected.
             var hotelSearch = FindHotelAsync(
                 city, priceLevel, profile, dislikedGoogleIds, cancellationToken);
             var touristicSearch = BuildTouristicPoolAsync(
@@ -152,10 +150,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
             int dayCount,
             CancellationToken cancellationToken)
         {
-            // Three searches, not three per day. The query behind a breakfast on day one is
-            // the query behind a breakfast on day five, so the trip used to ask Google the
-            // same question once for every day it lasted. The three do not wait for each
-            // other either.
             var breakfastSearch = SearchMealAsync(
                 destination, priceLevel, profile, MealType.Breakfast, cancellationToken);
             var lunchSearch = SearchMealAsync(
@@ -184,7 +178,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
                     dinners, destination, priceLevel, day, picker, cancellationToken);
             }
 
-            // Reading the details of what was claimed is not.
             var breakfastPlaces = MaterializeMealsAsync<Breakfast>(
                 breakfastIds, breakfasts.FoodQuery, priceLevel, cancellationToken);
             var lunchPlaces = MaterializeMealsAsync<Lunch>(

@@ -35,8 +35,6 @@ namespace EEaseWebAPI.Application.Behaviors
             }
             catch (Exception exception)
             {
-                // Rethrown as is: the global exception handler decides the status code and
-                // logs the details. This line only records that the request failed and when.
                 _logger.LogWarning(
                     "{Request} failed after {Elapsed:0} ms with {Exception}.",
                     requestName,

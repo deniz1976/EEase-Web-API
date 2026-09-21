@@ -39,8 +39,6 @@ namespace EEaseWebAPI.UnitTests.Api
             var services = new ServiceCollection();
 
             services.AddLogging();
-            // The real host registers these; MVC and Swagger read them while the container
-            // is being validated.
             services.AddSingleton(environment);
             services.AddSingleton<IHostEnvironment>(environment);
             services.AddApplicationServices(configuration);

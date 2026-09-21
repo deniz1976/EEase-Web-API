@@ -125,8 +125,6 @@ namespace EEaseWebAPI.UnitTests.User
         [Fact]
         public async Task An_unknown_topic_is_reported_instead_of_saving_nothing()
         {
-            // It used to be skipped, so a caller whose topics were all misspelled was told
-            // their preferences were saved and got three empty rows.
             await Assert.ThrowsAsync<UpdateUserSaveException>(
                 () => _service.SetFromTopicsAsync("alice", new[] { "Not A Topic" }));
         }
@@ -134,8 +132,6 @@ namespace EEaseWebAPI.UnitTests.User
         [Fact]
         public async Task A_topic_reaches_every_row_it_names()
         {
-            // "Waterfront Getaways" is listed under accommodation but also names a
-            // personalization preference, which used to be dropped without a word.
             await _service.SetFromTopicsAsync("alice", new[] { "Waterfront Getaways" });
 
             (await _context.Set<UserAccommodationPreferences>().SingleAsync())
@@ -232,8 +228,6 @@ namespace EEaseWebAPI.UnitTests.User
         [Fact]
         public async Task A_username_spelled_with_different_capitals_still_finds_the_user()
         {
-            // Identity itself is case insensitive about usernames; this lookup used to
-            // compare the raw name and answer "user not found".
             var user = await _service.GetUserWithPreferencesAsync("ALICE");
 
             user.Id.Should().Be("alice-id");

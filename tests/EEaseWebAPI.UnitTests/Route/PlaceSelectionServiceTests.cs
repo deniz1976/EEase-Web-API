@@ -84,8 +84,6 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public void Taking_from_several_threads_at_once_still_never_repeats()
         {
-            // The route builders search side by side now, so two slots can ask the picker for
-            // a place at the same moment.
             var picker = new PlacePicker(new Random(1));
             var pool = Enumerable.Range(1, 200).Select(index => $"place-{index}").ToList();
 

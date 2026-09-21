@@ -41,7 +41,6 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_request_without_a_photo_name_is_refused()
         {
-            // It used to leave with a bare Exception, which the caller read as a 500.
             await Assert.ThrowsAsync<ArgumentException>(
                 () => _handler.Handle(Request(photoName: string.Empty), CancellationToken.None));
         }

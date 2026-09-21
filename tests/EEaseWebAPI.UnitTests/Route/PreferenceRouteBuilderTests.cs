@@ -279,8 +279,6 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_meal_is_searched_for_once_however_long_the_trip_is()
         {
-            // A five day trip asks the same three questions a two day trip asks: one for the
-            // hotel and one per meal. It used to ask one per meal per day.
             await _builder.BuildAsync("rome", Start, Start.AddDays(4), PRICE_LEVEL.PRICE_LEVEL_MODERATE, "alice", null);
 
             await _search.Received(4).SearchFirstMatchAsync(

@@ -12,8 +12,6 @@ namespace EEaseWebAPI.API.Extensions
             var errorSchema = context.SchemaGenerator.GenerateSchema(
                 typeof(ErrorResponse), context.SchemaRepository);
 
-            // A request can always be refused for what it carries, either by a validator or
-            // by a rule the handler applies.
             Describe(operation, StatusCodes.Status400BadRequest,
                 "The request was refused for what it carries.", errorSchema);
 
@@ -30,7 +28,6 @@ namespace EEaseWebAPI.API.Extensions
             Describe(operation, StatusCodes.Status500InternalServerError,
                 "Something went wrong that the caller cannot do anything about.", errorSchema);
 
-            // Written above the action, because only a handful of endpoints can forbid.
             if (operation.Responses.TryGetValue(
                     StatusCodes.Status403Forbidden.ToString(), out var forbidden))
             {

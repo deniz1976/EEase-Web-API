@@ -59,8 +59,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             var pricePrefix = _placeQueryBuilder.PricePrefix(priceLevel);
 
-            // Each of these is a round trip to Google and none of them needs the others, so
-            // they go out together: the route used to wait for six searches in a row.
             var hotelSearch = FindHotelAsync(destination, priceLevel, cancellationToken);
             var foodSearch = FindFoodPlacesAsync(destination, pricePrefix, dayCount, priceLevel, cancellationToken);
             var touristicSearch = FindTouristicPlacesAsync(destination, touristicNeeded, cancellationToken);
@@ -150,9 +148,8 @@ namespace EEaseWebAPI.Persistence.Services.Route
             IReadOnlyList<string> touristicGoogleIds,
             CancellationToken cancellationToken)
         {
-            // The picker is what decides, and it decides in order: no two slots may claim the
-            // same place. Reading the details of what it claimed is seven calls to Google
-            // that have nothing to do with each other, so those go out together.
+            // The picker hands out places one at a time so that no two slots claim the same one;
+            // reading the details of what it handed out does not have to wait.
             var breakfastId = Claim(picker, breakfastGoogleIds, "breakfast");
             var lunchId = Claim(picker, lunchGoogleIds, "lunch");
             var dinnerId = Claim(picker, dinnerGoogleIds, "dinner");

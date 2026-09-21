@@ -47,8 +47,6 @@ namespace EEaseWebAPI.UnitTests.User
             var response = await new DeleteUserCommandHandler(_headers, _account)
                 .Handle(new DeleteUserCommandRequest { Username = "alice" }, CancellationToken.None);
 
-            // It used to be reported as UserDeletionFailed, over a message saying the
-            // account had been reactivated.
             response.Header!.EnumStatusCode.Should().Be((int)StatusEnum.AccountReactivated);
             response.Body!.Message.Should().Be(AppMessages.AccountReactivated);
         }

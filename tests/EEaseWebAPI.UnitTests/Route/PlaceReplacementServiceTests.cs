@@ -191,9 +191,6 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task An_after_dinner_slot_is_searched_for_in_four_different_ways()
         {
-            // The queries are picked at random, so the builder is stood in for: it used to be
-            // asked for an alternative twice, and two equal answers were deduplicated into
-            // one, leaving three ways to search instead of four.
             var queryBuilder = Substitute.For<IPlaceQueryBuilder>();
             queryBuilder.AfterDinner(Arg.Any<IReadOnlyList<PreferenceItem>?>(), Arg.Any<PRICE_LEVEL?>())
                 .Returns(call => call.Arg<IReadOnlyList<PreferenceItem>?>() is null

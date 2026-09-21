@@ -100,8 +100,7 @@ namespace EEaseWebAPI.UnitTests.Caching
         [Fact]
         public async Task A_search_still_works_when_the_cache_was_never_warmed_up()
         {
-            // The entry expires after an hour of no searches; before, that turned every
-            // search into an empty result instead of a database read.
+            // The entry expires after an hour of no searches.
             var results = await _service.SearchUsersAsync("alice");
 
             results.Single().Username.Should().Be("alice");
@@ -174,8 +173,6 @@ namespace EEaseWebAPI.UnitTests.Caching
 
             using var stop = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 
-            // The list used to be edited in place, so a search reading it at the same time
-            // threw "collection was modified" and the request failed with a 500.
             var writes = Task.Run(() =>
             {
                 var index = 0;

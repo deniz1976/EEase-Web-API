@@ -67,8 +67,6 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task A_caller_who_gives_up_stops_the_building()
         {
-            // Building a route is minutes of calls to Gemini and Google. The builders took a
-            // cancellation token all along and the service passed none.
             using var cancellation = new CancellationTokenSource();
 
             _preferenceBuilder

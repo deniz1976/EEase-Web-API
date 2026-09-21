@@ -50,9 +50,6 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
         private async Task<StandardRoute> SaveAsync(StandardRoute route, CancellationToken cancellationToken)
         {
-            // Building a route takes minutes of calls to Gemini and Google. A caller who
-            // gave up used to pay for all of them: the builders took a cancellation token
-            // and nobody passed one in.
             await _context.StandardRoutes.AddAsync(route, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 

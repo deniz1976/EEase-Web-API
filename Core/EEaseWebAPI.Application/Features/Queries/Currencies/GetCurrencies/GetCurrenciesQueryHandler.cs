@@ -19,9 +19,6 @@ namespace EEaseWebAPI.Application.Features.Queries.Currencies.GetCurrencies
         public async Task<GetCurrenciesQueryResponse> Handle(
             GetCurrenciesQueryRequest request, CancellationToken cancellationToken)
         {
-            // The service already keeps the list in memory. Caching it again here, under a
-            // second key with a lifetime of its own, only made it possible for the two
-            // copies to disagree.
             var currencies = await _currencyService.GetCurrenciesAsync(cancellationToken);
 
             var page = currencies

@@ -148,8 +148,6 @@ namespace EEaseWebAPI.UnitTests.Gemini
             await manager.AcquireKeyAsync();
             manager.ReportQuotaExceeded("only-key");
 
-            // The pool used to loop until the caller cancelled, so an exhausted quota left
-            // the request hanging rather than answering 429.
             await Assert.ThrowsAsync<GeminiAPIKeyLimitExceededException>(
                 () => manager.AcquireKeyAsync());
         }
