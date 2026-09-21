@@ -144,7 +144,10 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task The_like_status_of_a_route_nobody_liked_is_false()
         {
-            (await _service.CheckRouteLikeStatus("alice", _publicRouteId)).Should().BeFalse();
+            var (isLiked, likeCount) = await _service.CheckRouteLikeStatus("alice", _publicRouteId);
+
+            isLiked.Should().BeFalse();
+            likeCount.Should().Be(0);
         }
 
         [Fact]
@@ -154,7 +157,10 @@ namespace EEaseWebAPI.UnitTests.Route
             route.LikedUsers!.Add(_alice);
             await _context.SaveChangesAsync();
 
-            (await _service.CheckRouteLikeStatus("alice", _publicRouteId)).Should().BeTrue();
+            var (isLiked, likeCount) = await _service.CheckRouteLikeStatus("alice", _publicRouteId);
+
+            isLiked.Should().BeTrue();
+            likeCount.Should().Be(1);
         }
 
         [Fact]

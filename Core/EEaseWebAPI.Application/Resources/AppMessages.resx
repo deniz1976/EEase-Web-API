@@ -163,12 +163,6 @@
   <data name="NotFriendsPhoto" xml:space="preserve">
     <value>You need to be friends with this user to view their photo.</value>
   </data>
-  <data name="RouteLiked" xml:space="preserve">
-    <value>Route is liked by the user</value>
-  </data>
-  <data name="RouteNotLiked" xml:space="preserve">
-    <value>Route is not liked by the user</value>
-  </data>
   <data name="NoRoutesToDelete" xml:space="preserve">
     <value>You have no routes to delete.</value>
   </data>

@@ -120,7 +120,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
             return await _routeAccessPolicy.ToDtoAsync(route, username, user.Id, cancellationToken);
         }
 
-        public async Task<bool> CheckRouteLikeStatus(
+        public async Task<(bool IsLiked, int LikeCount)> CheckRouteLikeStatus(
             string username, Guid routeId, CancellationToken cancellationToken = default)
         {
             var user = await RequireUserAsync(username);
@@ -137,7 +137,9 @@ namespace EEaseWebAPI.Persistence.Services.Route
             if (!access.IsAccessible)
                 throw new ForbiddenException(access.Message!, StatusEnum.UnauthorizedToViewRoute);
 
-            return route.LikedUsers?.Any(liker => liker.Id == user.Id) == true;
+            return (
+                route.LikedUsers?.Any(liker => liker.Id == user.Id) == true,
+                route.LikedUsers?.Count ?? 0);
         }
 
         private async Task<AppUser> RequireUserAsync(string username) =>

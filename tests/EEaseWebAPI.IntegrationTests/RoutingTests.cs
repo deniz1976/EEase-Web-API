@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using FluentAssertions;
 using Xunit;
 
@@ -95,6 +96,29 @@ namespace EEaseWebAPI.IntegrationTests
 
             (await _client.SendAsync(wrong)).StatusCode
                 .Should().BeOneOf(HttpStatusCode.MethodNotAllowed, HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task The_three_methods_on_a_like_answer_the_same_shape()
+        {
+            var document = JsonDocument.Parse(
+                await _client.GetStringAsync("/swagger/v1/swagger.json")).RootElement;
+
+            var likes = document.GetProperty("paths").GetProperty("/api/routes/{routeId}/likes/me");
+            var schemas = document.GetProperty("components").GetProperty("schemas");
+
+            var bodies = new[] { "get", "put", "delete" }
+                .Select(method => likes.GetProperty(method)
+                    .GetProperty("responses").GetProperty("200")
+                    .GetProperty("content").GetProperty("application/json")
+                    .GetProperty("schema").GetProperty("$ref").GetString()!.Split('/').Last())
+                .Select(envelope => schemas.GetProperty(envelope)
+                    .GetProperty("properties").GetProperty("body")
+                    .GetProperty("$ref").GetString()!.Split('/').Last())
+                .ToList();
+
+            bodies.Should().AllBe(
+                "RouteLikeBody", "reading a like and changing one describe the same thing");
         }
 
         [Fact]

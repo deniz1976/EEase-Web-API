@@ -1,6 +1,6 @@
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Enums;
-using EEaseWebAPI.Application.Resources;
+using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 
 namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
@@ -18,17 +18,14 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus
 
         public async Task<CheckRouteLikeStatusQueryResponse> Handle(CheckRouteLikeStatusQueryRequest request, CancellationToken cancellationToken)
         {
-                var isLiked = await _routeQueryService.CheckRouteLikeStatus(request.Username, request.RouteId, cancellationToken);
+            var (isLiked, likeCount) = await _routeQueryService.CheckRouteLikeStatus(
+                request.Username, request.RouteId, cancellationToken);
 
-                return new CheckRouteLikeStatusQueryResponse
-                {
-                    Header = _headerService.HeaderCreate((int)StatusEnum.CheckRouteLikeSuccess),
-                    Body = new CheckRouteLikeStatusQueryResponseBody
-                    {
-                        IsLiked = isLiked,
-                        Message = isLiked ? AppMessages.RouteLiked : AppMessages.RouteNotLiked
-                    }
-                };
+            return new CheckRouteLikeStatusQueryResponse
+            {
+                Header = _headerService.HeaderCreate((int)StatusEnum.CheckRouteLikeSuccess),
+                Body = new RouteLikeBody { IsLiked = isLiked, LikeCount = likeCount }
+            };
         }
     }
 }

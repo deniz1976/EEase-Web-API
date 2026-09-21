@@ -17,7 +17,7 @@ namespace EEaseWebAPI.Application.Abstractions.Services
         Task<StandardRouteDTO> GetRouteById(
             string username, Guid? routeId, CancellationToken cancellationToken = default);
 
-        Task<bool> CheckRouteLikeStatus(
+        Task<(bool IsLiked, int LikeCount)> CheckRouteLikeStatus(
             string username, Guid routeId, CancellationToken cancellationToken = default);
     }
 }
