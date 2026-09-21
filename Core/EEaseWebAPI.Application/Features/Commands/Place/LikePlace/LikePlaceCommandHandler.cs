@@ -8,18 +8,18 @@ namespace EEaseWebAPI.Application.Features.Commands.Place.LikePlace
 {
     public class LikePlaceCommandHandler : IRequestHandler<LikePlaceCommandRequest, LikePlaceCommandResponse>
     {
-        private readonly IRouteService _routeService;
+        private readonly IRouteInteractionService _routeInteractionService;
         private readonly IHeaderService _headerService;
 
-        public LikePlaceCommandHandler(IRouteService routeService, IHeaderService headerService)
+        public LikePlaceCommandHandler(IRouteInteractionService routeInteractionService, IHeaderService headerService)
         {
-            _routeService = routeService;
+            _routeInteractionService = routeInteractionService;
             _headerService = headerService;
         }
 
         public async Task<LikePlaceCommandResponse> Handle(LikePlaceCommandRequest request, CancellationToken cancellationToken)
         {
-                var result = await _routeService.LikePlaceAsync(
+                var result = await _routeInteractionService.LikePlaceAsync(
                     request.Username,
                     request.GooglePlaceId,
                     request.PlaceType,

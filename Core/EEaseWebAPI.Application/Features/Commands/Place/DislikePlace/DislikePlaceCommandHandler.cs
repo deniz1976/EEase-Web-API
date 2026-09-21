@@ -12,12 +12,12 @@ namespace EEaseWebAPI.Application.Features.Commands.Place.DislikePlace
     public class DislikePlaceCommandHandler : IRequestHandler<DislikePlaceCommandRequest, DislikePlaceCommandResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IRouteService _routeService;
+        private readonly IRouteDislikeService _routeDislikeService;
 
-        public DislikePlaceCommandHandler(IHeaderService headerService, IRouteService routeService)
+        public DislikePlaceCommandHandler(IHeaderService headerService, IRouteDislikeService routeDislikeService)
         {
             _headerService = headerService;
-            _routeService = routeService;
+            _routeDislikeService = routeDislikeService;
         }
 
         public async Task<DislikePlaceCommandResponse> Handle(DislikePlaceCommandRequest request, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Place.DislikePlace
                 Header = _headerService.HeaderCreate((int)StatusEnum.ComponentChangedSuccessfully),
                 Body = new DislikePlaceCommandResponseBody()
                 {
-                    StandardRoute = await _routeService.DislikePlaceAsync(new()
+                    StandardRoute = await _routeDislikeService.DislikePlaceAsync(new()
                     {
                         Username = request.Username,
                         RouteId = request.RouteId,

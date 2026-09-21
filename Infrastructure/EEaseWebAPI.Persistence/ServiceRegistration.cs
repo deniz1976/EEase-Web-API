@@ -118,7 +118,6 @@ namespace EEaseWebAPI.Persistence
             services.AddScoped<IRouteQueryService, Services.Route.RouteQueryService>();
             services.AddScoped<IRouteInteractionService, Services.Route.RouteInteractionService>();
             services.AddScoped<IRouteDislikeService, Services.Route.RouteDislikeService>();
-            services.AddScoped<IRouteService, Services.Route.RouteService>();
             services.AddScoped<ITravellerPreferenceCollector, Services.Route.TravellerPreferenceCollector>();
             services.AddScoped<IRandomRouteBuilder, Services.Route.RandomRouteBuilder>();
             services.AddScoped<IPreferenceRouteBuilder, Services.Route.PreferenceRouteBuilder>();

@@ -11,18 +11,18 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetAllRoutes
 {
     public class GetAllRoutesQueryHandler : IRequestHandler<GetAllRoutesQueryRequest, GetAllRoutesQueryResponse>
     {
-        private readonly IRouteService _routeService;
+        private readonly IRouteQueryService _routeQueryService;
         private readonly IHeaderService _headerService;
 
-        public GetAllRoutesQueryHandler(IRouteService routeService, IHeaderService headerService)
+        public GetAllRoutesQueryHandler(IRouteQueryService routeQueryService, IHeaderService headerService)
         {
-            _routeService = routeService;
+            _routeQueryService = routeQueryService;
             _headerService = headerService;
         }
 
         public async Task<GetAllRoutesQueryResponse> Handle(GetAllRoutesQueryRequest request, CancellationToken cancellationToken)
         {
-            var (routes, totalCount) = await _routeService.GetAllRoutes(
+            var (routes, totalCount) = await _routeQueryService.GetAllRoutes(
                 request.Username, request.PageNumber, request.PageSize, cancellationToken);
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);

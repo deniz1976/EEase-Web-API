@@ -13,17 +13,17 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetLikedRoutes
     public class GetLikedRoutesQueryHandler : IRequestHandler<GetLikedRoutesQueryRequest, GetLikedRoutesQueryResponse>
     {
         private readonly IHeaderService _headerService;
-        private readonly IRouteService _routeService;
+        private readonly IRouteQueryService _routeQueryService;
 
-        public GetLikedRoutesQueryHandler(IHeaderService headerService, IRouteService routeService)
+        public GetLikedRoutesQueryHandler(IHeaderService headerService, IRouteQueryService routeQueryService)
         {
             _headerService = headerService;
-            _routeService = routeService;
+            _routeQueryService = routeQueryService;
         }
 
         public async Task<GetLikedRoutesQueryResponse> Handle(GetLikedRoutesQueryRequest request, CancellationToken cancellationToken)
         {
-            var (routes, totalCount) = await _routeService.GetLikedRoutes(
+            var (routes, totalCount) = await _routeQueryService.GetLikedRoutes(
                 request.Username, request.PageNumber, request.PageSize, cancellationToken);
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);

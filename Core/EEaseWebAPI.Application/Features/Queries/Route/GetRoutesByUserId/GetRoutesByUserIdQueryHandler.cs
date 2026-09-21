@@ -8,18 +8,18 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRoutesByUserId
 {
     public class GetRoutesByUserIdQueryHandler : IRequestHandler<GetRoutesByUserIdQueryRequest, GetRoutesByUserIdQueryResponse>
     {
-        private readonly IRouteService _routeService;
+        private readonly IRouteQueryService _routeQueryService;
         private readonly IHeaderService _headerService;
 
-        public GetRoutesByUserIdQueryHandler(IRouteService routeService, IHeaderService headerService)
+        public GetRoutesByUserIdQueryHandler(IRouteQueryService routeQueryService, IHeaderService headerService)
         {
-            _routeService = routeService;
+            _routeQueryService = routeQueryService;
             _headerService = headerService;
         }
 
         public async Task<GetRoutesByUserIdQueryResponse> Handle(GetRoutesByUserIdQueryRequest request, CancellationToken cancellationToken)
         {
-            var (routes, totalCount) = await _routeService.GetRoutesByUserId(
+            var (routes, totalCount) = await _routeQueryService.GetRoutesByUserId(
                 request.UserId,
                 request.RequesterUsername,
                 request.PageNumber,

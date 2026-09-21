@@ -6,18 +6,18 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.LikeRoute
 {
     public class LikeRouteCommandHandler : IRequestHandler<LikeRouteCommandRequest, LikeRouteCommandResponse>
     {
-        private readonly IRouteService _routeService;
+        private readonly IRouteInteractionService _routeInteractionService;
         private readonly IHeaderService _headerService;
 
-        public LikeRouteCommandHandler(IRouteService routeService, IHeaderService headerService)
+        public LikeRouteCommandHandler(IRouteInteractionService routeInteractionService, IHeaderService headerService)
         {
-            _routeService = routeService;
+            _routeInteractionService = routeInteractionService;
             _headerService = headerService;
         }
 
         public async Task<LikeRouteCommandResponse> Handle(LikeRouteCommandRequest request, CancellationToken cancellationToken)
         {
-            var isLiked = await _routeService.LikeRoute(request.Username, request.RouteId, cancellationToken);
+            var isLiked = await _routeInteractionService.LikeRoute(request.Username, request.RouteId, cancellationToken);
 
             return new LikeRouteCommandResponse
             {

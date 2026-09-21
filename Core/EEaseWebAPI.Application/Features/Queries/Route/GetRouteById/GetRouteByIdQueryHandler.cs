@@ -7,18 +7,18 @@ namespace EEaseWebAPI.Application.Features.Queries.Route.GetRouteById
 {
     public class GetRouteByIdQueryHandler : IRequestHandler<GetRouteByIdQueryRequest, GetRouteByIdQueryResponse>
     {
-        private readonly IRouteService _routeService;
+        private readonly IRouteQueryService _routeQueryService;
         private readonly IHeaderService _headerService;
 
-        public GetRouteByIdQueryHandler(IRouteService routeService, IHeaderService headerService)
+        public GetRouteByIdQueryHandler(IRouteQueryService routeQueryService, IHeaderService headerService)
         {
-            _routeService = routeService;
+            _routeQueryService = routeQueryService;
             _headerService = headerService;
         }
 
         public async Task<GetRouteByIdQueryResponse> Handle(GetRouteByIdQueryRequest request, CancellationToken cancellationToken)
         {
-            var route = await _routeService.GetRouteById(request.Username, request.RouteId, cancellationToken);
+            var route = await _routeQueryService.GetRouteById(request.Username, request.RouteId, cancellationToken);
 
             return new GetRouteByIdQueryResponse
             {

@@ -9,12 +9,12 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
 {
     public class UpdateRouteStatusCommandHandler : IRequestHandler<UpdateRouteStatusCommandRequest, UpdateRouteStatusCommandResponse>
     {
-        private readonly IRouteService _routeService;
+        private readonly IRouteInteractionService _routeInteractionService;
         private readonly IHeaderService _headerService;
 
-        public UpdateRouteStatusCommandHandler(IRouteService routeService, IHeaderService headerService)
+        public UpdateRouteStatusCommandHandler(IRouteInteractionService routeInteractionService, IHeaderService headerService)
         {
-            _routeService = routeService;
+            _routeInteractionService = routeInteractionService;
             _headerService = headerService;
         }
 
@@ -25,7 +25,7 @@ namespace EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus
                 throw new InvalidRouteStatusException();
             }
 
-            var result = await _routeService.UpdateRouteStatusAsync(request.RouteId, request.Status, request.Username, cancellationToken);
+            var result = await _routeInteractionService.UpdateRouteStatusAsync(request.RouteId, request.Status, request.Username, cancellationToken);
 
             return new UpdateRouteStatusCommandResponse
             {
