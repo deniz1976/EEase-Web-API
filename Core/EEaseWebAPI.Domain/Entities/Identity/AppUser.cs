@@ -17,7 +17,7 @@ namespace EEaseWebAPI.Domain.Entities.Identity
         public DateTime? DeleteDate { get; set; }
         public string? DeleteCode { get; set; }
         public DateTime? DeleteCodeExpiration { get; set; }
-        public string? RefreshToken { get; set; }
+        public string? RefreshTokenHash { get; set; }
         public DateTime? RefreshTokenEndDate { get; set; }
         public string? VerificationCode { get; set; }
         public string? ResetPasswordCode { get; set; }

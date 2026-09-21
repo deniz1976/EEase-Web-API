@@ -40,7 +40,7 @@ namespace EEaseWebAPI.IntegrationTests
             before.TryGetProperty("friendRequestStatus", out _).Should().BeTrue();
 
             (await ada.PostAsync("/api/friend-requests/gracer", null))
-                .EnsureSuccessStatusCode();
+                .StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
 
             var afterwards = await Travellers.BodyAsync(await ada.GetAsync("/api/users/gracer"));
 

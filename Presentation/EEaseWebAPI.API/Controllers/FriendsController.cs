@@ -77,7 +77,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("{username}")]
-        [ProducesResponseType(typeof(SendFriendRequestCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SendFriendRequestCommandResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> SendFriendRequest(
             [FromRoute] string username, CancellationToken cancellationToken)
         {
@@ -88,7 +88,8 @@ namespace EEaseWebAPI.API.Controllers
             };
 
             var response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
+
+            return Created($"/api/friend-requests/{username}", response);
         }
 
         [HttpGet("{username}")]
@@ -163,7 +164,7 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost("{username}")]
-        [ProducesResponseType(typeof(BlockFriendCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BlockFriendCommandResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> BlockUser(
             [FromRoute] string username, CancellationToken cancellationToken)
         {
@@ -174,7 +175,8 @@ namespace EEaseWebAPI.API.Controllers
             };
 
             var response = await _mediator.Send(command, cancellationToken);
-            return Ok(response);
+
+            return Created($"/api/blocked-users/{username}", response);
         }
 
         [HttpDelete("{username}")]

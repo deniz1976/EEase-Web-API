@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using EEaseWebAPI.Application;
 using EEaseWebAPI.Application.Resources;
+using EEaseWebAPI.Application.Security;
 
 namespace EEaseWebAPI.Persistence.Services.Authentication
 {
@@ -118,7 +119,12 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
         public async Task<RefreshTokenLoginBody> RefreshTokenLoginAsync(string refreshToken, CancellationToken cancellationToken = default)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(candidate => candidate.RefreshToken == refreshToken, cancellationToken)
+            // The stored value is a hash, so the offered token is hashed and the hashes are
+            // compared. The database never held anything that could be replayed.
+            var refreshTokenHash = SecretCode.Hash(refreshToken);
+
+            var user = await _userManager.Users
+                           .FirstOrDefaultAsync(candidate => candidate.RefreshTokenHash == refreshTokenHash, cancellationToken)
                        ?? throw new Application.Exceptions.Login.UserNotFoundException("User Not Found.", (int)StatusEnum.UserNotFound);
 
             if (user.RefreshTokenEndDate <= DateTime.UtcNow)

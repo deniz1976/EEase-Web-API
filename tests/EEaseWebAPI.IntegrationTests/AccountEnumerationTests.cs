@@ -21,7 +21,7 @@ namespace EEaseWebAPI.IntegrationTests
 
         private async Task RegisterAsync(string username) =>
             (await _client.PostAsJsonAsync("/api/users", Travellers.Registration(username)))
-                .StatusCode.Should().Be(HttpStatusCode.OK);
+                .StatusCode.Should().Be(HttpStatusCode.Created);
 
         private static async Task<(HttpStatusCode Status, string Message)> Describe(HttpResponseMessage response)
         {

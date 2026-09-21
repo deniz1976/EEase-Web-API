@@ -23,7 +23,7 @@ namespace EEaseWebAPI.IntegrationTests
             var grace = await Travellers.SignedInAsync(_factory, "gracef");
 
             (await ada.PostAsync("/api/friend-requests/gracef", null))
-                .StatusCode.Should().Be(HttpStatusCode.OK);
+                .StatusCode.Should().Be(HttpStatusCode.Created);
 
             var pendingForAda = await Travellers.BodyAsync(await ada.GetAsync("/api/friend-requests/gracef"));
             pendingForAda.GetProperty("status").GetInt32().Should().Be(1);
@@ -54,7 +54,7 @@ namespace EEaseWebAPI.IntegrationTests
             var grace = await Travellers.SignedInAsync(_factory, "gracew");
 
             (await ada.PostAsync("/api/friend-requests/gracew", null))
-                .StatusCode.Should().Be(HttpStatusCode.OK);
+                .StatusCode.Should().Be(HttpStatusCode.Created);
 
             (await ada.DeleteAsync("/api/friend-requests/gracew"))
                 .StatusCode.Should().Be(HttpStatusCode.OK);
@@ -70,7 +70,7 @@ namespace EEaseWebAPI.IntegrationTests
             await Travellers.SignedInAsync(_factory, "graceb");
 
             (await ada.PostAsync("/api/blocked-users/graceb", null))
-                .StatusCode.Should().Be(HttpStatusCode.OK);
+                .StatusCode.Should().Be(HttpStatusCode.Created);
 
             var blocked = await Travellers.BodyAsync(await ada.GetAsync("/api/blocked-users"));
             UsernamesIn(blocked, "blockedUsers", "username").Should().Contain("graceb");

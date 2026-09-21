@@ -1,3 +1,4 @@
+using EEaseWebAPI.Application.Security;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Exceptions;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
@@ -169,8 +170,17 @@ namespace EEaseWebAPI.UnitTests.User
         {
             await _service.UpdateRefreshTokenAsync("refresh", _alice, TimeSpan.FromDays(7));
 
-            _alice.RefreshToken.Should().Be("refresh");
+            _alice.RefreshTokenHash.Should().Be(SecretCode.Hash("refresh"));
             _alice.RefreshTokenEndDate.Should().BeCloseTo(DateTime.UtcNow.AddDays(7), TimeSpan.FromMinutes(1));
+        }
+
+        [Fact]
+        public async Task The_token_itself_is_never_written_down()
+        {
+            await _service.UpdateRefreshTokenAsync("refresh", _alice, TimeSpan.FromDays(7));
+
+            _alice.RefreshTokenHash.Should().NotBe(
+                "refresh", "a copy of the users table should not be a set of working sessions");
         }
     }
 }

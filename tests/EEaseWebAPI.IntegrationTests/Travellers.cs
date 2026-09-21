@@ -30,7 +30,7 @@ namespace EEaseWebAPI.IntegrationTests
             var anonymous = factory.CreateClient();
 
             (await anonymous.PostAsJsonAsync("/api/users", Registration(username)))
-                .StatusCode.Should().Be(HttpStatusCode.OK);
+                .StatusCode.Should().Be(HttpStatusCode.Created);
 
             await ConfirmEmailAsync(factory, username);
 

@@ -40,7 +40,7 @@ namespace EEaseWebAPI.Persistence.Services.User
                     "User not found", (int)StatusEnum.UserNotFound);
             }
 
-            user.RefreshToken = refreshToken;
+            user.RefreshTokenHash = SecretCode.Hash(refreshToken);
             user.RefreshTokenEndDate = DateTime.UtcNow.Add(lifetime);
 
             await _userManager.UpdateAsync(user);

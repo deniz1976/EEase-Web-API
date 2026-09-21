@@ -31,7 +31,7 @@ namespace EEaseWebAPI.IntegrationTests
         public async Task A_name_that_is_already_taken_is_refused()
         {
             (await _client.PostAsJsonAsync("/api/users", Travellers.Registration("grace")))
-                .StatusCode.Should().Be(HttpStatusCode.OK);
+                .StatusCode.Should().Be(HttpStatusCode.Created);
 
             var again = await _client.PostAsJsonAsync("/api/users", Travellers.Registration("grace"));
 
@@ -69,7 +69,7 @@ namespace EEaseWebAPI.IntegrationTests
         public async Task A_password_that_is_wrong_does_not_sign_anybody_in()
         {
             (await _client.PostAsJsonAsync("/api/users", Travellers.Registration("hedy")))
-                .StatusCode.Should().Be(HttpStatusCode.OK);
+                .StatusCode.Should().Be(HttpStatusCode.Created);
 
             var login = await _client.PostAsJsonAsync(
                 "/api/auth/login", new { usernameOrEmail = "hedy", password = "not-the-password" });

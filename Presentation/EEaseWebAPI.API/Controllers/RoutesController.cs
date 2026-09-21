@@ -33,7 +33,7 @@ namespace EEaseWebAPI.API.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
-        [ProducesResponseType(typeof(CreateCustomRouteCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CreateCustomRouteCommandResponse), StatusCodes.Status201Created)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> CreateRoute(
             [FromBody] CreateCustomRouteDTO createCustomRouteDTO, CancellationToken cancellationToken)
@@ -49,17 +49,19 @@ namespace EEaseWebAPI.API.Controllers
             };
 
             var response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
+
+            return Created($"/api/routes/{response.Body?.Route?.Id}", response);
         }
 
         [HttpPost("guest")]
-        [ProducesResponseType(typeof(CreateRouteWithoutLoginCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CreateRouteWithoutLoginCommandResponse), StatusCodes.Status201Created)]
         [EnableRateLimiting(RateLimitPolicies.Expensive)]
         public async Task<IActionResult> CreateGuestRoute(
             [FromBody] CreateRouteWithoutLoginCommandRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
+
+            return StatusCode(StatusCodes.Status201Created, response);
         }
 
         [HttpGet]

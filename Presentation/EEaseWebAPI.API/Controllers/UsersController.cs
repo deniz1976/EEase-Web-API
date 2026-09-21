@@ -42,13 +42,14 @@ namespace EEaseWebAPI.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(CreateUserCommandResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CreateUserCommandResponse), StatusCodes.Status201Created)]
         [EnableRateLimiting(RateLimitPolicies.Sensitive)]
         public async Task<IActionResult> CreateUser(
             [FromBody] CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
-            return Ok(response);
+
+            return Created($"/api/users/{request.Username}", response);
         }
 
         [HttpGet]
