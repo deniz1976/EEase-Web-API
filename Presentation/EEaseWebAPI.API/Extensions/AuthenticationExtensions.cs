@@ -13,17 +13,33 @@ namespace EEaseWebAPI.API.Extensions
 {
     public static class AuthenticationExtensions
     {
+        public const int MinimumSecurityKeyBytes = 32;
+
         public static IServiceCollection AddJwtAuthentication(
             this IServiceCollection services,
             IConfiguration configuration)
         {
             var tokenOptions = configuration.GetSection(TokenOptions.SectionName).Get<TokenOptions>();
 
-            if (tokenOptions is null || string.IsNullOrWhiteSpace(tokenOptions.SecurityKey))
+            if (tokenOptions is null ||
+                string.IsNullOrWhiteSpace(tokenOptions.Issuer) ||
+                string.IsNullOrWhiteSpace(tokenOptions.Audience) ||
+                string.IsNullOrWhiteSpace(tokenOptions.SecurityKey))
             {
                 throw new InvalidOperationException(
                     "Token settings are missing. Define 'Token:Issuer', 'Token:Audience' and " +
                     "'Token:SecurityKey' in appsettings or in environment variables.");
+            }
+
+            // HS256 refuses a key shorter than this, and it refuses it while signing rather
+            // than while starting: a short key boots an application that 500s on every login.
+            var keySizeInBytes = Encoding.UTF8.GetByteCount(tokenOptions.SecurityKey);
+
+            if (keySizeInBytes < MinimumSecurityKeyBytes)
+            {
+                throw new InvalidOperationException(
+                    $"'Token:SecurityKey' is {keySizeInBytes} bytes. HMAC-SHA256 needs at least " +
+                    $"{MinimumSecurityKeyBytes}.");
             }
 
             services
