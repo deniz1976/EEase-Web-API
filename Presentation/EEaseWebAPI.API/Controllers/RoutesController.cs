@@ -6,6 +6,7 @@ using EEaseWebAPI.Application.Features.Commands.Route.CreateRouteWithoutLogin;
 using EEaseWebAPI.Application.Features.Commands.Route.DeleteAllRoutes;
 using EEaseWebAPI.Application.Features.Commands.Route.DeleteRoute;
 using EEaseWebAPI.Application.Features.Commands.Route.LikeRoute;
+using EEaseWebAPI.Application.Features.Commands.Route.UnlikeRoute;
 using EEaseWebAPI.Application.Features.Commands.Route.UpdateRouteStatus;
 using EEaseWebAPI.Application.Features.Queries.Route.CheckRouteLikeStatus;
 using EEaseWebAPI.Application.Features.Queries.Route.GetAllRoutes;
@@ -142,7 +143,7 @@ namespace EEaseWebAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("{routeId:guid}/likes")]
+        [HttpPut("{routeId:guid}/likes/me")]
         [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(LikeRouteCommandResponse), StatusCodes.Status200OK)]
@@ -150,6 +151,23 @@ namespace EEaseWebAPI.API.Controllers
             [FromRoute] Guid routeId, CancellationToken cancellationToken)
         {
             var request = new LikeRouteCommandRequest
+            {
+                RouteId = routeId,
+                Username = CurrentUsername
+            };
+
+            var response = await _mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpDelete("{routeId:guid}/likes/me")]
+        [Authorize(AuthenticationSchemes = AuthenticationSchemes.User)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(UnlikeRouteCommandResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UnlikeRoute(
+            [FromRoute] Guid routeId, CancellationToken cancellationToken)
+        {
+            var request = new UnlikeRouteCommandRequest
             {
                 RouteId = routeId,
                 Username = CurrentUsername

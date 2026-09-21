@@ -35,6 +35,7 @@ namespace EEaseWebAPI.UnitTests.Application
             "ResetUserPreferencesCommandRequest",
             "SearchUsersQueryRequest",
             "GetAccountStatusQueryRequest",
+            "UnlikeRouteCommandRequest",
             "UpdateRouteStatusCommandRequest",
             "UpdateUserCountryCommandRequest",
             "UpdateUserCurrencyCommandRequest",

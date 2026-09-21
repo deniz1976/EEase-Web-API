@@ -78,7 +78,7 @@ namespace EEaseWebAPI.UnitTests.Route
         [Fact]
         public async Task Liking_a_route_adds_the_user_and_counts_them()
         {
-            (await _service.LikeRoute("alice", _routeId)).Should().BeTrue();
+            (await _service.LikeRouteAsync("alice", _routeId)).Should().Be(1);
 
             var route = Route();
             route.LikedUsers.Should().ContainSingle();
@@ -86,11 +86,23 @@ namespace EEaseWebAPI.UnitTests.Route
         }
 
         [Fact]
-        public async Task Liking_twice_is_an_unlike_and_the_count_follows()
+        public async Task Liking_twice_leaves_one_like_rather_than_taking_it_away()
         {
-            await _service.LikeRoute("alice", _routeId);
+            await _service.LikeRouteAsync("alice", _routeId);
 
-            (await _service.LikeRoute("alice", _routeId)).Should().BeFalse();
+            (await _service.LikeRouteAsync("alice", _routeId)).Should().Be(1);
+
+            var route = Route();
+            route.LikedUsers.Should().ContainSingle();
+            route.LikeCount.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task Unliking_takes_the_like_away_and_the_count_follows()
+        {
+            await _service.LikeRouteAsync("alice", _routeId);
+
+            (await _service.UnlikeRouteAsync("alice", _routeId)).Should().Be(0);
 
             var route = Route();
             route.LikedUsers.Should().BeEmpty();
@@ -98,14 +110,22 @@ namespace EEaseWebAPI.UnitTests.Route
         }
 
         [Fact]
-        public async Task An_unlike_never_drives_the_count_below_zero()
+        public async Task Unliking_what_was_never_liked_changes_nothing()
+        {
+            (await _service.UnlikeRouteAsync("alice", _routeId)).Should().Be(0);
+
+            Route().LikedUsers.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task The_count_is_derived_rather_than_stepped_so_a_wrong_one_recovers()
         {
             var route = Route();
             route.LikedUsers!.Add(_alice);
-            route.LikeCount = 0;
+            route.LikeCount = 97;
             await _context.SaveChangesAsync();
 
-            await _service.LikeRoute("alice", _routeId);
+            await _service.UnlikeRouteAsync("alice", _routeId);
 
             Route().LikeCount.Should().Be(0);
         }
@@ -116,7 +136,7 @@ namespace EEaseWebAPI.UnitTests.Route
             _accessPolicy.EvaluateAsync(Arg.Any<StandardRoute>(), "bob", Arg.Any<string>())
                 .Returns(RouteAccessResult.Denied("private route"));
 
-            var thrown = await _service.Invoking(service => service.LikeRoute("bob", _routeId))
+            var thrown = await _service.Invoking(service => service.LikeRouteAsync("bob", _routeId))
                 .Should().ThrowAsync<ForbiddenException>();
 
             thrown.Which.EnumStatusCode.Should().Be((int)StatusEnum.UnauthorizedToViewRoute);
@@ -127,14 +147,14 @@ namespace EEaseWebAPI.UnitTests.Route
         {
             _userManager.FindByNameAsync("nobody").Returns((AppUser?)null);
 
-            await _service.Invoking(service => service.LikeRoute("nobody", _routeId))
+            await _service.Invoking(service => service.LikeRouteAsync("nobody", _routeId))
                 .Should().ThrowAsync<UserNotFoundException>();
         }
 
         [Fact]
         public async Task A_missing_route_is_reported_as_such()
         {
-            await _service.Invoking(service => service.LikeRoute("alice", Guid.NewGuid()))
+            await _service.Invoking(service => service.LikeRouteAsync("alice", Guid.NewGuid()))
                 .Should().ThrowAsync<RouteNotFoundException>();
         }
 

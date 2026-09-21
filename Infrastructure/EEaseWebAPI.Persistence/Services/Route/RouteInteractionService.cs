@@ -40,7 +40,14 @@ namespace EEaseWebAPI.Persistence.Services.Route
             _preferenceFeedbackService = preferenceFeedbackService;
         }
 
-        public async Task<bool> LikeRoute(string username, Guid routeId, CancellationToken cancellationToken = default)
+        public Task<int> LikeRouteAsync(string username, Guid routeId, CancellationToken cancellationToken = default) =>
+            SetLikeAsync(username, routeId, liked: true, cancellationToken);
+
+        public Task<int> UnlikeRouteAsync(string username, Guid routeId, CancellationToken cancellationToken = default) =>
+            SetLikeAsync(username, routeId, liked: false, cancellationToken);
+
+        private async Task<int> SetLikeAsync(
+            string username, Guid routeId, bool liked, CancellationToken cancellationToken)
         {
             var user = await RequireUserAsync(username);
 
@@ -57,15 +64,17 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             route.LikedUsers ??= new List<AppUser>();
 
-            var wasLiked = route.LikedUsers.Any(liker => liker.Id == user.Id);
+            var alreadyLiked = route.LikedUsers.Any(liker => liker.Id == user.Id);
 
-            if (wasLiked)
-            {
-                route.LikedUsers.Remove(user);
-            }
-            else
+            // Asking for what is already the case is not an error: the same request sent
+            // twice leaves the route the way the caller asked for it once.
+            if (liked && !alreadyLiked)
             {
                 route.LikedUsers.Add(user);
+            }
+            else if (!liked && alreadyLiked)
+            {
+                route.LikedUsers.Remove(user);
             }
 
             // Deriving the counter from the collection keeps it from drifting, which a
@@ -74,7 +83,7 @@ namespace EEaseWebAPI.Persistence.Services.Route
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return !wasLiked;
+            return route.LikeCount ?? 0;
         }
 
         public async Task<bool> DeleteRoute(string username, Guid? routeId, CancellationToken cancellationToken = default)

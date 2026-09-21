@@ -72,6 +72,9 @@ namespace EEaseWebAPI.IntegrationTests
         [InlineData("POST", "/api/friend-requests/adatest")]
         [InlineData("PUT", "/api/friend-requests/adatest")]
         [InlineData("DELETE", "/api/friend-requests/adatest")]
+        [InlineData("GET", "/api/routes/11111111-1111-1111-1111-111111111111/likes/me")]
+        [InlineData("PUT", "/api/routes/11111111-1111-1111-1111-111111111111/likes/me")]
+        [InlineData("DELETE", "/api/routes/11111111-1111-1111-1111-111111111111/likes/me")]
         public async Task One_path_answers_to_several_methods(string method, string path)
         {
             var response = await _client.SendAsync(new HttpRequestMessage(new HttpMethod(method), path));
@@ -81,6 +84,7 @@ namespace EEaseWebAPI.IntegrationTests
         }
 
         [Theory]
+        [InlineData("POST", "/api/routes/11111111-1111-1111-1111-111111111111/likes")]
         [InlineData("DELETE", "/api/users/email-confirmation")]
         [InlineData("DELETE", "/api/users/me/deletion-request")]
         [InlineData("GET", "/api/places/likes")]

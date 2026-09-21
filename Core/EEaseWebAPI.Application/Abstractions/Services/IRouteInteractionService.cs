@@ -5,7 +5,9 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 {
     public interface IRouteInteractionService
     {
-        Task<bool> LikeRoute(string username, Guid routeId, CancellationToken cancellationToken = default);
+        Task<int> LikeRouteAsync(string username, Guid routeId, CancellationToken cancellationToken = default);
+
+        Task<int> UnlikeRouteAsync(string username, Guid routeId, CancellationToken cancellationToken = default);
 
         Task<bool> DeleteRoute(string username, Guid? routeId, CancellationToken cancellationToken = default);
 

@@ -3,29 +3,29 @@ using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.MapEntities;
 using MediatR;
 
-namespace EEaseWebAPI.Application.Features.Commands.Route.LikeRoute
+namespace EEaseWebAPI.Application.Features.Commands.Route.UnlikeRoute
 {
-    public class LikeRouteCommandHandler : IRequestHandler<LikeRouteCommandRequest, LikeRouteCommandResponse>
+    public class UnlikeRouteCommandHandler : IRequestHandler<UnlikeRouteCommandRequest, UnlikeRouteCommandResponse>
     {
         private readonly IRouteInteractionService _routeInteractionService;
         private readonly IHeaderService _headerService;
 
-        public LikeRouteCommandHandler(
+        public UnlikeRouteCommandHandler(
             IRouteInteractionService routeInteractionService, IHeaderService headerService)
         {
             _routeInteractionService = routeInteractionService;
             _headerService = headerService;
         }
 
-        public async Task<LikeRouteCommandResponse> Handle(
-            LikeRouteCommandRequest request, CancellationToken cancellationToken)
+        public async Task<UnlikeRouteCommandResponse> Handle(
+            UnlikeRouteCommandRequest request, CancellationToken cancellationToken)
         {
-            var likeCount = await _routeInteractionService.LikeRouteAsync(
+            var likeCount = await _routeInteractionService.UnlikeRouteAsync(
                 request.Username, request.RouteId, cancellationToken);
 
-            return new LikeRouteCommandResponse
+            return new UnlikeRouteCommandResponse
             {
-                Body = new RouteLikeBody { IsLiked = true, LikeCount = likeCount },
+                Body = new RouteLikeBody { IsLiked = false, LikeCount = likeCount },
                 Header = _headerService.HeaderCreate((int)StatusEnum.RouteLikeStatusUpdatedSuccessfully)
             };
         }

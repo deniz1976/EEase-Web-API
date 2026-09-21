@@ -72,6 +72,7 @@ namespace EEaseWebAPI.UnitTests.Api
                 "PlacesController.DislikePlace",
                 "RoutesController.GetMyRouteLike",
                 "RoutesController.LikeRoute",
+                "RoutesController.UnlikeRoute",
                 "RoutesController.UpdateRouteVisibility");
         }
 
