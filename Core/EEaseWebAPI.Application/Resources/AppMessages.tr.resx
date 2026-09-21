@@ -190,6 +190,9 @@
   <data name="Mail_DeleteAccountLabel" xml:space="preserve">
     <value>Hesap Silme Kodunuz</value>
   </data>
+  <data name="AccountLockedOut" xml:space="preserve">
+    <value>Çok fazla başarısız giriş denemesi. Birkaç dakika sonra tekrar deneyin.</value>
+  </data>
   <data name="Mail_VerificationSubject" xml:space="preserve">
     <value>E-posta Doğrulama</value>
   </data>

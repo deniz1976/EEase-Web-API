@@ -190,6 +190,9 @@
   <data name="Mail_DeleteAccountLabel" xml:space="preserve">
     <value>Your Delete Code</value>
   </data>
+  <data name="AccountLockedOut" xml:space="preserve">
+    <value>Too many failed sign-in attempts. Try again in a few minutes.</value>
+  </data>
   <data name="Mail_VerificationSubject" xml:space="preserve">
     <value>Email Confirmation</value>
   </data>

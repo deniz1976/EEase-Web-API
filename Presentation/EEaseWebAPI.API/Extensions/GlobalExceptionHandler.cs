@@ -81,7 +81,9 @@ namespace EEaseWebAPI.API.Extensions
         {
             RequestValidationException => StatusCodes.Status400BadRequest,
 
-            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+            UnauthorizedAccessException
+                or Application.Exceptions.Login.UserAuthenticationException
+                => StatusCodes.Status401Unauthorized,
 
             ForbiddenException
                 or DeleteRouteException => StatusCodes.Status403Forbidden,

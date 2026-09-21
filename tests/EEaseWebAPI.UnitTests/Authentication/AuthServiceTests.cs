@@ -1,3 +1,4 @@
+using EEaseWebAPI.Application.Enums;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Application.Abstractions.Services.Authentication;
 using EEaseWebAPI.Application.Abstractions.Token;
@@ -59,16 +60,49 @@ namespace EEaseWebAPI.UnitTests.Authentication
         }
 
         [Fact]
-        public async Task An_unknown_user_cannot_log_in()
+        public async Task An_unknown_user_is_refused_the_same_way_a_wrong_password_is()
         {
-            await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.Login.UserNotFoundException>(
+            _signInManager.CheckPasswordSignInAsync(_alice, "wrong", true)
+                .Returns(Microsoft.AspNetCore.Identity.SignInResult.Failed);
+
+            var unknown = await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.Login.UserAuthenticationException>(
                 () => _service.LoginAsync("nobody", "whatever", 900));
+
+            var wrongPassword = await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.Login.UserAuthenticationException>(
+                () => _service.LoginAsync("alice", "wrong", 900));
+
+            unknown.EnumStatusCode.Should().Be(wrongPassword.EnumStatusCode);
+            unknown.Message.Should().Be(wrongPassword.Message);
+        }
+
+        [Fact]
+        public async Task A_failed_attempt_is_counted_towards_the_lockout()
+        {
+            _signInManager.CheckPasswordSignInAsync(_alice, "wrong", true)
+                .Returns(Microsoft.AspNetCore.Identity.SignInResult.Failed);
+
+            await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.Login.UserAuthenticationException>(
+                () => _service.LoginAsync("alice", "wrong", 900));
+
+            await _signInManager.Received(1).CheckPasswordSignInAsync(_alice, "wrong", true);
+        }
+
+        [Fact]
+        public async Task An_account_that_is_locked_out_says_so()
+        {
+            _signInManager.CheckPasswordSignInAsync(_alice, "wrong", true)
+                .Returns(Microsoft.AspNetCore.Identity.SignInResult.LockedOut);
+
+            var thrown = await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.Login.UserAuthenticationException>(
+                () => _service.LoginAsync("alice", "wrong", 900));
+
+            thrown.EnumStatusCode.Should().Be((int)StatusEnum.AccountLockedOut);
         }
 
         [Fact]
         public async Task A_wrong_password_is_rejected()
         {
-            _signInManager.CheckPasswordSignInAsync(_alice, "wrong", false)
+            _signInManager.CheckPasswordSignInAsync(_alice, "wrong", true)
                 .Returns(Microsoft.AspNetCore.Identity.SignInResult.Failed);
 
             await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.Login.UserAuthenticationException>(
@@ -80,7 +114,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
         {
             _alice.Status = false;
             _alice.DeleteDate = DateTime.UtcNow.AddDays(-1);
-            _signInManager.CheckPasswordSignInAsync(_alice, "wrong", false)
+            _signInManager.CheckPasswordSignInAsync(_alice, "wrong", true)
                 .Returns(Microsoft.AspNetCore.Identity.SignInResult.Failed);
 
             await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.Login.UserAuthenticationException>(
@@ -93,7 +127,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
         public async Task An_unconfirmed_email_gets_a_fresh_verification_code()
         {
             _alice.EmailConfirmed = false;
-            _signInManager.CheckPasswordSignInAsync(_alice, "OldPass1!", false)
+            _signInManager.CheckPasswordSignInAsync(_alice, "OldPass1!", true)
                 .Returns(Microsoft.AspNetCore.Identity.SignInResult.Success);
 
             await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.EmailConfirmException>(
@@ -109,7 +143,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
         {
             var earlier = DateTime.UtcNow.AddDays(-2);
             _alice.LastSeen = earlier;
-            _signInManager.CheckPasswordSignInAsync(_alice, "OldPass1!", false)
+            _signInManager.CheckPasswordSignInAsync(_alice, "OldPass1!", true)
                 .Returns(Microsoft.AspNetCore.Identity.SignInResult.Success);
 
             var body = await _service.LoginAsync("alice", "OldPass1!", 900);
@@ -122,7 +156,7 @@ namespace EEaseWebAPI.UnitTests.Authentication
         [Fact]
         public async Task A_login_that_triggers_deletion_does_not_hand_out_a_token()
         {
-            _signInManager.CheckPasswordSignInAsync(_alice, "OldPass1!", false)
+            _signInManager.CheckPasswordSignInAsync(_alice, "OldPass1!", true)
                 .Returns(Microsoft.AspNetCore.Identity.SignInResult.Success);
             _deletionPolicy.EnforceAsync(_alice).Returns(new AccountStatus(true, "Account deleted"));
 

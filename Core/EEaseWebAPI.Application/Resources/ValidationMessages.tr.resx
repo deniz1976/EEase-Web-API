@@ -175,6 +175,15 @@
   <data name="RouteId_Required" xml:space="preserve">
     <value>Rota kimliği gereklidir.</value>
   </data>
+  <data name="PhotoName_Invalid" xml:space="preserve">
+    <value>Fotoğraf adı places/{placeId}/photos/{photoId} biçiminde olmalıdır.</value>
+  </data>
+  <data name="PhotoName_Required" xml:space="preserve">
+    <value>Fotoğraf adı gereklidir.</value>
+  </data>
+  <data name="PhotoSize_OutOfRange" xml:space="preserve">
+    <value>Fotoğrafın her kenarı 1 ile 4800 piksel arasında olmalıdır.</value>
+  </data>
   <data name="PhotoPath_Required" xml:space="preserve">
     <value>Fotoğraf adresi gereklidir.</value>
   </data>

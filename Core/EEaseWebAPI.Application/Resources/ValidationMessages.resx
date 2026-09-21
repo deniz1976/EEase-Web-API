@@ -175,6 +175,15 @@
   <data name="RouteId_Required" xml:space="preserve">
     <value>A route id is required.</value>
   </data>
+  <data name="PhotoName_Invalid" xml:space="preserve">
+    <value>A photo name looks like places/{placeId}/photos/{photoId}.</value>
+  </data>
+  <data name="PhotoName_Required" xml:space="preserve">
+    <value>A photo name is required.</value>
+  </data>
+  <data name="PhotoSize_OutOfRange" xml:space="preserve">
+    <value>A photo may be between 1 and 4800 pixels on each side.</value>
+  </data>
   <data name="PhotoPath_Required" xml:space="preserve">
     <value>A photo path is required.</value>
   </data>

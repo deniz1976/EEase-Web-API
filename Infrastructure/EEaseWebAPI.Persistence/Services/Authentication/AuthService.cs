@@ -48,16 +48,25 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
         public async Task<LoginBody> LoginAsync(string usernameOrEmail, string password, int accessTokenLifetime, CancellationToken cancellationToken = default)
         {
+            // A name nobody has registered and a password that is wrong answer the same
+            // way. Telling them apart is how an attacker finds out who has an account here.
             var user = await _userManager.FindByNameAsync(usernameOrEmail)
                        ?? await _userManager.FindByEmailAsync(usernameOrEmail)
-                       ?? throw new Application.Exceptions.Login.UserNotFoundException("User not found", (int)StatusEnum.UserNotFound);
+                       ?? throw InvalidCredentials();
 
-            var signIn = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+            // Counting the failures is what makes the ten attempts and the fifteen minutes
+            // configured for this application mean anything.
+            var signIn = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
+
+            if (signIn.IsLockedOut)
+            {
+                throw new Application.Exceptions.Login.UserAuthenticationException(
+                    AppMessages.AccountLockedOut, (int)StatusEnum.AccountLockedOut);
+            }
 
             if (!signIn.Succeeded)
             {
-                throw new Application.Exceptions.Login.UserAuthenticationException(
-                    "Username or password is incorrect", (int)StatusEnum.InvalidCredentials);
+                throw InvalidCredentials();
             }
 
             if (!user.EmailConfirmed)
@@ -150,6 +159,9 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
         public async Task<bool> IsEmailInUse(string email, CancellationToken cancellationToken = default) =>
             await _userManager.FindByEmailAsync(email) != null;
+
+        private static Application.Exceptions.Login.UserAuthenticationException InvalidCredentials() =>
+            new("Username or password is incorrect", (int)StatusEnum.InvalidCredentials);
 
         private async Task SendVerificationEmailAsync(AppUser user)
         {

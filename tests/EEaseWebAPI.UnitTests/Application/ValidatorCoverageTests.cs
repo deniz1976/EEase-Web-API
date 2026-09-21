@@ -23,7 +23,6 @@ namespace EEaseWebAPI.UnitTests.Application
             "GetLikedRoutesQueryRequest",
             "GetPendingFriendRequestsQuery",
             "GetRouteByIdQueryRequest",
-            "GetPlacePhotoQueryRequest",
             "GetRoutesByUserIdQueryRequest",
             "GetUserCurrencyQueryRequest",
             "GetUserFriendsQuery",
