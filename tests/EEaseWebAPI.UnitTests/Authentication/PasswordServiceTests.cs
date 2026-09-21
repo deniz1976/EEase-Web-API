@@ -49,10 +49,15 @@ namespace EEaseWebAPI.UnitTests.Authentication
         }
 
         [Fact]
-        public async Task An_unknown_user_cannot_request_a_reset_code()
+        public async Task An_unknown_name_is_answered_the_same_way_a_real_one_is()
         {
-            await Assert.ThrowsAsync<EEaseWebAPI.Application.Exceptions.Login.UserNotFoundException>(
-                () => _service.SendResetCodeAsync("nobody"));
+            var asking = () => _service.SendResetCodeAsync("nobody");
+
+            await asking.Should().NotThrowAsync(
+                "telling a stranger which names are registered is the whole attack");
+
+            await _mail.DidNotReceiveWithAnyArgs()
+                .SendResetPasswordEmailAsync(default!, default!, default!);
         }
 
         [Fact]
@@ -197,24 +202,14 @@ namespace EEaseWebAPI.UnitTests.Authentication
         }
 
         [Fact]
-        public async Task An_empty_new_password_only_confirms_the_current_one()
-        {
-            _userManager.CheckPasswordAsync(_alice, "OldPass1!").Returns(true);
-
-            var message = await _service.ChangePasswordAsync("alice", "OldPass1!", "");
-
-            message.Should().Contain("Please provide a new password");
-            await _userManager.DidNotReceiveWithAnyArgs().ChangePasswordAsync(default!, default!, default!);
-        }
-
-        [Fact]
         public async Task A_valid_change_goes_through()
         {
             _userManager.CheckPasswordAsync(_alice, "OldPass1!").Returns(true);
             _userManager.ChangePasswordAsync(_alice, "OldPass1!", "NewPass1!").Returns(IdentityResult.Success);
 
-            (await _service.ChangePasswordAsync("alice", "OldPass1!", "NewPass1!"))
-                .Should().Be("Password changed successfully.");
+            await _service.ChangePasswordAsync("alice", "OldPass1!", "NewPass1!");
+
+            await _userManager.Received(1).ChangePasswordAsync(_alice, "OldPass1!", "NewPass1!");
         }
     }
 }

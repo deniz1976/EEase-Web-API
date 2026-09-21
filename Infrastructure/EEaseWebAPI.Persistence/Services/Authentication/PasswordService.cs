@@ -32,7 +32,14 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
 
         public async Task<bool> SendResetCodeAsync(string usernameOrEmail, CancellationToken cancellationToken = default)
         {
-            var user = await FindAsync(usernameOrEmail);
+            // A name nobody has registered is answered the same way a real one is. Saying
+            // "no such user" here is how a stranger finds out who has an account.
+            var user = await FindOrDefaultAsync(usernameOrEmail);
+
+            if (user is null)
+            {
+                return true;
+            }
 
             var code = _codeGenerator.Generate();
 
@@ -93,7 +100,7 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
             await UpdateAsync(user, "Failed to clear the reset password code.");
         }
 
-        public async Task<string> ChangePasswordAsync(string username, string oldPassword, string newPassword, CancellationToken cancellationToken = default)
+        public async Task ChangePasswordAsync(string username, string oldPassword, string newPassword, CancellationToken cancellationToken = default)
         {
             if (oldPassword == newPassword)
             {
@@ -109,11 +116,6 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
                     "The old password is incorrect.", (int)StatusEnum.InvalidPassword);
             }
 
-            if (string.IsNullOrWhiteSpace(newPassword))
-            {
-                return "The old password is correct. Please provide a new password.";
-            }
-
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
 
             if (!result.Succeeded)
@@ -122,8 +124,6 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
                     $"Failed to change the password. Errors: {Describe(result)}",
                     (int)StatusEnum.PasswordChangeFailed);
             }
-
-            return "Password changed successfully.";
         }
 
         private async Task ValidateResetCodeAsync(AppUser user, string code)
@@ -163,10 +163,13 @@ namespace EEaseWebAPI.Persistence.Services.Authentication
         }
 
         private async Task<AppUser> FindAsync(string usernameOrEmail) =>
-            await _userManager.FindByNameAsync(usernameOrEmail)
-            ?? await _userManager.FindByEmailAsync(usernameOrEmail)
+            await FindOrDefaultAsync(usernameOrEmail)
             ?? throw new Application.Exceptions.Login.UserNotFoundException(
                 "User not found", (int)StatusEnum.UserNotFound);
+
+        private async Task<AppUser?> FindOrDefaultAsync(string usernameOrEmail) =>
+            await _userManager.FindByNameAsync(usernameOrEmail)
+            ?? await _userManager.FindByEmailAsync(usernameOrEmail);
 
         private async Task UpdateAsync(AppUser user, string failureMessage)
         {

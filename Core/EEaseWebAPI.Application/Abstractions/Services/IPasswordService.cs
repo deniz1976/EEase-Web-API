@@ -8,6 +8,6 @@ namespace EEaseWebAPI.Application.Abstractions.Services
 
         Task ResetPasswordAsync(string usernameOrEmail, string code, string newPassword, CancellationToken cancellationToken = default);
 
-        Task<string> ChangePasswordAsync(string username, string oldPassword, string newPassword, CancellationToken cancellationToken = default);
+        Task ChangePasswordAsync(string username, string oldPassword, string newPassword, CancellationToken cancellationToken = default);
     }
 }

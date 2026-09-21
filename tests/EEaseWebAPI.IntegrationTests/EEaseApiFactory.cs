@@ -24,6 +24,7 @@ namespace EEaseWebAPI.IntegrationTests
             builder.UseSetting("Token:Audience", "eease-tests");
             builder.UseSetting("Token:SecurityKey", "integration-tests-signing-key-long-enough-for-hmac-sha256");
             builder.UseSetting("Database:MigrateOnStartup", "false");
+            builder.UseSetting("MailService:Enabled", "false");
             builder.UseSetting("RateLimiting:SensitivePermitLimit", SensitivePermitLimit.ToString());
 
             builder.ConfigureServices(services =>
