@@ -1,6 +1,9 @@
+using EEaseWebAPI.Domain.Enums;
 using EEaseWebAPI.Application.Abstractions.Services;
 using EEaseWebAPI.Domain.Entities.Identity;
+using EEaseWebAPI.Persistence.Contexts;
 using EEaseWebAPI.Persistence.Services.Authentication;
+using Microsoft.EntityFrameworkCore;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
@@ -15,12 +18,18 @@ namespace EEaseWebAPI.UnitTests.Authentication
             null, null, null, null, null, null, null, null);
 
         private readonly IUserCacheService _cache = Substitute.For<IUserCacheService>();
+        private readonly EEaseAPIDbContext _context;
         private readonly AccountDeletionPolicy _policy;
 
         public AccountDeletionPolicyTests()
         {
+            _context = new EEaseAPIDbContext(
+                new DbContextOptionsBuilder<EEaseAPIDbContext>()
+                    .UseInMemoryDatabase($"deletion-{Guid.NewGuid():N}")
+                    .Options);
+
             _userManager.DeleteAsync(Arg.Any<AppUser>()).Returns(IdentityResult.Success);
-            _policy = new AccountDeletionPolicy(_userManager, _cache);
+            _policy = new AccountDeletionPolicy(_userManager, _context, _cache);
         }
 
         private static AppUser User(bool? status = true, DateTime? deleteDate = null) =>
@@ -82,6 +91,54 @@ namespace EEaseWebAPI.UnitTests.Authentication
                 User(status: false, deleteDate: DateTime.UtcNow.AddMinutes(30)));
 
             status.Message.Should().Be("Account will be deleted in 1 day(s).");
+        }
+
+        [Fact]
+        public async Task A_traveller_who_blocked_somebody_can_still_leave()
+        {
+            var user = User(status: false, deleteDate: DateTime.UtcNow.AddDays(-1));
+
+            await _context.AddAsync(new UserBlock
+            {
+                Id = Guid.NewGuid(),
+                BlockerId = user.Id,
+                BlockedId = "somebody-else",
+                BlockedDate = DateTime.UtcNow
+            });
+
+            await _context.SaveChangesAsync();
+
+            var status = await _policy.EnforceAsync(user);
+
+            status.IsDeleted.Should().BeTrue(
+                "the database refuses to delete a row a block still names");
+
+            _context.UserBlocks.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task A_traveller_with_friends_can_still_leave()
+        {
+            var user = User(status: false, deleteDate: DateTime.UtcNow.AddDays(-1));
+
+            var pair = UserFriendship.NormalizePair(user.Id, "somebody-else");
+
+            await _context.AddAsync(new UserFriendship
+            {
+                Id = Guid.NewGuid(),
+                UserAId = pair.UserAId,
+                UserBId = pair.UserBId,
+                RequesterId = user.Id,
+                AddresseeId = "somebody-else",
+                Status = FriendshipStatus.Accepted,
+                RequestDate = DateTime.UtcNow
+            });
+
+            await _context.SaveChangesAsync();
+
+            (await _policy.EnforceAsync(user)).IsDeleted.Should().BeTrue();
+
+            _context.UserFriendships.Should().BeEmpty();
         }
     }
 }
